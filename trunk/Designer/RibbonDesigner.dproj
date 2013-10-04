@@ -1,0 +1,312 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{453097E8-48A7-46E6-A57F-BDD6E5BE0E90}</ProjectGuid>
+			<MainSource>RibbonDesigner.dpr</MainSource>
+			<ProjectVersion>12.3</ProjectVersion>
+			<Base>True</Base>
+			<Config Condition="'$(Config)'==''">Release</Config>
+			<Platform>Win32</Platform>
+			<AppType>Application</AppType>
+			<FrameworkType>VCL</FrameworkType>
+			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_DependencyCheckOutputName>RibbonDesigner.exe</DCC_DependencyCheckOutputName>
+			<DCC_ImageBase>00400000</DCC_ImageBase>
+			<DCC_DcuOutput>.\$(Config)\$(Platform)</DCC_DcuOutput>
+			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+			<DCC_E>false</DCC_E>
+			<DCC_N>false</DCC_N>
+			<DCC_S>false</DCC_S>
+			<DCC_F>false</DCC_F>
+			<DCC_K>false</DCC_K>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_DependencyCheckOutputName>Bin\RibbonDesigner.exe</DCC_DependencyCheckOutputName>
+			<DCC_DebugDCUs>true</DCC_DebugDCUs>
+			<DCC_Optimize>false</DCC_Optimize>
+			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+			<DCC_ExeOutput>Bin</DCC_ExeOutput>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<DCC_DependencyCheckOutputName>Bin\RibbonDesigner.exe</DCC_DependencyCheckOutputName>
+			<DCC_ExeOutput>Bin</DCC_ExeOutput>
+			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+			<DCC_DebugInformation>false</DCC_DebugInformation>
+		</PropertyGroup>
+		<ItemGroup>
+			<DelphiCompile Include="RibbonDesigner.dpr">
+				<MainSource>MainSource</MainSource>
+			</DelphiCompile>
+			<RcCompile Include="..\Lib\UIRibbon.rc">
+				<Form>UIRibbon.res</Form>
+			</RcCompile>
+			<DCCReference Include="FMain.pas">
+				<Form>FormMain</Form>
+			</DCCReference>
+			<DCCReference Include="Classes\BasicXml.pas"/>
+			<DCCReference Include="Classes\RibbonMarkup.pas"/>
+			<DCCReference Include="Classes\Settings.pas"/>
+			<DCCReference Include="Classes\RibbonCompiler.pas"/>
+			<DCCReference Include="..\Lib\UIRibbonForm.pas"/>
+			<DCCReference Include="..\Lib\UIRibbon.pas"/>
+			<DCCReference Include="..\Lib\UIRibbonApi.pas"/>
+			<DCCReference Include="..\Lib\UIRibbonCommands.pas"/>
+			<DCCReference Include="..\Lib\WinApiEx.pas"/>
+			<DCCReference Include="FPreview.pas">
+				<Form>FormPreview</Form>
+			</DCCReference>
+			<DCCReference Include="FCommands.pas">
+				<Form>FrameCommands</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FEditImage.pas">
+				<Form>FormEditImage</Form>
+			</DCCReference>
+			<DCCReference Include="FImageList.pas">
+				<Form>FrameImageList</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FSettings.pas">
+				<Form>FormSettings</Form>
+			</DCCReference>
+			<DCCReference Include="FViews.pas">
+				<Form>FrameViews</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FControl.pas">
+				<Form>FrameControl</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FApplicationMenu.pas">
+				<Form>FrameApplicationMenu</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="DMShared.pas">
+				<Form>DataModuleShared</Form>
+				<DesignClass>TDataModule</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FApplicationModes.pas">
+				<Form>FormApplicationModes</Form>
+			</DCCReference>
+			<DCCReference Include="FViewRibbon.pas">
+				<Form>FrameViewRibbon</Form>
+			</DCCReference>
+			<DCCReference Include="FCommandRefObject.pas">
+				<Form>FrameCommandRefObject</Form>
+			</DCCReference>
+			<DCCReference Include="FBaseFrame.pas">
+				<Form>BaseFrame</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FAppMenuGroup.pas">
+				<Form>FrameAppMenuGroup</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FButton.pas">
+				<Form>FrameButton</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FQuickAccessToolbar.pas">
+				<Form>FrameQuickAccessToolbar</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FHelpButton.pas">
+				<Form>FrameHelpButton</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FTab.pas">
+				<Form>FrameTab</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FSplitButton.pas">
+				<Form>FrameSplitButton</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FMenuGroup.pas">
+				<Form>FrameMenuGroup</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FQatControl.pas">
+				<Form>FrameQatControl</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FScale.pas">
+				<Form>FrameScale</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FDropDownButton.pas">
+				<Form>FrameDropDownButton</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FGallery.pas">
+				<Form>FrameGallery</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FDropDownGallery.pas">
+				<Form>FrameDropDownGallery</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FSplitButtonGallery.pas">
+				<Form>FrameSplitButtonGallery</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FGroup.pas">
+				<Form>FrameGroup</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FSizeDefinition.pas">
+				<Form>FrameSizeDefinition</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FGroupSizeDefinition.pas">
+				<Form>FrameGroupSizeDefinition</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FControlSizeDefinition.pas">
+				<Form>FrameControlSizeDefintion</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FColumnBreak.pas">
+				<Form>FrameColumnBreak</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FFloatieFontControl.pas">
+				<Form>FrameFloatieFontControl</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FFontControl.pas">
+				<Form>FrameFontControl</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FControlGroup.pas">
+				<Form>FrameControlGroup</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FToggleButton.pas">
+				<Form>FrameToggleButton</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FComboBox.pas">
+				<Form>FrameComboBox</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FCheckBox.pas">
+				<Form>FrameCheckBox</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FDropDownColorPicker.pas">
+				<Form>FrameDropDownColorPicker</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FSpinner.pas">
+				<Form>FrameSpinner</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FInRibbonGallery.pas">
+				<Form>FrameInRibbonGallery</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FTabGroup.pas">
+				<Form>FrameTabGroup</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FMiniToolbar.pas">
+				<Form>FrameMiniToolbar</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FContextMenu.pas">
+				<Form>FrameContextMenu</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FContextMap.pas">
+				<Form>FrameContextMap</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="FXmlSource.pas">
+				<Form>FrameXmlSource</Form>
+				<DesignClass>TFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="..\Lib\UIRibbonUtils.pas"/>
+			<DCCReference Include="FNewFile.pas">
+				<Form>FormNewFile</Form>
+			</DCCReference>
+			<DCCReference Include="Classes\BasicZip.pas"/>
+			<BuildConfiguration Include="Base">
+				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+		<ProjectExtensions>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Delphi.Personality>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">True</VersionInfo>
+						<VersionInfo Name="MajorVer">1</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">69</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1033</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName">Erik van Bilsen AudioVisuality</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">Ribbon Designer</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.0.0.69</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName"/>
+						<VersionInfoKeys Name="LegalCopyright">© 2011 Erik van Bilsen</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename"/>
+						<VersionInfoKeys Name="ProductName"/>
+						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments"/>
+					</VersionInfoKeys>
+					<Source>
+						<Source Name="MainSource">RibbonDesigner.dpr</Source>
+					</Source>
+					<Parameters>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+				</Delphi.Personality>
+				<Platforms>
+					<Platform value="Win32">True</Platform>
+				</Platforms>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+	</Project>

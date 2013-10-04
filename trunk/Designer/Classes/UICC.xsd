@@ -1,0 +1,976 @@
+<?xml version="1.0"?>
+<!--
+Microsoft (R) Windows (R) User Interface Command and Controls (UICC)
+Copyright (c) Microsoft Corporation. All rights reserved.
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+  targetNamespace='http://schemas.microsoft.com/windows/2009/Ribbon'
+  xmlns='http://schemas.microsoft.com/windows/2009/Ribbon'
+  elementFormDefault="qualified">
+  
+  
+  
+  
+  <xs:simpleType name="SymbolString">
+    <xs:restriction base="xs:string">
+      
+      <xs:pattern value="[_A-Za-z][_A-Za-z0-9]*" />
+      
+      <xs:maxLength value="100" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CommentString">
+    <xs:restriction base="xs:string">
+      
+      <xs:maxLength value="250" />
+      
+      <xs:pattern value="[^\r\n\f]*" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CommandValue">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:positiveInteger">
+          <xs:pattern value="[1-9][0-9]*" />
+          <xs:minInclusive value="2"/>
+          <xs:maxInclusive value="59999"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          
+          <xs:pattern value="0[xX]0*([2-9a-fA-F]|[1-9a-fA-F][0-9a-fA-F]{1}|[1-9a-fA-F][0-9a-fA-F]{2}|[1-9a-dA-D][0-9a-fA-F]{3}|[eE]([0-9][0-9a-fA-F]{2}|[aA][0-5][0-9a-fA-F]))" />
+          <xs:maxLength value="10"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="DPIValue">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:minInclusive value="96"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="ApplicationModesString">
+    <xs:restriction base="xs:string">
+      <xs:whiteSpace value="collapse"/>
+      
+      <xs:pattern value="((\d)|([12]\d)|(3[01]))([ \t]*,[ \t]*((\d)|([12]\d)|(3[01])))*" />
+      <xs:maxLength value="250" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ImageItem" mixed="true">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="Image.Source" type="xs:anyURI"/>
+    </xs:sequence>
+    <xs:attribute name="Source" type="xs:anyURI" use="optional" />
+    <xs:attribute name="MinDPI" type="DPIValue" use="optional" />
+    <xs:attributeGroup ref="IdSymbolAttributes"/>
+  </xs:complexType>
+  <xs:complexType name="ImageListType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Image" minOccurs="0" maxOccurs="unbounded" type="ImageItem"/>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:attributeGroup name="IdSymbolAttributes">
+    <xs:attribute name="Symbol" type="SymbolString" use="optional" />
+    <xs:attribute name="Id" type="CommandValue" use="optional" />
+  </xs:attributeGroup>
+  
+  <xs:simpleType name="GroupLayout">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Popup" />
+      <xs:enumeration value="Small" />
+      <xs:enumeration value="Medium" />
+      <xs:enumeration value="Large" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="GroupSpacingType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Small" />
+      <xs:enumeration value="Medium" />
+      <xs:enumeration value="Large" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CommandNameString">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Za-z_][0-9A-Za-z_]*" />
+      <xs:maxLength value="100" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="CommandName">
+    <xs:union memberTypes="CommandNameString CommandValue"/>
+  </xs:simpleType>
+  <xs:simpleType name="GalleryType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Items" />
+      <xs:enumeration value="Commands" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SingleColumnGripperType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Vertical" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MultiColumnGripperType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Vertical" />
+      <xs:enumeration value="Corner" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="Boolean">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="true" />
+      <xs:enumeration value="false" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="IntGroupLayout">
+    <xs:attribute name="Value" type="GroupLayout" use="required" />
+  </xs:complexType>
+  <xs:complexType name="ScaleType" mixed="true">
+    <xs:attribute name="Group" type="CommandName" use="required" />
+    <xs:attribute name="Size" type="GroupLayout" use="required" />
+  </xs:complexType>
+  <xs:simpleType name="FontControlTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FontOnly" />
+      <xs:enumeration value="FontWithColor" />
+      <xs:enumeration value="RichFont" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TextPositionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Bottom" />
+      <xs:enumeration value="Hide" />
+      <xs:enumeration value="Left" />
+      <xs:enumeration value="Overlap" />
+      <xs:enumeration value="Right" />
+      <xs:enumeration value="Top" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:attributeGroup name="CoreAttrGroup">
+    <xs:attribute name="CommandName" type="CommandName" use="optional" />
+  </xs:attributeGroup>
+  <xs:attributeGroup name="QATItemAttrGroup">
+    <xs:attribute name="ApplicationDefaults.IsChecked" type="Boolean" use="optional" default="true" />
+  </xs:attributeGroup>
+  <xs:attributeGroup name="GalleryAttrGroup">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="Type" type="GalleryType" use="optional" />
+    <xs:attribute name="HasLargeItems" type="Boolean" use="optional" default="true"/>
+    <xs:attribute name="ItemHeight" type="xs:integer" use="optional" default="-1"/>
+    <xs:attribute name="ItemWidth" type="xs:integer" use="optional" default="-1"/>
+    <xs:attribute name="TextPosition" type="TextPositionType" use="optional" />
+  </xs:attributeGroup>
+  <xs:attributeGroup name="InRibbonGalleryLayoutAttrGroup">
+    <xs:attribute name="MinColumnsLarge" type="xs:integer" use="optional" />
+    <xs:attribute name="MaxColumnsMedium" type="xs:integer" use="optional" />
+    <xs:attribute name="MinColumnsMedium" type="xs:integer" use="optional" />
+    <xs:attribute name="MaxColumns" type="xs:integer" use="optional"/>
+    <xs:attribute name="MaxRows" type="xs:integer" use="optional" />
+  </xs:attributeGroup>
+  <xs:attributeGroup name="ApplicationModesAttrGroup">
+    <xs:attribute name="ApplicationModes" type="ApplicationModesString" use="optional" />
+  </xs:attributeGroup>
+  <xs:complexType name="VerticalMenuLayout" mixed="true">
+    <xs:attribute name="Rows" type="xs:integer" use="optional" default="-1" />
+    <xs:attribute name="Gripper" type="SingleColumnGripperType" use="optional" default="Vertical" />
+  </xs:complexType>
+  <xs:element name="VerticalMenuLayout" type="VerticalMenuLayout" />
+  <xs:complexType name="FlowMenuLayout" mixed="true">
+    <xs:attribute name="Rows" type="xs:integer" use="optional" default="-1" />
+    <xs:attribute name="Columns" type="xs:integer" use="optional" default="2" />
+    <xs:attribute name="Gripper" type="MultiColumnGripperType" use="optional" default="Corner" />
+  </xs:complexType>
+  <xs:element name="FlowMenuLayout" type="FlowMenuLayout" />
+  <xs:complexType name="GalleryMenuLayout" mixed="true">
+    <xs:choice minOccurs="1" maxOccurs="1">
+      <xs:element ref="VerticalMenuLayout" />
+      <xs:element ref="FlowMenuLayout"/>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:simpleType name="ImageSizeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Large" />
+      <xs:enumeration value="Small" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="GroupSizeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Large" />
+      <xs:enumeration value="Medium" />
+      <xs:enumeration value="Small" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ControlNameMap">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ControlNameDefinition" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Name" type="CommandName"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    
+    <xs:unique name="UniqueName">
+      <xs:selector xpath="./ControlNameDefinition"/>
+      <xs:field xpath="@Name"/>
+    </xs:unique>
+  </xs:element>
+  <xs:element name="ControlSizeDefinition">
+    <xs:complexType>
+      <xs:attribute name="ImageSize" type="ImageSizeType" use="optional" default="Small" />
+      <xs:attribute name="IsLabelVisible" type="Boolean" use="optional" default="true" />
+      <xs:attribute name="IsImageVisible" type="Boolean" use="optional" default="true" />
+      <xs:attribute name="IsPopup" type="Boolean" use="optional"/>
+      <xs:attribute name="ControlName" type="CommandName" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ControlGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ControlSizeDefinition" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ColumnBreak">
+    <xs:complexType>
+      <xs:attribute name="ShowSeparator" type="Boolean" use="optional" default="true" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Row">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="ControlSizeDefinition"/>
+        <xs:element ref="ControlGroup"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GroupSizeDefinition">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="ControlSizeDefinition"/>
+        <xs:element ref="ControlGroup"/>
+        <xs:element ref="ColumnBreak"/>
+        <xs:element ref="Row"/>
+      </xs:choice>
+      <xs:attribute name="Size" type="GroupSizeType" use="optional" default="Large" />
+    </xs:complexType>
+    
+    <xs:unique name="UniqueControlName">
+      <xs:selector xpath=".//ControlSizeDefinition"/>
+      <xs:field xpath="@ControlName"/>
+    </xs:unique>
+  </xs:element>
+  <xs:complexType name="SizeDefinitionType">
+    <xs:sequence>
+      <xs:element ref="ControlNameMap" minOccurs="0" maxOccurs="1"/>
+      <xs:element ref="GroupSizeDefinition" minOccurs="1" maxOccurs="3"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RibbonSizeDefinitionType">
+    <xs:complexContent>
+      <xs:extension base="SizeDefinitionType">
+        
+        <xs:attribute name="Name" type="CommandName" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="StringType" mixed="true">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="String">
+        <xs:complexType mixed="true">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="3">
+              <xs:element name="String.Content" type="xs:string" minOccurs="0" maxOccurs="1"/>
+              <xs:element name="String.Id" type="CommandValue" minOccurs="0" maxOccurs="1"/>
+              <xs:element name="String.Symbol" type="SymbolString" minOccurs="0" maxOccurs="1"/>
+            </xs:choice>
+          </xs:sequence>
+          <xs:attribute name="Content" type="xs:string" use="optional" />
+          <xs:attributeGroup ref="IdSymbolAttributes"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ToggleButton"  mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+  </xs:complexType>
+  <xs:element name="ToggleButton" type="ToggleButton" />
+  <xs:complexType name="QATToggleButton" mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attributeGroup ref="QATItemAttrGroup" />
+  </xs:complexType>
+  <xs:complexType name="CheckBox"  mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+  </xs:complexType>
+  <xs:element name="CheckBox" type="CheckBox" />
+  <xs:complexType name="QATCheckBox"  mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attributeGroup ref="QATItemAttrGroup" />
+  </xs:complexType>
+  <xs:complexType name="Button" mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+  </xs:complexType>
+  <xs:element name="Button" type="Button" />
+  <xs:complexType name="QATButton" mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attributeGroup ref="QATItemAttrGroup" />
+  </xs:complexType>
+  <xs:complexType name="RibbonHelpButton" mixed="true">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="HelpButton">
+        <xs:complexType>
+          <xs:attributeGroup ref="CoreAttrGroup" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Ribbon.HelpButton" type="RibbonHelpButton" />
+  <xs:element name="SplitButton">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SplitButton.ButtonItem" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element ref="ToggleButton"/>
+                <xs:element ref="Button"/>
+              </xs:choice>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:choice>
+          <xs:sequence minOccurs="0" maxOccurs ="unbounded">
+            <xs:group ref="ContextualControl" />
+          </xs:sequence>
+          <xs:sequence>
+            <xs:element name="SplitButton.MenuGroups" minOccurs="1" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="MenuGroup" minOccurs="1" maxOccurs="unbounded" type="MenuCategory"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attributeGroup ref="CoreAttrGroup" />
+      <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="MenuCategoryClass">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="StandardItems"/>
+      <xs:enumeration value="MajorItems"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="MenuCategory">
+    <xs:sequence minOccurs="0" maxOccurs ="unbounded">
+      <xs:group ref="ContextualControl" />
+    </xs:sequence>
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="Class" use="optional" type="MenuCategoryClass" default="StandardItems"/>
+  </xs:complexType>
+  <xs:element name="MenuGroup" type="MenuCategory"/>
+  <xs:complexType name="AppMenuCategory">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Button" />
+        <xs:element ref="SplitButton"/>
+        <xs:element ref="DropDownButton"/>
+        <xs:element name="DropDownGallery" type="DropDownGalleryInAppMenu"/>
+        <xs:element name="SplitButtonGallery" type="SplitButtonGalleryInAppMenu" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="Class" use="optional" type="MenuCategoryClass" default="MajorItems"/>
+  </xs:complexType>
+  <xs:complexType name="MiniToolbarCategory">
+    <xs:sequence minOccurs="0" maxOccurs ="unbounded">
+      <xs:choice>
+        <xs:group ref="CoreControl" />
+        <xs:element name="FontControl" type="FloatieFontControl" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="Class" use="optional" type="MenuCategoryClass" default="StandardItems"/>
+  </xs:complexType>
+  <xs:complexType name="ContextMenuCategory">
+    <xs:sequence minOccurs="0" maxOccurs ="unbounded">
+      <xs:choice>
+        <xs:group ref="ContextualControl" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="Class" use="optional" type="MenuCategoryClass" default="StandardItems"/>
+  </xs:complexType>
+  <xs:complexType name="ContextMap">
+    <xs:attributeGroup ref="CoreAttrGroup"/>
+    <xs:attribute name="MiniToolbar" type="xs:string" use="optional" />
+    <xs:attribute name="ContextMenu" type="xs:string" use="optional" />
+  </xs:complexType>
+  <xs:element name="ContextMap" type="ContextMap"/>
+  <xs:complexType name="MiniToolbar">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="unbounded" name="MenuGroup" type="MiniToolbarCategory"/>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required" />
+  </xs:complexType>
+  <xs:element name="MiniToolbar" type="MiniToolbar"/>
+  <xs:complexType name="ContextMenu">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="unbounded" name="MenuGroup" type="ContextMenuCategory"/>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required" />
+  </xs:complexType>
+  <xs:element name="ContextMenu" type="ContextMenu"/>
+  <xs:complexType name="DropDownButton">
+    <xs:choice>
+      <xs:sequence minOccurs="0" maxOccurs ="unbounded">
+        <xs:group ref="ContextualControl" />
+      </xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="unbounded" ref="MenuGroup" />
+    </xs:choice>
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+  </xs:complexType>
+  <xs:element name="DropDownButton" type="DropDownButton"/>
+  <xs:complexType name="InRibbonGallery">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="InRibbonGallery.MenuLayout" type="GalleryMenuLayout"/>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:sequence minOccurs="0" maxOccurs ="unbounded">
+          <xs:group ref="ContextualControl" />
+        </xs:sequence>
+        <xs:sequence>
+          <xs:element name="InRibbonGallery.MenuGroups" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="MenuGroup" minOccurs="1" maxOccurs="unbounded" type="MenuCategory"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="GalleryAttrGroup" />
+    <xs:attributeGroup ref="InRibbonGalleryLayoutAttrGroup" />
+  </xs:complexType>
+  <xs:element name="InRibbonGallery" type="InRibbonGallery" />
+  <xs:complexType name="DropDownGallery">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="DropDownGallery.MenuLayout" type="GalleryMenuLayout"/>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:sequence minOccurs="0" maxOccurs ="unbounded">
+          <xs:group ref="ContextualControl" />
+        </xs:sequence>
+        <xs:sequence>
+          <xs:element name="DropDownGallery.MenuGroups" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="MenuGroup" minOccurs="1" maxOccurs="unbounded" type="MenuCategory"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="GalleryAttrGroup" />
+    <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+  </xs:complexType>
+  <xs:element name="DropDownGallery" type="DropDownGallery" />
+  <xs:complexType name="DropDownGalleryInAppMenu">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+  </xs:complexType>
+  <xs:complexType name="SplitButtonGallery">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="SplitButtonGallery.MenuLayout" type="GalleryMenuLayout"/>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:sequence minOccurs="0" maxOccurs ="unbounded">
+          <xs:group ref="ContextualControl" />
+        </xs:sequence>
+        <xs:sequence>
+          <xs:element name="SplitButtonGallery.MenuGroups" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="MenuGroup" minOccurs="1" maxOccurs="unbounded" type="MenuCategory"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="GalleryAttrGroup" />
+    <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+  </xs:complexType>
+  <xs:element name="SplitButtonGallery" type="SplitButtonGallery" />
+  <xs:complexType name="SplitButtonGalleryInAppMenu">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+  </xs:complexType>
+  <xs:complexType name="Spinner" mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+  </xs:complexType>
+  <xs:element name="Spinner" type="Spinner"/>
+  <xs:simpleType name="ComboBoxResizeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NoResize" />
+      <xs:enumeration value="VerticalResize" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ComboBox" mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="IsEditable" type="Boolean" use="optional" default="true" />
+    <xs:attribute name="ResizeType" type="ComboBoxResizeType" use="optional" default="NoResize" />
+    <xs:attribute name="IsAutoCompleteEnabled" type="Boolean" use="optional" default="true" />
+  </xs:complexType>
+  <xs:element name="ComboBox" type="ComboBox" />
+  <xs:simpleType name="FontControlFontSizeLimitType">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="9999"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="InRibbonFontControl" mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="FontType" type="FontControlTypes" use="optional"/>
+    <xs:attribute name="IsStrikethroughButtonVisible" type="Boolean" use="optional" default = "true" />
+    <xs:attribute name="IsUnderlineButtonVisible" type="Boolean" use="optional" default = "true" />
+    <xs:attribute name="IsHighlightButtonVisible" type="Boolean" use="optional" />
+    <xs:attribute name="ShowTrueTypeOnly" type="Boolean" use="optional" default="false" />
+    <xs:attribute name="ShowVerticalFonts" type="Boolean" use="optional" default="true" />
+    <xs:attribute name="MinimumFontSize" type="FontControlFontSizeLimitType" use="optional" default ="1"/>
+    <xs:attribute name="MaximumFontSize" type="FontControlFontSizeLimitType" use="optional" default ="9999"/>
+  </xs:complexType>
+  <xs:complexType name="FloatieFontControl">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="MinimumFontSize" type="FontControlFontSizeLimitType" use="optional" default ="1"/>
+    <xs:attribute name="MaximumFontSize" type="FontControlFontSizeLimitType" use="optional" default ="9999"/>
+    <xs:attribute name="ShowTrueTypeOnly" type="Boolean" use="optional" default="false" />
+    <xs:attribute name="ShowVerticalFonts" type="Boolean" use="optional" default="true" />
+  </xs:complexType>
+  
+  <xs:complexType name="DropDownColorPicker" mixed="true">
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attribute name="ColorTemplate" use="optional" default="ThemeColors">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ThemeColors"/>
+          <xs:enumeration value="StandardColors"/>
+          <xs:enumeration value="HighlightColors"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="ChipSize" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Small"/>
+          <xs:enumeration value="Medium"/>
+          <xs:enumeration value="Large"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="Columns" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:positiveInteger">
+          <xs:minInclusive value="1"/>
+          <xs:maxInclusive value="256"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="ThemeColorGridRows" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:positiveInteger">
+          <xs:minInclusive value="1"/>
+          <xs:maxInclusive value="256"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="StandardColorGridRows" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:positiveInteger">
+          <xs:minInclusive value="1"/>
+          <xs:maxInclusive value="256"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="RecentColorGridRows" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:positiveInteger">
+          <xs:minInclusive value="1"/>
+          <xs:maxInclusive value="256"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="IsAutomaticColorButtonVisible" type="Boolean" use="optional" />
+    <xs:attribute name="IsNoColorButtonVisible" type="Boolean" use="optional" />
+  </xs:complexType>
+  <xs:element name="DropDownColorPicker" type="DropDownColorPicker" />
+  
+  <xs:group name="ContextualControl">
+    <xs:choice>
+      <xs:element ref="ToggleButton" />
+      <xs:element ref="CheckBox" />
+      <xs:element ref="Button" />
+      <xs:element ref="SplitButton"/>
+      <xs:element ref="DropDownButton"/>
+      <xs:element ref="DropDownGallery" />
+      <xs:element ref="SplitButtonGallery" />
+      <xs:element ref="DropDownColorPicker" />
+    </xs:choice>
+  </xs:group>
+  
+  <xs:group name="CoreControl">
+    <xs:choice>
+      <xs:group ref="ContextualControl"/>
+      <xs:element ref="ComboBox" />
+      <xs:element ref="Spinner" />
+    </xs:choice>
+  </xs:group>
+  
+  <xs:group name="InRibbonControl">
+    <xs:choice>
+      <xs:element ref="InRibbonGallery" />
+      
+      <xs:element name="FontControl" type="InRibbonFontControl"/>
+    </xs:choice>
+  </xs:group>
+  
+  <xs:group name="Control">
+    <xs:choice>
+      <xs:group ref="CoreControl" />
+      <xs:group ref="InRibbonControl" />
+    </xs:choice>
+  </xs:group>
+  
+  <xs:complexType name="ControlGroupType">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:choice>
+        <xs:element name="ControlGroup" type="ControlGroupType" />
+        <xs:group ref="Control" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="SequenceNumber" type="xs:positiveInteger" use="optional" />
+  </xs:complexType>
+  <xs:simpleType name="PredefinedSizeDefinitionStringType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OneButton"/>
+      <xs:enumeration value="TwoButtons"/>
+      <xs:enumeration value="ThreeButtons"/>
+      <xs:enumeration value="ThreeButtons-OneBigAndTwoSmall"/>
+      <xs:enumeration value="ThreeButtonsAndOneCheckBox"/>
+      <xs:enumeration value="FourButtons"/>
+      <xs:enumeration value="FiveButtons"/>
+      <xs:enumeration value="FiveOrSixButtons"/>
+      <xs:enumeration value="SixButtons"/>
+      <xs:enumeration value="SixButtons-TwoColumns"/>
+      <xs:enumeration value="SevenButtons"/>
+      <xs:enumeration value="EightButtons"/>
+      <xs:enumeration value="EightButtons-LastThreeSmall"/>
+      <xs:enumeration value="NineButtons"/>
+      <xs:enumeration value="TenButtons"/>
+      <xs:enumeration value="ElevenButtons"/>
+      <xs:enumeration value="OneFontControl"/>
+      <xs:enumeration value="IntFontOnly"/>
+      <xs:enumeration value="IntRichFont"/>
+      <xs:enumeration value="IntFontWithColor"/>
+      <xs:enumeration value="OneInRibbonGallery"/>
+      <xs:enumeration value="BigButtonsAndSmallButtonsOrInputs"/>
+      <xs:enumeration value="InRibbonGalleryAndBigButton"/>
+      <xs:enumeration value="InRibbonGalleryAndButtons-GalleryScalesFirst"/>
+      <xs:enumeration value="InRibbonGalleryAndThreeButtons"/>
+      <xs:enumeration value="ButtonGroupsAndInputs"/>
+      <xs:enumeration value="ButtonGroups"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SizeDefinitionStringType">
+    <xs:union memberTypes="PredefinedSizeDefinitionStringType xs:string" />
+  </xs:simpleType>
+  <xs:complexType name="GroupType">
+    <xs:sequence>
+      <xs:element name="SizeDefinition" minOccurs="0" maxOccurs="1" type="SizeDefinitionType"/>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:group ref="Control" />
+        <xs:element name="ControlGroup" type="ControlGroupType">
+          <xs:unique name="UniqueGroupSequenceNumber">
+            
+            <xs:selector xpath=".//Group" />
+            <xs:field xpath="@SequenceNumber" />
+          </xs:unique>
+        </xs:element>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="SizeDefinition" use="optional" type="SizeDefinitionStringType"/>
+    <xs:attributeGroup ref="CoreAttrGroup" />
+    <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+  </xs:complexType>
+  <xs:element name="Group" type="GroupType">
+    <xs:unique name="UniqueCommandNameArgOnControlsInGroup">
+      
+      <xs:selector xpath="*" />
+      <xs:field xpath="@CommandName" />
+      <xs:field xpath="@Argument" />
+    </xs:unique>
+    <xs:unique name="UniqueCommandNameArgOnControlsInGroups">
+      
+      <xs:selector xpath=".//Group/*" />
+      <xs:field xpath="@CommandName" />
+      <xs:field xpath="@Argument" />
+    </xs:unique>
+    <xs:unique name="UniqueGroupCommandNameInTab">
+      
+      <xs:selector xpath=".//Group" />
+      <xs:field xpath="@CommandName" />
+    </xs:unique>
+  </xs:element>
+  <xs:element name="Tab">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="Tab.ScalingPolicy">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="1" maxOccurs="1" name="ScalingPolicy">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1" name="ScalingPolicy.IdealSizes">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Scale" minOccurs="0" maxOccurs="unbounded" type="ScaleType" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Scale" minOccurs="0" maxOccurs="15" type="ScaleType" />
+                  </xs:sequence>
+                </xs:complexType>
+                <xs:unique name="UniqueScaleSizes">
+                  <xs:selector xpath="./ScalingPolicy.IdealSizes/Scale | ./Scale" />
+                  <xs:field xpath="@Group" />
+                  <xs:field xpath="@Size" />
+                </xs:unique>
+                <xs:unique name="UniqueGroupInEachMaxSize">
+                  <xs:selector xpath="./ScalingPolicy.IdealSizes/Scale" />
+                  <xs:field xpath="@Group" />
+                </xs:unique>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="Group" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="CoreAttrGroup" />
+      <xs:attributeGroup ref="ApplicationModesAttrGroup" />
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="MRUMenu">
+    <xs:sequence>
+      <xs:element name="RecentItems" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:attributeGroup ref="CoreAttrGroup"/>
+          <xs:attribute name="MaxCount" type="xs:nonNegativeInteger" use="optional" default="10"/>
+          <xs:attribute name="EnablePinning" type="Boolean" use="optional" default="true"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AppMenu">
+    <xs:sequence>
+      <xs:element name="ApplicationMenu">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="ApplicationMenu.RecentItems" minOccurs="0" maxOccurs="1" type="MRUMenu" />
+            <xs:element name="MenuGroup" minOccurs="0" maxOccurs="unbounded" type="AppMenuCategory" />
+          </xs:sequence>
+          <xs:attributeGroup ref="CoreAttrGroup"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TabSet">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="unbounded" ref="Tab" />
+    </xs:sequence>
+    <xs:attributeGroup ref="CoreAttrGroup"/>
+  </xs:complexType>
+  <xs:element name="TabGroup" type="TabSet"/>
+  
+  <xs:element name="Application">
+    <xs:complexType>
+      <xs:sequence>
+        
+        <xs:element name="Application.Commands" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Command">
+                <xs:complexType>
+                  
+                  
+                  <xs:all>
+                    <xs:element name="Command.Name" minOccurs="0" maxOccurs="1" type="CommandNameString" />
+                    
+                    <xs:element name="Command.Symbol" minOccurs="0" maxOccurs="1" type="SymbolString" />
+                    
+                    <xs:element name="Command.Id" minOccurs="0" maxOccurs="1" type="CommandValue" />
+                    
+                    <xs:element name="Command.LabelTitle" minOccurs="0" type="StringType"/>
+                    <xs:element name="Command.LabelDescription" minOccurs="0" type="StringType"/>
+                    
+                    <xs:element name="Command.Keytip" minOccurs="0" type="StringType"/>
+                    
+                    <xs:element name="Command.TooltipTitle" minOccurs="0" type="StringType"/>
+                    <xs:element name="Command.TooltipDescription" minOccurs="0" type="StringType"/>
+                    
+                    <xs:element name="Command.SmallImages" minOccurs="0" maxOccurs="1" type="ImageListType"/>
+                    <xs:element name="Command.LargeImages" minOccurs="0" maxOccurs="1" type="ImageListType"/>
+                    <xs:element name="Command.SmallHighContrastImages" minOccurs="0" maxOccurs="1" type="ImageListType"/>
+                    <xs:element name="Command.LargeHighContrastImages" minOccurs="0" maxOccurs="1" type="ImageListType"/>
+                    
+                    <xs:element name="Command.Comment" minOccurs="0" maxOccurs="1" type="CommentString" />
+                  </xs:all>
+                  
+                  <xs:attribute name="Name" type="CommandNameString" use="optional" />
+                  <xs:attributeGroup ref="IdSymbolAttributes"/>
+                  <xs:attribute name="Comment" type="CommentString" use="optional" />
+                  <xs:attribute name="LabelTitle" type="xs:string" use="optional" />
+                  <xs:attribute name="LabelDescription" type="xs:string" use="optional" />
+                  <xs:attribute name="TooltipTitle" type="xs:string" use="optional" />
+                  <xs:attribute name="TooltipDescription" type="xs:string" use="optional" />
+                  <xs:attribute name="Keytip" type="xs:string" use="optional" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Application.Views" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:all>
+              <xs:element minOccurs="1" maxOccurs="1" name="Ribbon">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="Ribbon.SizeDefinitions" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="SizeDefinition" minOccurs="0" maxOccurs="unbounded" type="RibbonSizeDefinitionType">
+                            <xs:unique name="UniqueGroupSize">
+                              <xs:selector xpath="./GroupSizeDefinition"/>
+                              <xs:field xpath="@Size"/>
+                            </xs:unique>
+                            <xs:key name="ControlName">
+                              <xs:selector xpath=".//ControlNameMap/ControlNameDefinition"/>
+                              <xs:field xpath="@Name"/>
+                            </xs:key>
+                            
+                            <xs:keyref  name="ControlNameKeyRef" refer="ControlName">
+                              <xs:selector xpath=".//ControlSizeDefinition"/>
+                              <xs:field xpath="@ControlName"/>
+                            </xs:keyref>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Ribbon.ApplicationMenu" minOccurs="0" maxOccurs="1" type="AppMenu">
+                      
+                      <xs:unique name="UniqueCommandNameArgInFileMenu">
+                        <xs:selector xpath="*"/>
+                        <xs:field xpath="@CommandName"/>
+                        <xs:field xpath="@Argument"/>
+                      </xs:unique>
+                    </xs:element>
+                    <xs:element ref="Ribbon.HelpButton" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="Ribbon.Tabs" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element minOccurs="1" maxOccurs="unbounded" ref="Tab" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="Ribbon.ContextualTabs">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element ref="TabGroup" minOccurs="1" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Ribbon.QuickAccessToolbar" minOccurs="0" maxOccurs="1" >
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="QuickAccessToolbar" minOccurs="1" maxOccurs="1" >
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element minOccurs="0" maxOccurs="1" name="QuickAccessToolbar.ApplicationDefaults">
+                                  <xs:complexType>
+                                    <xs:sequence minOccurs="1" maxOccurs="20">
+                                      <xs:choice>
+                                        <xs:element name="Button" type="QATButton"/>
+                                        <xs:element name="ToggleButton" type="QATToggleButton"/>
+                                        <xs:element name="CheckBox" type="QATCheckBox"/>
+                                      </xs:choice>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute name="CommandName" type="CommandName" use="optional" />
+                              <xs:attribute name="CustomizeCommandName" type="CommandName" use="optional" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:all>
+                  <xs:attribute name="Name" type="xs:string" use="optional" />
+                  <xs:attribute name="GroupSpacing" type="GroupSpacingType" use="optional" default="Small" />
+                </xs:complexType>
+                <xs:unique name="UniqueTabCommandName">
+                  
+                  <xs:selector xpath=".//Tab" />
+                  <xs:field xpath="@CommandName" />
+                </xs:unique>
+              </xs:element>
+              <xs:element minOccurs="0" name="ContextPopup">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ContextPopup.MiniToolbars" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element ref="MiniToolbar" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ContextPopup.ContextMenus" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element ref="ContextMenu" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ContextPopup.ContextMaps" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element ref="ContextMap" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:all>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

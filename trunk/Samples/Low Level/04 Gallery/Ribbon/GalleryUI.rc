@@ -1,0 +1,120 @@
+// ******************************************************************************
+// * This is an automatically generated file containing the ribbon resource for *
+// * your application.                                                          *
+// ******************************************************************************
+
+#include ".\GalleryUI.h"
+
+STRINGTABLE 
+BEGIN
+    cmdTabHome_LabelTitle_RESID L"Home" /* LabelTitle cmdTabHome_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdShapesGroup_LabelTitle_RESID L"Shape" /* LabelTitle cmdShapesGroup_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdBorderGroup_LabelTitle_RESID L"Border" /* LabelTitle cmdBorderGroup_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdLayoutGroup_LabelTitle_RESID L"Border" /* LabelTitle cmdLayoutGroup_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_CMD_SHAPES_LabelTitle_RESID L"Shapes" /* LabelTitle IDR_CMD_SHAPES_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_CMD_SIZEANDCOLOR_LabelTitle_RESID L"Size and Color" /* LabelTitle IDR_CMD_SIZEANDCOLOR_LabelTitle_RESID: (null) */
+END
+
+IDR_CMD_SIZEANDCOLOR_LargeImages_96__RESID    BITMAP    "res\\sizeAndColor_96.bmp" /* LargeImages IDR_CMD_SIZEANDCOLOR_LargeImages_96__RESID: (null) */
+IDR_CMD_SIZEANDCOLOR_LargeImages_120__RESID    BITMAP    "res\\sizeAndColor_120.bmp" /* LargeImages IDR_CMD_SIZEANDCOLOR_LargeImages_120__RESID: (null) */
+IDR_CMD_SIZEANDCOLOR_LargeImages_144__RESID    BITMAP    "res\\sizeAndColor_144.bmp" /* LargeImages IDR_CMD_SIZEANDCOLOR_LargeImages_144__RESID: (null) */
+IDR_CMD_SIZEANDCOLOR_LargeImages_192__RESID    BITMAP    "res\\sizeAndColor_192.bmp" /* LargeImages IDR_CMD_SIZEANDCOLOR_LargeImages_192__RESID: (null) */
+STRINGTABLE 
+BEGIN
+    IDR_CMD_BORDERSTYLES_LabelTitle_RESID L"Style" /* LabelTitle IDR_CMD_BORDERSTYLES_LabelTitle_RESID: (null) */
+END
+
+IDR_CMD_BORDERSTYLES_LargeImages_96__RESID    BITMAP    "res\\solidBorder_96.bmp" /* LargeImages IDR_CMD_BORDERSTYLES_LargeImages_96__RESID: (null) */
+IDR_CMD_BORDERSTYLES_LargeImages_120__RESID    BITMAP    "res\\solidBorder_120.bmp" /* LargeImages IDR_CMD_BORDERSTYLES_LargeImages_120__RESID: (null) */
+IDR_CMD_BORDERSTYLES_LargeImages_144__RESID    BITMAP    "res\\solidBorder_144.bmp" /* LargeImages IDR_CMD_BORDERSTYLES_LargeImages_144__RESID: (null) */
+IDR_CMD_BORDERSTYLES_LargeImages_192__RESID    BITMAP    "res\\solidBorder_192.bmp" /* LargeImages IDR_CMD_BORDERSTYLES_LargeImages_192__RESID: (null) */
+STRINGTABLE 
+BEGIN
+    IDR_CMD_BORDERSIZES_LabelTitle_RESID L"Size" /* LabelTitle IDR_CMD_BORDERSIZES_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_CMD_LAYOUTS_LabelTitle_RESID L"Grid Size" /* LabelTitle IDR_CMD_LAYOUTS_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    IDR_CMD_SMALL_LabelTitle_RESID L"Small" /* LabelTitle IDR_CMD_SMALL_LabelTitle_RESID: (null) */
+END
+
+IDR_CMD_SMALL_LargeImages_96__RESID    BITMAP    "res\\small_96.bmp" /* LargeImages IDR_CMD_SMALL_LargeImages_96__RESID: (null) */
+IDR_CMD_SMALL_LargeImages_120__RESID    BITMAP    "res\\small_120.bmp" /* LargeImages IDR_CMD_SMALL_LargeImages_120__RESID: (null) */
+IDR_CMD_SMALL_LargeImages_144__RESID    BITMAP    "res\\small_144.bmp" /* LargeImages IDR_CMD_SMALL_LargeImages_144__RESID: (null) */
+IDR_CMD_SMALL_LargeImages_192__RESID    BITMAP    "res\\small_192.bmp" /* LargeImages IDR_CMD_SMALL_LargeImages_192__RESID: (null) */
+STRINGTABLE 
+BEGIN
+    IDR_CMD_MEDIUM_LabelTitle_RESID L"Medium" /* LabelTitle IDR_CMD_MEDIUM_LabelTitle_RESID: (null) */
+END
+
+IDR_CMD_MEDIUM_LargeImages_96__RESID    BITMAP    "res\\medium_96.bmp" /* LargeImages IDR_CMD_MEDIUM_LargeImages_96__RESID: (null) */
+IDR_CMD_MEDIUM_LargeImages_120__RESID    BITMAP    "res\\medium_120.bmp" /* LargeImages IDR_CMD_MEDIUM_LargeImages_120__RESID: (null) */
+IDR_CMD_MEDIUM_LargeImages_144__RESID    BITMAP    "res\\medium_144.bmp" /* LargeImages IDR_CMD_MEDIUM_LargeImages_144__RESID: (null) */
+IDR_CMD_MEDIUM_LargeImages_192__RESID    BITMAP    "res\\medium_192.bmp" /* LargeImages IDR_CMD_MEDIUM_LargeImages_192__RESID: (null) */
+STRINGTABLE 
+BEGIN
+    IDR_CMD_LARGE_LabelTitle_RESID L"Large" /* LabelTitle IDR_CMD_LARGE_LabelTitle_RESID: (null) */
+END
+
+IDR_CMD_LARGE_LargeImages_96__RESID    BITMAP    "res\\large_96.bmp" /* LargeImages IDR_CMD_LARGE_LargeImages_96__RESID: (null) */
+IDR_CMD_LARGE_LargeImages_120__RESID    BITMAP    "res\\large_120.bmp" /* LargeImages IDR_CMD_LARGE_LargeImages_120__RESID: (null) */
+IDR_CMD_LARGE_LargeImages_144__RESID    BITMAP    "res\\large_144.bmp" /* LargeImages IDR_CMD_LARGE_LargeImages_144__RESID: (null) */
+IDR_CMD_LARGE_LargeImages_192__RESID    BITMAP    "res\\large_192.bmp" /* LargeImages IDR_CMD_LARGE_LargeImages_192__RESID: (null) */
+STRINGTABLE 
+BEGIN
+    IDR_CMD_RED_LabelTitle_RESID L"Red" /* LabelTitle IDR_CMD_RED_LabelTitle_RESID: (null) */
+END
+
+IDR_CMD_RED_LargeImages_96__RESID    BITMAP    "res\\red_96.bmp" /* LargeImages IDR_CMD_RED_LargeImages_96__RESID: (null) */
+IDR_CMD_RED_LargeImages_120__RESID    BITMAP    "res\\red_120.bmp" /* LargeImages IDR_CMD_RED_LargeImages_120__RESID: (null) */
+IDR_CMD_RED_LargeImages_144__RESID    BITMAP    "res\\red_144.bmp" /* LargeImages IDR_CMD_RED_LargeImages_144__RESID: (null) */
+IDR_CMD_RED_LargeImages_192__RESID    BITMAP    "res\\red_192.bmp" /* LargeImages IDR_CMD_RED_LargeImages_192__RESID: (null) */
+STRINGTABLE 
+BEGIN
+    IDR_CMD_GREEN_LabelTitle_RESID L"Green" /* LabelTitle IDR_CMD_GREEN_LabelTitle_RESID: (null) */
+END
+
+IDR_CMD_GREEN_LargeImages_96__RESID    BITMAP    "res\\green_96.bmp" /* LargeImages IDR_CMD_GREEN_LargeImages_96__RESID: (null) */
+IDR_CMD_GREEN_LargeImages_120__RESID    BITMAP    "res\\green_120.bmp" /* LargeImages IDR_CMD_GREEN_LargeImages_120__RESID: (null) */
+IDR_CMD_GREEN_LargeImages_144__RESID    BITMAP    "res\\green_144.bmp" /* LargeImages IDR_CMD_GREEN_LargeImages_144__RESID: (null) */
+IDR_CMD_GREEN_LargeImages_192__RESID    BITMAP    "res\\green_192.bmp" /* LargeImages IDR_CMD_GREEN_LargeImages_192__RESID: (null) */
+STRINGTABLE 
+BEGIN
+    IDR_CMD_BLUE_LabelTitle_RESID L"Blue" /* LabelTitle IDR_CMD_BLUE_LabelTitle_RESID: (null) */
+END
+
+IDR_CMD_BLUE_LargeImages_96__RESID    BITMAP    "res\\blue_96.bmp" /* LargeImages IDR_CMD_BLUE_LargeImages_96__RESID: (null) */
+IDR_CMD_BLUE_LargeImages_120__RESID    BITMAP    "res\\blue_120.bmp" /* LargeImages IDR_CMD_BLUE_LargeImages_120__RESID: (null) */
+IDR_CMD_BLUE_LargeImages_144__RESID    BITMAP    "res\\blue_144.bmp" /* LargeImages IDR_CMD_BLUE_LargeImages_144__RESID: (null) */
+IDR_CMD_BLUE_LargeImages_192__RESID    BITMAP    "res\\blue_192.bmp" /* LargeImages IDR_CMD_BLUE_LargeImages_192__RESID: (null) */
+STRINGTABLE 
+BEGIN
+    InternalCmd2_LabelTitle_RESID L"Label:InternalCmd2" /* LabelTitle InternalCmd2_LabelTitle_RESID: (null) */
+END
+
+APPLICATION_RIBBON    UIFILE    "GalleryUI.bml"

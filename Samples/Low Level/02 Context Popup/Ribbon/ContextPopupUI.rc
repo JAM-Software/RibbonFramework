@@ -1,0 +1,97 @@
+// ******************************************************************************
+// * This is an automatically generated file containing the ribbon resource for *
+// * your application.                                                          *
+// ******************************************************************************
+
+#include ".\ContextPopupUI.h"
+
+STRINGTABLE 
+BEGIN
+    cmdTab1_LabelTitle_RESID L"Tab 1" /* LabelTitle cmdTab1_LabelTitle_RESID: These comments are optional and are inserted into the header file. */
+END
+
+cmdGroup1_SmallImages_RESID    BITMAP    "res\\Button_Image.bmp" /* SmallImages cmdGroup1_SmallImages_RESID: Group #1 */
+STRINGTABLE 
+BEGIN
+    IDC_CMD_CONTEXT1_LabelTitle_RESID L"Activate\nContext 1" /* LabelTitle IDC_CMD_CONTEXT1_LabelTitle_RESID: Button that activates context 1 */
+END
+
+IDC_CMD_CONTEXT1_LargeImages_RESID    BITMAP    "res\\AddTableL.bmp" /* LargeImages IDC_CMD_CONTEXT1_LargeImages_RESID: Button that activates context 1 */
+STRINGTABLE 
+BEGIN
+    IDC_CMD_CONTEXT2_LabelTitle_RESID L"Activate\nContext 2" /* LabelTitle IDC_CMD_CONTEXT2_LabelTitle_RESID: Button that activates context 2 */
+END
+
+IDC_CMD_CONTEXT2_LargeImages_RESID    BITMAP    "res\\AddTableL.bmp" /* LargeImages IDC_CMD_CONTEXT2_LargeImages_RESID: Button that activates context 2 */
+STRINGTABLE 
+BEGIN
+    IDC_CMD_CONTEXT3_LabelTitle_RESID L"Activate\nContext 3" /* LabelTitle IDC_CMD_CONTEXT3_LabelTitle_RESID: Button that activates context 3 */
+END
+
+IDC_CMD_CONTEXT3_LargeImages_RESID    BITMAP    "res\\AddTableL.bmp" /* LargeImages IDC_CMD_CONTEXT3_LargeImages_RESID: Button that activates context 3 */
+STRINGTABLE 
+BEGIN
+    IDC_CMD_CONTEXT4_LabelTitle_RESID L"Activate\nContext 4" /* LabelTitle IDC_CMD_CONTEXT4_LabelTitle_RESID: Button that activates context 4 */
+END
+
+IDC_CMD_CONTEXT4_LargeImages_RESID    BITMAP    "res\\AddTableL.bmp" /* LargeImages IDC_CMD_CONTEXT4_LargeImages_RESID: Button that activates context 4 */
+STRINGTABLE 
+BEGIN
+    cmdCut_LabelTitle_RESID L"Cut" /* LabelTitle cmdCut_LabelTitle_RESID: Cut button */
+END
+
+cmdCut_SmallImages_RESID    BITMAP    "res\\Cut.bmp" /* SmallImages cmdCut_SmallImages_RESID: Cut button */
+STRINGTABLE 
+BEGIN
+    cmdCopy_LabelTitle_RESID L"Copy" /* LabelTitle cmdCopy_LabelTitle_RESID: Copy button */
+END
+
+cmdCopy_SmallImages_RESID    BITMAP    "res\\Copy.bmp" /* SmallImages cmdCopy_SmallImages_RESID: Copy button */
+STRINGTABLE 
+BEGIN
+    cmdPaste_LabelTitle_RESID L"Paste" /* LabelTitle cmdPaste_LabelTitle_RESID: Paste button */
+END
+
+cmdPaste_LargeImages_RESID    BITMAP    "res\\Paste.bmp" /* LargeImages cmdPaste_LargeImages_RESID: Paste button */
+STRINGTABLE 
+BEGIN
+    cmdToggleButton_LabelTitle_RESID L"ToggleButton" /* LabelTitle cmdToggleButton_LabelTitle_RESID: Toggle Button */
+END
+
+cmdToggleButton_SmallImages_RESID    BITMAP    "res\\DeleteTableL.bmp" /* SmallImages cmdToggleButton_SmallImages_RESID: Toggle Button */
+STRINGTABLE 
+BEGIN
+    cmdButton1_LabelTitle_RESID L"Button 1" /* LabelTitle cmdButton1_LabelTitle_RESID: Button #1 */
+END
+
+cmdButton1_LargeImages_RESID    BITMAP    "res\\OpenHH.bmp" /* LargeImages cmdButton1_LargeImages_RESID: Button #1 */
+STRINGTABLE 
+BEGIN
+    cmdButton2_LabelTitle_RESID L"Button 2" /* LabelTitle cmdButton2_LabelTitle_RESID: Button #2 */
+END
+
+cmdButton2_LargeImages_RESID    BITMAP    "res\\delete.bmp" /* LargeImages cmdButton2_LargeImages_RESID: Button #2 */
+STRINGTABLE 
+BEGIN
+    cmdButton3_LabelTitle_RESID L"Button 3" /* LabelTitle cmdButton3_LabelTitle_RESID: Button #3 */
+END
+
+cmdButton3_LargeImages_RESID    BITMAP    "res\\PrintRelationshipsL.bmp" /* LargeImages cmdButton3_LargeImages_RESID: Button #3 */
+STRINGTABLE 
+BEGIN
+    cmdButtons_LabelTitle_RESID L"Buttons" /* LabelTitle cmdButtons_LabelTitle_RESID: DropDownButton that contains the three buttons */
+END
+
+cmdButtons_LargeImages_RESID    BITMAP    "res\\GraphHH.bmp" /* LargeImages cmdButtons_LargeImages_RESID: DropDownButton that contains the three buttons */
+STRINGTABLE 
+BEGIN
+    cmdMRUList_LabelTitle_RESID L"MRU List" /* LabelTitle cmdMRUList_LabelTitle_RESID: The Most Recently Used Menu */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdExit_LabelTitle_RESID L"Exit Button" /* LabelTitle cmdExit_LabelTitle_RESID: Dummy exit command */
+END
+
+cmdExit_LargeImages_RESID    BITMAP    "res\\ExitL.bmp" /* LargeImages cmdExit_LargeImages_RESID: Dummy exit command */
+CONTEXTPOPUP_RIBBON    UIFILE    "ContextPopupUI.bml"

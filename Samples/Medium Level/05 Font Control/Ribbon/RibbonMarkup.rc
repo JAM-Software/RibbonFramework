@@ -1,0 +1,30 @@
+// ******************************************************************************
+// * This is an automatically generated file containing the ribbon resource for *
+// * your application.                                                          *
+// ******************************************************************************
+
+#include ".\RibbonMarkup.h"
+
+STRINGTABLE 
+BEGIN
+    IDR_CMD_TAB1_LabelTitle_RESID L"Home" /* LabelTitle IDR_CMD_TAB1_LabelTitle_RESID: These comments are optional and are inserted into the header file. */
+END
+
+cmdGroup1_SmallImages_RESID    BITMAP    "res\\Button_Image.bmp" /* SmallImages cmdGroup1_SmallImages_RESID: (null) */
+STRINGTABLE 
+BEGIN
+    cmdMRUList_LabelTitle_RESID L"MRU List" /* LabelTitle cmdMRUList_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdExit_LabelTitle_RESID L"Exit Button" /* LabelTitle cmdExit_LabelTitle_RESID: (null) */
+END
+
+cmdExit_LargeImages_RESID    BITMAP    "res\\ExitL.bmp" /* LargeImages cmdExit_LargeImages_RESID: (null) */
+STRINGTABLE 
+BEGIN
+    IDC_CMD_FONTCONTROL_Keytip_RESID L"F" /* Keytip IDC_CMD_FONTCONTROL_Keytip_RESID: (null) */
+END
+
+APPLICATION_RIBBON    UIFILE    "RibbonMarkup.bml"

@@ -1,0 +1,3 @@
+=Projects and Products using the Delphi Ribbon Framework=
+
+Here we collect links to projects and products using the Delphi Ribbon Framework

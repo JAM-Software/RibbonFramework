@@ -5,6 +5,7 @@ interface
 uses
   Generics.Collections,
   Windows,
+  Messages,
   Graphics,
   Classes,
   ActiveX,
@@ -14,6 +15,9 @@ uses
   PropSys,
   ActnList,
   UIRibbonApi;
+
+const
+  WM_RIBBONCMD_NOTIFY = WM_USER + 241;
 
 type
   TUICommandType = (ctUnknown, ctGroup, ctAction, ctAnchor, ctContext,
@@ -1244,7 +1248,6 @@ implementation
 
 uses
   Menus,
-  Messages,
   SysUtils,
   WinApiEx,
   PngImage,
@@ -1673,7 +1676,7 @@ begin
 
   if ((Flags and (1 shl Flag)) = 0) then
   begin
-    PostMessage(FNotificationWindow, WM_NOTIFY, Flag, Integer(Command));
+    PostMessage(FNotificationWindow, WM_RIBBONCMD_NOTIFY, Flag, LPARAM(Command));
     Flags := Flags or (1 shl Flag);
     FClients.AddOrSetValue(Command, Flags);
   end;
@@ -1698,7 +1701,7 @@ end;
 
 procedure TNotifier.WndProc(var Msg: TMessage);
 begin
-  if (Msg.Msg = WM_NOTIFY) then
+  if (Msg.Msg = WM_RIBBONCMD_NOTIFY) then
     Notify(TUICommand(Msg.LParam), Msg.WParam)
   else
     Msg.Result := DefWindowProc(FNotificationWindow, Msg.Msg, Msg.WParam, Msg.LParam);

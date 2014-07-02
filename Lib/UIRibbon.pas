@@ -304,9 +304,8 @@ end;
 
 destructor TUIRibbon.Destroy;
 begin
-  if Assigned(FFramework) then
-    FFramework.Destroy;
-  FCommands.Free;
+  FFramework := nil;
+  FreeAndNil(FCommands);
   inherited;
 end;
 

@@ -16,8 +16,6 @@ type
   {$REGION 'Internal Declarations'}
   strict private
     FRibbon: TUIRibbon;
-  protected
-    procedure AdjustClientRect(var Rect: TRect); override;
   {$ENDREGION 'Internal Declarations'}
   strict protected
     { This method is called just after a command for the ribbon is created.
@@ -63,13 +61,6 @@ uses
   Menus;
 
 { TUIRibbonForm }
-
-procedure TUIRibbonForm.AdjustClientRect(var Rect: TRect);
-begin
-  inherited;
-  if Assigned(FRibbon) then
-    Inc(Rect.Top, FRibbon.Height);
-end;
 
 procedure TUIRibbonForm.AfterConstruction;
 begin

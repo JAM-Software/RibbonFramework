@@ -21,6 +21,7 @@ unit UIRibbon;
 interface
 
 uses
+  Messages,
   Windows,
   Graphics,
   Generics.Collections,
@@ -36,19 +37,20 @@ type
 
   TUIRibbomCommandEvent = procedure(const Sender: TUIRibbon; const Command: TUICommand) of object;
 
-  TUIRibbon = class(TObject, IUIApplication)
+  TUIRibbon = class(TCustomControl, IUIApplication)
   {$REGION 'Internal Declarations'}
   strict private
     type
       TCommandEnumerator = TEnumerator<TUICommand>;
   strict private
-    FParent: TWinControl;
     FFramework: IUIFramework;
     FRibbon: IUIRibbon;
-    FHeight: Integer;
+    FResourceName: String;
+    FResourceInstance: Integer;
     FCommands: TObjectDictionary<Cardinal, TUICommand>;
     FAvailable: Boolean;
     FOnCommandCreate: TUIRibbomCommandEvent;
+    FLoaded: Boolean;
     function GetCommand(const CommandId: Cardinal): TUICommand;
     function GetBackgroundHsbColor: TUIHsbColor;
     function GetHighlightHsbColor: TUIHsbColor;
@@ -63,9 +65,9 @@ type
     function GetQuickAccessToolbarPosition: TUIQuickAccessToolbarPosition;
     procedure SetQuickAccessToolbarPosition(
       const Value: TUIQuickAccessToolbarPosition);
+    procedure WMPaint(var Message: TMessage); message WM_PAINT;
   private
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   private
@@ -90,6 +92,10 @@ type
     procedure SetColor(const PropKey: TUIPropertyKey; const Value: TUIHsbColor);
   {$ENDREGION 'Internal Declarations'}
   public
+
+    { Creates a new ribbon and places it on the Parent control (usually a form).}
+    constructor Create(AOwner: TComponent); overload; override;
+
     { Creates a new ribbon and places it on the Parent control (usually a form).
       The OnCommandCreate is fired each time a command is loaded/created
       for the ribbon. You can use this event to initialize a command right
@@ -97,12 +103,16 @@ type
       NOTE: Ribbon functionality will be disabled when the Available-property
       returns False. }
     constructor Create(const Parent: TWinControl;
-      const OnCommandCreate: TUIRibbomCommandEvent);
+      const OnCommandCreate: TUIRibbomCommandEvent); reintroduce; overload;
+
     destructor Destroy; override;
+
+    { Loads the ribbon. }
+    procedure Load(); overload;
 
     { Loads the ribbon with the given resource name from the given resource. }
     procedure Load(const ResourceName: String;
-      const ResourceInstance: THandle = 0);
+      const ResourceInstance: THandle = 0); overload;
 
     { Invalidates on or more aspects from a UI command. This will cause a
       repaint of the specified command. The command will be queried for new
@@ -165,9 +175,6 @@ type
       as menus and toolbars) when the ribbon framework is not available. }
     property Available: Boolean read FAvailable;
 
-    { Current ribbon height }
-    property Height: Integer read FHeight;
-
     { Whether the ribbon is currently visible }
     property Visible: Boolean read GetVisible write SetVisible;
 
@@ -200,7 +207,17 @@ type
 
     { Low-level access to the Ribbon Framework. }
     property Framework: IUIFramework read FFramework;
+
+  published
+    { The name of the Ribbon resource as it is stored in the resource file. }
+    property ResourceName: String read FResourceName write FResourceName;
+    { The module instance from which to load the Ribbon resource. }
+    property ResourceInstance: Integer read FResourceInstance write FResourceInstance;
+    { The event that is fired when the Ribbon Framework creates a command. }
+    property OnCommandCreate: TUIRibbomCommandEvent read FOnCommandCreate write FOnCommandCreate;
   end;
+
+  procedure Register;
 
 implementation
 
@@ -210,6 +227,8 @@ uses
   ComObj,
   Dialogs,
   PropSys,
+  Forms,
+  UITypes,
   UIRibbonUtils;
 
 type
@@ -222,24 +241,65 @@ begin
   FCommands.Add(Command.CommandId, Command);
 end;
 
-constructor TUIRibbon.Create(const Parent: TWinControl;
-  const OnCommandCreate: TUIRibbomCommandEvent);
+constructor TUIRibbon.Create(AOwner: TComponent);
 var
   Intf: IUnknown;
+  ParentForm: TCustomForm;
+const
+  cControlErrorMsg = 'TUIRibbon control can be used on TCustomForm or descendants only.';
 begin
-  Assert(Assigned(Parent));
-  inherited Create;
+  inherited Create(AOwner);
+
+  Color := clWhite;
+  Height := 117;
+  Align := TAlign.alTop;
+  Top := 0;
+
+  FResourceInstance := 0;
+  FResourceName := 'APPLICATION';
   FCommands := TObjectDictionary<Cardinal, TUICommand>.Create([doOwnsValues]);
+
+  // Ensure the control is used on a TCustomForm.
+  ParentForm := GetParentForm(AOwner as TWinControl);
+  if not Assigned(ParentForm) then begin
+    if csDesigning in ComponentState then
+      MessageDlg(cControlErrorMsg,  mtError, [mbOK], 0)
+    else
+      raise Exception.Create(cControlErrorMsg);
+
+    exit;
+  end;
+
+  Parent := ParentForm; // Make the form the parent of the ribbon control.
+
+  if csDesigning in ComponentState then
+    exit; // Initializing the ribbon doesn't work in design time, so exit here.
+
   FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil,
     CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
   if (FAvailable) then
   begin
-    FOnCommandCreate := OnCommandCreate;
-    FParent := Parent;
-
     FFramework := Intf as IUIFramework;
-    FFramework.Initialize(Parent.Handle, Self);
+    FFramework.Initialize(ParentForm.Handle, Self);
   end;
+end;
+
+procedure TUIRibbon.WMPaint(var Message: TMessage);
+begin
+  inherited;
+  if Visible then begin
+    Load();
+	{ Redraw frame to prevent black caption bar on Aero }
+    SetWindowPos(Parent.Handle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or
+      SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
+  end;
+end;
+
+constructor TUIRibbon.Create(const Parent: TWinControl;
+  const OnCommandCreate: TUIRibbomCommandEvent);
+begin
+  Create(Parent);
+  FOnCommandCreate := OnCommandCreate;
 end;
 
 destructor TUIRibbon.Destroy;
@@ -378,18 +438,18 @@ begin
   end;
 end;
 
-procedure TUIRibbon.Load(const ResourceName: String;
-  const ResourceInstance: THandle);
+procedure TUIRibbon.Load();
 var
   Inst: THandle;
 begin
-  if (FAvailable) then
+  if (FAvailable) and not (FLoaded) then
   begin
-    if (ResourceInstance = 0) then
+    if (FResourceInstance = 0) then
       Inst := HInstance
     else
-      Inst := ResourceInstance;
-    FFramework.LoadUI(Inst, PChar(ResourceName + '_RIBBON'));
+      Inst := FResourceInstance;
+    FFramework.LoadUI(Inst, PChar(FResourceName + '_RIBBON'));
+    FLoaded := True;
   end;
 end;
 
@@ -403,6 +463,14 @@ begin
   finally
     Stream.Free;
   end;
+end;
+
+procedure TUIRibbon.Load(const ResourceName: String;
+  const ResourceInstance: THandle);
+begin
+  FResourceName := ResourceName;
+  FResourceInstance := ResourceInstance;
+  Load();
 end;
 
 function TUIRibbon.LoadSettings(const Stream: TStream): Boolean;
@@ -484,12 +552,12 @@ begin
             FRibbon := View as IUIRibbon;
             { Call to the framework to determine the desired height of the Ribbon. }
             NewHeight := FRibbon.GetHeight;
-            if (NewHeight <> FHeight) then
+            if (NewHeight <> Height) then
             begin
-              FHeight := NewHeight;
+              Height := NewHeight;
               { Realign controls to fit into the new client area }
-              FParent.Realign;
-              FParent.Invalidate;
+              Parent.Realign;
+              Parent.Invalidate;
             end;
             Result := S_OK;
           end;
@@ -505,14 +573,6 @@ begin
     else
       Result := E_FAIL;
   end;
-end;
-
-function TUIRibbon.QueryInterface(const IID: TGUID; out Obj): HResult;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE
 end;
 
 procedure TUIRibbon.SetApplicationModes(const Modes: array of Integer);
@@ -678,6 +738,11 @@ end;
 function TUIRibbon._Release: Integer;
 begin
   Result := -1;
+end;
+
+procedure Register;
+begin
+  RegisterComponents('Windows Ribbon Framework for Delphi', [TUIRibbon]);
 end;
 
 end.

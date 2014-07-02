@@ -11,17 +11,11 @@ uses
   UIRibbon,
   UIRibbonCommands;
 
-const
-  WM_INVALIDATE_FRAME = WM_USER + 231;
-
 type
   TUIRibbonForm = class(TForm)
   {$REGION 'Internal Declarations'}
   strict private
     FRibbon: TUIRibbon;
-  private
-    procedure CMVisibleChanged(var Message: TMessage); message CM_VISIBLECHANGED;
-    procedure WMInvalidateFrame(var Message: TMessage); message WM_INVALIDATE_FRAME;
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
   {$ENDREGION 'Internal Declarations'}
@@ -80,15 +74,7 @@ end;
 procedure TUIRibbonForm.AfterConstruction;
 begin
   inherited;
-  FRibbon.Load(RibbonResourceName, RibbonInstance);
   RibbonLoaded;
-end;
-
-procedure TUIRibbonForm.CMVisibleChanged(var Message: TMessage);
-begin
-  inherited;
-  if Visible then
-    PostMessage(Handle, WM_INVALIDATE_FRAME, 0, 0);
 end;
 
 procedure TUIRibbonForm.CommandCreated(const Sender: TUIRibbon;
@@ -100,7 +86,7 @@ end;
 constructor TUIRibbonForm.Create(AOwner: TComponent);
 begin
   inherited;
-  FRibbon := TUIRibbon.Create(Self, CommandCreated);
+  FRibbon := TUIRibbon.Create(Self);
 end;
 
 destructor TUIRibbonForm.Destroy;
@@ -137,13 +123,6 @@ end;
 class function TUIRibbonForm.RibbonResourceName: String;
 begin
   Result := 'APPLICATION';
-end;
-
-procedure TUIRibbonForm.WMInvalidateFrame(var Message: TMessage);
-begin
-  { Redraw frame to prevent black caption bar on Aero }
-  SetWindowPos(Handle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or
-    SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
 end;
 
 end.

@@ -65,6 +65,7 @@ uses
 procedure TUIRibbonForm.AfterConstruction;
 begin
   inherited;
+  FRibbon.Load(RibbonResourceName, RibbonInstance);
   RibbonLoaded;
 end;
 

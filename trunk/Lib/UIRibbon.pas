@@ -280,7 +280,9 @@ begin
 
   FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil,
     CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
-  if (FAvailable) then
+  if (not FAvailable) then
+    Height := 0
+  else
   begin
     FFramework := Intf as IUIFramework;
     FFramework.Initialize(ParentForm.Handle, Self);

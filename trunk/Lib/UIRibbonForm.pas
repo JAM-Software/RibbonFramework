@@ -78,7 +78,7 @@ end;
 constructor TUIRibbonForm.Create(AOwner: TComponent);
 begin
   inherited;
-  FRibbon := TUIRibbon.Create(Self);
+  FRibbon := TUIRibbon.Create(Self, CommandCreated);
 end;
 
 destructor TUIRibbonForm.Destroy;

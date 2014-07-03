@@ -167,6 +167,9 @@ type
       descends from TUIRibbonForm, then this is taken care of automatically. }
     function HandleShortCut(const ShortCut: TShortCut): Boolean;
 
+    { Tries to retrieve a command with the specified ID from the list of Commands. }
+    function TryGetCommand(const CommandId: Cardinal; out Command: TUICommand): boolean;
+
     { Whether the UI Ribbon Framework is available on the system.
       Returns False when the application is not running on Windows 7 or
       Windows Vista with the Platform update. In that case, all ribbon
@@ -332,9 +335,14 @@ begin
   end;
 end;
 
+function TUIRibbon.TryGetCommand(const CommandId: Cardinal; out Command: TUICommand): boolean;
+begin
+  Result := FCommands.TryGetValue(CommandId, Command);
+end;
+
 function TUIRibbon.GetCommand(const CommandId: Cardinal): TUICommand;
 begin
-  if (not FCommands.TryGetValue(CommandId, Result)) then
+  if (not TryGetCommand(CommandId, Result)) then
     raise EInvalidOperation.CreateFmt('Command %d does not exist', [CommandId]);
 end;
 

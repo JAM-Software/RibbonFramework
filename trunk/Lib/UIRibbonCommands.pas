@@ -136,7 +136,7 @@ type
   TUIImage = class;
 
   { Abstract base class for Ribbon Commands. }
-  TUICommand = class abstract(TObject, IUICommandHandler)
+  TUICommand = class abstract(TComponent, IUICommandHandler)
   {$REGION 'Internal Declarations'}
   strict private
     const NOTIFY_CACHED_PROPERTIES = 31;
@@ -1764,7 +1764,7 @@ constructor TUICommand.Create(const Ribbon: TObject;
 begin
   if (not (Ribbon is TUIRibbon)) then
     raise EArgumentException.Create('Invalid Ribbon parameter');
-  inherited Create;
+  inherited Create(Ribbon as TUIRibbon);
   FFramework := TUIRibbon(Ribbon).Framework;
   FCommandId := CommandId;
   TUIRibbonAccess(Ribbon).AddCommand(Self);

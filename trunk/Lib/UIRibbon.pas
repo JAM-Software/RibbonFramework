@@ -50,6 +50,7 @@ type
     FCommands: TObjectDictionary<Cardinal, TUICommand>;
     FAvailable: Boolean;
     FOnCommandCreate: TUIRibbomCommandEvent;
+    FOnLoaded: TNotifyEvent;
     FLoaded: Boolean;
     function GetCommand(const CommandId: Cardinal): TUICommand;
     function GetBackgroundHsbColor: TUIHsbColor;
@@ -170,6 +171,11 @@ type
     { Tries to retrieve a command with the specified ID from the list of Commands. }
     function TryGetCommand(const CommandId: Cardinal; out Command: TUICommand): boolean;
 
+    { Calls the Update method for those commands that have a TBasicAction
+      descendant assigned. This way the command and its assigned action
+      synchronize their properties states. }
+    procedure InitiateAction; override;
+
     { Whether the UI Ribbon Framework is available on the system.
       Returns False when the application is not running on Windows 7 or
       Windows Vista with the Platform update. In that case, all ribbon
@@ -212,12 +218,16 @@ type
     property Framework: IUIFramework read FFramework;
 
   published
+
     { The name of the Ribbon resource as it is stored in the resource file. }
     property ResourceName: String read FResourceName write FResourceName;
     { The module instance from which to load the Ribbon resource. }
     property ResourceInstance: Integer read FResourceInstance write FResourceInstance;
+
     { The event that is fired when the Ribbon Framework creates a command. }
     property OnCommandCreate: TUIRibbomCommandEvent read FOnCommandCreate write FOnCommandCreate;
+    { The event that is fired when the Ribbon Framework has been loaded. }
+    property OnLoaded: TNotifyEvent read FOnLoaded write FOnLoaded;
   end;
 
   procedure Register;
@@ -257,6 +267,7 @@ begin
   Height := 117;
   Align := TAlign.alTop;
   Top := 0;
+  ControlStyle := ControlStyle + [csActionClient];
 
   FResourceInstance := 0;
   FResourceName := 'APPLICATION';
@@ -427,6 +438,17 @@ begin
   Result := False;
 end;
 
+procedure TUIRibbon.InitiateAction;
+var
+  Command: TUICommand;
+begin
+  inherited;
+  for Command in FCommands.Values do begin
+    if Assigned(Command.ActionLink.Action) then
+      Command.ActionLink.Action.Update();
+  end;
+end;
+
 procedure TUIRibbon.InvalidateUICommand(const Command: TUICommand;
   const Prop: TUIProperty);
 var
@@ -459,6 +481,8 @@ begin
       Inst := FResourceInstance;
     FFramework.LoadUI(Inst, PChar(FResourceName + '_RIBBON'));
     FLoaded := True;
+    if Assigned(FOnLoaded) then
+      FOnLoaded(Self);
   end;
 end;
 

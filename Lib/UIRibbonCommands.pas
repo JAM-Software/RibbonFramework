@@ -172,7 +172,6 @@ type
     function GetActionLink: TActionLink;
   private
     { IInterface }
-    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   private
@@ -212,7 +211,7 @@ type
     class destructor Destroy;
   {$ENDREGION 'Internal Declarations'}
   public
-    constructor Create(const Ribbon: TObject{TUIRibbon}; const CommandId: Cardinal); virtual;
+    constructor Create(const Ribbon: TObject{TUIRibbon}; const CommandId: Cardinal); reintroduce; virtual;
     destructor Destroy; override;
 
     { The command type for this class. You can inspect this before casting a
@@ -1991,14 +1990,6 @@ begin
     end;
     FreeAndNil(FCachedProperties);
   end;
-end;
-
-function TUICommand.QueryInterface(const IID: TGUID; out Obj): HResult;
-begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE
 end;
 
 procedure TUICommand.SetAlive(const Value: Boolean);

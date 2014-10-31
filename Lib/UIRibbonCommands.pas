@@ -2186,8 +2186,8 @@ function TUICommandAction.HandleShortCut(const ShortCut: TShortCut): Boolean;
 var
   Args: TUICommandActionEventArgs;
 begin
-  Result := (ShortCut = FShortCut);
-  if Result and Enabled and Assigned(FOnExecute) then
+  Result := (ShortCut = FShortCut) and Enabled;
+  if Result and Assigned(FOnExecute) then
   begin
     Args.Command := Self;
     Args.Verb := cvExecute;
@@ -3586,6 +3586,8 @@ var
   Unk: IUnknown;
 begin
   inherited;
+  if Assigned(ActionLink) then
+    ActionLink.Update;
   if (Prop = upRecentItems) then
   begin
     Count := FItems.Count;

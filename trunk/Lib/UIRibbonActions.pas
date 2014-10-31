@@ -19,6 +19,7 @@ type
     function IsOnExecuteLinked: Boolean; override;
     procedure SetCaption(const Value: String); override;
     procedure SetEnabled(Value: Boolean); override;
+    procedure SetVisible(Value: Boolean); override;
     procedure SetHint(const Value: String); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
 
@@ -91,18 +92,27 @@ type
   TUICommandRecentItemsActionLink = class(TUICommandActionLink)
   {$REGION 'Internal Declarations'}
   strict private
+    fSelected: TUIRecentItem;
     procedure CommandSelect(const Command: TUICommandRecentItems;
       const Verb: TUICommandVerb; const ItemIndex: Integer;
       const Properties: TUICommandExecutionProperties);
   {$ENDREGION 'Internal Declarations'}
   protected
     procedure SetAction(Value: TBasicAction); override;
+  public
+    //Added property "Selected" to allow access to selected item.
+    //TODO: Create a custom action that provides the required properties.
+    property Selected: TUIRecentItem read fSelected write fSelected;
   end;
 
 implementation
 
 uses
-  Menus;
+  Menus,
+  {$if CompilerVersion >= 24}
+  System.Actions,
+  {$endif}
+  System.SysUtils; 
 
 { TUICommandActionLink }
 
@@ -137,6 +147,14 @@ procedure TUICommandActionLink.SetEnabled(Value: Boolean);
 begin
   if IsEnabledLinked then
     FClient.Enabled := Value;
+end;
+
+procedure TUICommandActionLink.SetVisible(Value: Boolean);
+begin
+  inherited;
+  // The Windows ribbon framework does not off to make a button invisible at runtime, so we at least disable the button
+  if not Value then
+    FClient.Enabled := False;
 end;
 
 procedure TUICommandActionLink.SetHint(const Value: String);
@@ -212,11 +230,16 @@ end;
 
 { TUICommandBooleanActionLink }
 
-procedure TUICommandBooleanActionLink.CommandToggle(
-  const Args: TUICommandBooleanEventArgs);
+procedure TUICommandBooleanActionLink.CommandToggle(const Args: TUICommandBooleanEventArgs);
 begin
   if Assigned(Action) then
     Action.Execute;
+  // sync the Toogle state of the ribbon buton with the action. This is important as the ToggleButton toggles automatically.
+  if IsCheckedLinked and Args.Command.Checked <> TContainedAction(Action).Checked then
+  begin
+    // TBasicAction does not have a Checked property
+    SetChecked(TContainedAction(Action).Checked);
+  end;//if
 end;
 
 procedure TUICommandBooleanActionLink.SetAction(Value: TBasicAction);
@@ -269,9 +292,24 @@ end;
 procedure TUICommandRecentItemsActionLink.CommandSelect(
   const Command: TUICommandRecentItems; const Verb: TUICommandVerb;
   const ItemIndex: Integer; const Properties: TUICommandExecutionProperties);
+var
+  lItem: IUICollectionItem;
 begin
+  //[JAM:Lemke] Filling property "Selected" with required information
+
+  lItem := Command.Items.Items[ItemIndex];
+
+  Self.Selected := TUIRecentItem.Create;
+  try
+    Self.Selected.LabelText := (lItem as TUIRecentItem).LabelText;
+    Self.Selected.Description := (lItem as TUIRecentItem).Description;
+    Self.Selected.Pinned := (lItem as TUIRecentItem).Pinned;
+
   if Assigned(Action) then
     Action.Execute;
+  finally
+    FreeAndNil(fSelected);
+  end;
 end;
 
 procedure TUICommandRecentItemsActionLink.SetAction(Value: TBasicAction);

@@ -236,6 +236,7 @@ implementation
 
 uses
   SysUtils,
+  Actions,
   ActiveX,
   ComObj,
   Dialogs,
@@ -444,8 +445,13 @@ var
 begin
   inherited;
   for Command in FCommands.Values do begin
-    if Assigned(Command.ActionLink.Action) then
+    if Assigned(Command.ActionLink.Action) then begin
+      if not (Command.CommandType in [TUICommandType.ctRecentItems]) then // Recently used items will be updated when the File menu is opened, done in TUICommandRecentItems.DoUpdate()
       Command.ActionLink.Action.Update();
+      // Ensure that ribbon command has enabled same state as assigned action.
+      if Command.ActionLink.Action is TContainedAction then
+        Command.Enabled := (Command.ActionLink.Action as TContainedAction).Enabled and (Command.ActionLink.Action as TContainedAction).Visible;
+    end;
   end;
 end;
 

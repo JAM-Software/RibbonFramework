@@ -18,6 +18,7 @@ uses
   StdCtrls,
   ImgList,
   ActnList,
+  Actions,
   RibbonMarkup,
   UIRibbonCommands,
   FImageList, Menus;
@@ -167,6 +168,7 @@ implementation
 {$R *.dfm}
 
 uses
+  UITypes,
   FMain;
 
 { TFrameCommands }

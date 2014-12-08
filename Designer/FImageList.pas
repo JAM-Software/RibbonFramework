@@ -13,12 +13,14 @@ uses
   Forms,
   Dialogs,
   ActnList,
+  Actions,
+  Menus,
   ImgList,
   ComCtrls,
   CommCtrl,
   ToolWin,
   RibbonMarkup,
-  UIRibbonCommands, Menus;
+  UIRibbonCommands;
 
 type
   TImageFlag = (ifLarge, ifHighContrast);
@@ -73,6 +75,7 @@ implementation
 
 uses
   StrUtils,
+  UITypes,
   IOUtils,
   Math,
   FMain,

@@ -1031,13 +1031,13 @@ var
   P, Q: PRawByteChar;
   C: RawByteChar;
 begin
-  P := AnsiStrPos(FCur, '?>');
+  P := AnsiStrings.AnsiStrPos(FCur, '?>');
   if (P = nil) then
     raise EInvalidOperation.Create(RS_INVALID_XML_DECL);
   C := P^;
   P^ := #0;
   try
-    Q := TextPos(FCur, 'encoding');
+    Q := AnsiStrings.TextPos(FCur, 'encoding');
     if (Q = nil) then
       Exit;
     Inc(Q, 8);
@@ -1200,7 +1200,7 @@ end;
 
 procedure TXmlReader.SkipCData;
 begin
-  FCur := AnsiStrPos(FCur, ']]>');
+  FCur := AnsiStrings.AnsiStrPos(FCur, ']]>');
   if (FCur = nil) then
     raise EInvalidOperation.Create(RS_INVALID_CDATA);
   Inc(FCur, 3);
@@ -1208,7 +1208,7 @@ end;
 
 procedure TXmlReader.SkipComment;
 begin
-  FCur := AnsiStrPos(FCur, '-->');
+  FCur := AnsiStrings.AnsiStrPos(FCur, '-->');
   if (FCur = nil) then
     raise EInvalidOperation.Create(RS_INVALID_COMMENT);
   Inc(FCur, 3);
@@ -1216,7 +1216,7 @@ end;
 
 procedure TXmlReader.SkipDTD;
 begin
-  FCur := AnsiStrPos(FCur, '>');
+  FCur := AnsiStrings.AnsiStrPos(FCur, '>');
   if (FCur = nil) then
     raise EInvalidOperation.Create(RS_INVALID_DTD);
   Inc(FCur);
@@ -1235,7 +1235,7 @@ end;
 
 procedure TXmlReader.SkipProcessingInstruction;
 begin
-  FCur := AnsiStrPos(FCur, '?>');
+  FCur := AnsiStrings.AnsiStrPos(FCur, '?>');
   if (FCur = nil) then
     raise EInvalidOperation.Create(RS_INVALID_PI);
   Inc(FCur, 2);

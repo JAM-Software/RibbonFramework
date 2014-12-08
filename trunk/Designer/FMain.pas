@@ -20,6 +20,7 @@ uses
   AppEvnts,
   ImgList,
   Menus,
+  Actions,
   ShellApi,
   RibbonMarkup,
   RibbonCompiler,
@@ -157,6 +158,9 @@ resourcestring
     'Do you want to continue to save this document?';
 
 implementation
+
+uses
+  UITypes;
 
 {$R *.dfm}
 

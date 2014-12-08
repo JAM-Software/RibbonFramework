@@ -135,7 +135,7 @@ begin
   Result := Code;
 
   if (Code < 0) then
-    raise EZCompressionError.Create(_z_errmsg[2 - Code]);
+    raise EZCompressionError.Create(string(_z_errmsg[2 - Code]));
 end;
 
 { TZipReader }
@@ -362,11 +362,11 @@ begin
   while (InSize > 0) do
   begin
     Dec(BytesLeft, InSize);
-    ZStream.next_in := InBuffer;
+    ZStream.next_in := @InBuffer[0];
     ZStream.avail_in := InSize;
 
     repeat
-      ZStream.next_out := OutBuffer;
+      ZStream.next_out := @OutBuffer[0];
       ZStream.avail_out := BUFFER_SIZE;
 
       ZCompressCheck(inflate(ZStream, Z_NO_FLUSH));
@@ -383,7 +383,7 @@ begin
   end;
 
   repeat
-    ZStream.next_out := OutBuffer;
+    ZStream.next_out := @OutBuffer[0];
     ZStream.avail_out := BUFFER_SIZE;
 
     ZResult := ZCompressCheck(inflate(ZStream, Z_FINISH));

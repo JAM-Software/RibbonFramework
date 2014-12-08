@@ -108,7 +108,7 @@ type
     property ReferenceCount: Integer read GetReferenceCount;
   end;
 
-  TRibbonList<T> = class(TRibbonObject)
+  TRibbonList<T: TRibbonObject> = class(TRibbonObject)
   {$REGION 'Internal Declarations'}
   strict private
     FItems: TList<T>;
@@ -950,7 +950,7 @@ type
   TRibbonControlNameMap = class(TRibbonObject)
   {$REGION 'Internal Declarations'}
   strict private
-    FControlNameDefinitions: TRibbonList<String>;
+    FControlNameDefinitions: TList<String>;
   private
     constructor Create(const Owner: TRibbonDocument); overload;
     constructor Create(const Owner: TRibbonDocument; const E: TXmlElement); overload;
@@ -962,7 +962,7 @@ type
     procedure Clear;
     procedure Add(const Name: String);
 
-    property ControlNameDefinitions: TRibbonList<String> read FControlNameDefinitions;
+    property ControlNameDefinitions: TList<String> read FControlNameDefinitions;
   end;
 
   TRibbonGroupSizeDefinitionElement = class abstract(TRibbonObject)
@@ -5108,7 +5108,7 @@ end;
 constructor TRibbonControlNameMap.Create(const Owner: TRibbonDocument);
 begin
   inherited Create(Owner);
-  FControlNameDefinitions := TRibbonList<String>.Create(Owner, False);
+  FControlNameDefinitions := TList<String>.Create();
 end;
 
 procedure TRibbonControlNameMap.Add(const Name: String);
@@ -5128,7 +5128,7 @@ var
   S: String;
 begin
   inherited Create(Owner);
-  FControlNameDefinitions := TRibbonList<String>.Create(Owner, False);
+  FControlNameDefinitions := TList<String>.Create();
   for C in E do
   begin
     if (C.Name = EN_CONTROL_NAME_DEFINITION) then

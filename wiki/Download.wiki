@@ -1,5 +1,3 @@
-#Download instructions
-
 = Download =
 
 The latest official download can be found here:

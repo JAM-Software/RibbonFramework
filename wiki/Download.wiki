@@ -1,0 +1,8 @@
+#summary One-sentence summary of this page.
+
+= Download =
+
+The latest official download can be foudd here:
+[http://bilsen.com/windowsribbon/WindowsRibbonForDelphi1.2.zip V1.2]
+
+We however strongly recommend to work with the [https://code.google.com/p/delphi-ribbon-framework/source/checkout latest sources from this project page].

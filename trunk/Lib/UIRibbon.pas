@@ -67,6 +67,12 @@ type
     procedure SetQuickAccessToolbarPosition(
       const Value: TUIQuickAccessToolbarPosition);
     procedure WMPaint(var Message: TMessage); message WM_PAINT;
+    /// <summary>
+    ///  Sets the Availability property of a ribbon context tab command.
+    /// </summary>
+    /// <param name="pCommandId">The id of the ribbon command.</param>
+    /// <param name="pContextAvailability">The availability state.</param>
+    procedure SetContextTabAvailability(const pCommandId: Integer; const pContextAvailability: TUIContextAvailability);
   private
     { IInterface }
     function _AddRef: Integer; stdcall;
@@ -176,6 +182,31 @@ type
       synchronize their properties states. }
     procedure InitiateAction; override;
 
+    /// <summary>
+    ///  Activates a ribbon context tab.
+    /// </summary>
+    /// <param name="pCommandId">The ID of the context tab.</param>
+    /// <author>marder@jam-software.com</author>
+    procedure ActivateContextTab(const pCommandId: Integer);
+
+    /// <summary>
+    ///  Enables a ribbon context tab.
+    /// </summary>
+    /// <param name="pCommandId">The ID of the context tab.</param>
+    procedure EnableContextTab(const pCommandId: Integer);
+
+    /// <summary>
+    ///  Hides a ribbon context tab.
+    /// </summary>
+    /// <param name="pCommandId">The ID of the context tab.</param>
+    procedure HideContextTab(const pCommandId: Integer);
+
+    /// <summary>
+    ///  Hides all ribbon context tabs.
+    /// </summary>
+    /// <param name="pExceptCommandId">Optional. The ID of the context tab that should be excluded from hiding.</param>
+    procedure HideAllContextTabs(pExceptCommandId: Cardinal = High(Cardinal));
+
     { Whether the UI Ribbon Framework is available on the system.
       Returns False when the application is not running on Windows 7 or
       Windows Vista with the Platform update. In that case, all ribbon
@@ -249,6 +280,11 @@ type
   TUICommandAccess = class(TUICommand);
 
 { TUIRibbon }
+
+procedure TUIRibbon.ActivateContextTab(const pCommandId: Integer);
+begin
+  SetContextTabAvailability(pCommandId, TUIContextAvailability.caActive);
+end;
 
 procedure TUIRibbon.AddCommand(const Command: TUICommand);
 begin
@@ -324,6 +360,11 @@ begin
   FFramework := nil;
   FreeAndNil(FCommands);
   inherited;
+end;
+
+procedure TUIRibbon.EnableContextTab(const pCommandId: Integer);
+begin
+  SetContextTabAvailability(pCommandId, TUIContextAvailability.caAvailable);
 end;
 
 function TUIRibbon.GetBackgroundColor: TColor;
@@ -421,7 +462,9 @@ var
   PropertyStore: IPropertyStore;
   PropValue: TPropVariant;
 begin
-  Result := True;
+  if not Available then
+    Exit(False);
+  Result := inherited Visible;
   if Assigned(FRibbon) and Supports(FRibbon, IPropertyStore, PropertyStore) then
   begin
     if Succeeded(PropertyStore.GetValue(TPropertyKey(UI_PKEY_Viewable), PropValue)) then
@@ -439,6 +482,25 @@ begin
   Result := False;
 end;
 
+procedure TUIRibbon.HideAllContextTabs(pExceptCommandId: Cardinal);
+var
+  lCommand: TUICommand;
+begin
+  //If Ribbons are disabled, exit here.
+  if (not Self.Visible) then
+    exit;
+  // Iterate over the available ribbon elements and hide them
+  for lCommand in Self do begin
+    if (lCommand.CommandType = TUICommandType.ctContext) and (lCommand.CommandId <> pExceptCommandId) then
+      HideContextTab(lCommand.CommandId);
+  end;//for
+end;
+
+procedure TUIRibbon.HideContextTab(const pCommandId: Integer);
+begin
+  SetContextTabAvailability(pCommandId, TUIContextAvailability.caNotAvailable);
+end;
+
 procedure TUIRibbon.InitiateAction;
 var
   Command: TUICommand;
@@ -447,7 +509,7 @@ begin
   for Command in FCommands.Values do begin
     if Assigned(Command.ActionLink.Action) then begin
       if not (Command.CommandType in [TUICommandType.ctRecentItems]) then // Recently used items will be updated when the File menu is opened, done in TUICommandRecentItems.DoUpdate()
-      Command.ActionLink.Action.Update();
+        Command.ActionLink.Action.Update();
       // Ensure that ribbon command has enabled same state as assigned action.
       if Command.ActionLink.Action is TContainedAction then
         Command.Enabled := (Command.ActionLink.Action as TContainedAction).Enabled and (Command.ActionLink.Action as TContainedAction).Visible;
@@ -479,7 +541,7 @@ procedure TUIRibbon.Load();
 var
   Inst: THandle;
 begin
-  if (FAvailable) and not (FLoaded) then
+  if (Available) and (inherited Visible) and not (FLoaded) then
   begin
     if (FResourceInstance = 0) then
       Inst := HInstance
@@ -685,6 +747,20 @@ begin
   end;
 end;
 
+procedure TUIRibbon.SetContextTabAvailability(const pCommandId: Integer; const pContextAvailability: TUIContextAvailability);
+var
+  lCommand: TUICommand;
+begin
+  //If Ribbons are disabled, exit here.
+  if (not Self.Visible) then
+    exit;
+  // Get the command with that ID
+  if not Self.TryGetCommand(pCommandId, lCommand) then exit;
+  // If found, check type, cast and set Availability property.
+  if (lCommand.CommandType = TUICommandType.ctContext) then
+    (lCommand as TUICommandContext).Availability := pContextAvailability;
+end;
+
 procedure TUIRibbon.SetHighlightColor(const Value: TColor);
 begin
   SetHighlightHsbColor(ColorToHsb(Value));
@@ -742,6 +818,7 @@ var
   PropertyStore: IPropertyStore;
   PropValue: TPropVariant;
 begin
+  inherited Visible := Value;
   if Assigned(FRibbon) and Supports(FRibbon, IPropertyStore, PropertyStore) then
   begin
     UIInitPropertyFromBoolean(UI_PKEY_Viewable, Value, PropValue);

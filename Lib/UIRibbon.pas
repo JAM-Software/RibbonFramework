@@ -52,6 +52,8 @@ type
     FOnCommandCreate: TUIRibbomCommandEvent;
     FOnLoaded: TNotifyEvent;
     FLoaded: Boolean;
+    /// member variable for the property RibbonSettingsFilePath
+    fRibbonSettingsFilePath: string;
     function GetCommand(const CommandId: Cardinal): TUICommand;
     function GetBackgroundHsbColor: TUIHsbColor;
     function GetHighlightHsbColor: TUIHsbColor;
@@ -97,6 +99,19 @@ type
     procedure AddCommand(const Command: TUICommand);
     function GetColor(const PropKey: TUIPropertyKey): TUIHsbColor;
     procedure SetColor(const PropKey: TUIPropertyKey; const Value: TUIHsbColor);
+    /// <summary>
+    ///  Gets the path of the Ribbon settings file.
+    /// </summary>
+    /// <returns>Full file path to the Ribbon settings file.</returns>
+    function GetRibbonSettingsFilePath(): string;
+    /// <summary>
+    ///  Load the Ribbon settings.
+    /// </summary>
+    function LoadRibbonSettings(): boolean;
+    /// <summary>
+    ///  Save the Ribbon settings.
+    /// </summary>
+    procedure SaveRibbonSettings();
   {$ENDREGION 'Internal Declarations'}
   public
 
@@ -255,6 +270,13 @@ type
     { The module instance from which to load the Ribbon resource. }
     property ResourceInstance: Integer read FResourceInstance write FResourceInstance;
 
+    /// <summary>
+    ///  Filename of the XML settings file that is used to store ribbon specific
+    ///  settings such as the QuickAccessToolBar items. The default file name is
+    ///  "RibbonSettings.xml".
+    /// </summary>
+    property RibbonSettingsFilePath: string read fRibbonSettingsFilePath write fRibbonSettingsFilePath;
+
     { The event that is fired when the Ribbon Framework creates a command. }
     property OnCommandCreate: TUIRibbomCommandEvent read FOnCommandCreate write FOnCommandCreate;
     { The event that is fired when the Ribbon Framework has been loaded. }
@@ -357,6 +379,7 @@ end;
 
 destructor TUIRibbon.Destroy;
 begin
+  SaveRibbonSettings(); // Save quick toolbar, etc.
   FFramework := nil;
   FreeAndNil(FCommands);
   inherited;
@@ -551,7 +574,27 @@ begin
     FLoaded := True;
     if Assigned(FOnLoaded) then
       FOnLoaded(Self);
+    LoadRibbonSettings();
   end;
+end;
+
+function TUIRibbon.GetRibbonSettingsFilePath(): string;
+const
+  cRibbonSettingsDefaultFileName = 'RibbonOptions.xml';
+var
+  lRibbonFilename: string;
+begin
+  if fRibbonSettingsFilePath.IsEmpty() and not (csDesigning in ComponentState) then begin
+    lRibbonFilename := GetParentForm(Self).Name + '_' + cRibbonSettingsDefaultFileName;
+    fRibbonSettingsFilePath := ExtractFilePath(ParamStr(0)) + lRibbonFilename;
+    // Portable editions have their settings stored beside the executable.
+    if not FileExists(fRibbonSettingsFilePath) then begin
+      // If no settings file found beside the executable, we use appdata path, e.g.
+      // "C:\Users\foo\AppData\Roaming\JAM Software\My Application"
+      fRibbonSettingsFilePath := IncludeTrailingPathDelimiter(GetHomePath) + Application.Title + PathDelim + lRibbonFilename;
+    end;//if
+  end;//if
+  Exit(fRibbonSettingsFilePath);
 end;
 
 function TUIRibbon.LoadSettings(const Filename: String): Boolean;
@@ -572,6 +615,23 @@ begin
   FResourceName := ResourceName;
   FResourceInstance := ResourceInstance;
   Load();
+end;
+
+function TUIRibbon.LoadRibbonSettings(): boolean;
+var
+  lSettingsFileFullPath: string;
+begin
+  // If Ribbons are not available, do not continue.
+  if not Self.Visible then
+    exit(false);
+  // Get the path for the settings file (beside executable or %appdata%)
+  lSettingsFileFullPath := GetRibbonSettingsFilePath();
+  // If file not exists or is just a dummy file (portable editions), exit here.
+  if not FileExists(RibbonSettingsFilePath) { or (FileSize(lSettingsFileFullPath) = 0)} then
+    exit(false);
+  // Otherwise, try to load the file.
+  Result := Self.LoadSettings(lSettingsFileFullPath);
+  Assert(Result, 'Loading ribbon settings failed with unknown error.');
 end;
 
 function TUIRibbon.LoadSettings(const Stream: TStream): Boolean;
@@ -697,6 +757,25 @@ begin
     Result := SaveSettings(Stream);
   finally
     Stream.Free;
+  end;
+end;
+
+procedure TUIRibbon.SaveRibbonSettings;
+begin
+  // If Ribbons are not available, do not continue.
+  if not Self.Visible then
+    exit;
+  // Save ribbon user settings
+  try
+    Self.SaveSettings(Self.RibbonSettingsFilePath);
+  except
+    on E: EFileStreamError do
+    begin
+      OutputDebugString(PChar('An EFileStreamError error occured while trying to save the ribbon settings: ' + E.Message));
+      {$ifdef DEBUG}
+      raise e;
+      {$endif}
+    end;
   end;
 end;
 

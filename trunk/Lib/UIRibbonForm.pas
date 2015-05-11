@@ -53,7 +53,7 @@ type
 
     { The ribbon hosted on this form }
     property Ribbon: TUIRibbon read FRibbon;
-  end;
+  end deprecated 'There is no longer a need to use TUIRibbonForm, you can place TUIRibbon on your form and it ha all properties in the designer.';
 
 implementation
 

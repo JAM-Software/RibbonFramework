@@ -27,8 +27,49 @@ uses
   Generics.Collections,
   Controls,
   Classes,
+  ActnList,
+  ActnMan,
   UIRibbonApi,
   UIRibbonCommands;
+
+type
+  TRibbonMarkupElement = record
+  public
+    Name: string;
+    ID: integer;
+    LabelTitleResourceID: integer;
+    LabelDescriptionResourceID: integer;
+    TooltipTitleResourceID: integer;
+    TooltipDescriptionResourceID: integer;
+    constructor Create(pActionName: string; pActionID: integer;
+      pLabelTitleResourceID: integer = -1;
+      pLabelDescriptionResourceID: integer = -1;
+      pTooltipTitleResourceID: integer = -1;
+      pTooltipDescriptionResourceID: integer = -1);
+  end;
+
+  TRibbonMarkupElementList = class(TList<TRibbonMarkupElement>)
+    function TryGetItem(pID: integer; out pItem: TRibbonMarkupElement): boolean;
+  end;
+
+
+  /// <summary>
+  ///  Defines the available user-defined Ribbon application modes. The Windows
+  ///  Ribbon Framework supports a set of 32 different application modes. The
+  ///  meaning of each mode isn't specified by the framework but can be defined
+  ///  individually by the project. Depending on the current application mode,
+  ///  Ribbon elements are shown or hidden. Application modes may be combined,
+  ///  e.g. if your application defines an application mode for a scenario where
+  ///  your app is started with admin privileges and another application mode
+  ///  for the trial version, you may combine both modes to express the state
+  ///  "Trial version, started with admin privileges".
+  /// </summary>
+  TRibbonApplicationMode = 0..31;
+
+  /// <summary>
+  ///  A set of Application modes (see above).
+  /// </summary>
+  TRibbonApplicationModes = set of TRibbonApplicationMode;
 
 type
   TUIRibbon = class;
@@ -37,7 +78,18 @@ type
 
   TUIRibbomCommandEvent = procedure(const Sender: TUIRibbon; const Command: TUICommand) of object;
 
-  TUIRibbon = class(TCustomControl, IUIApplication)
+  /// <summary>
+  /// Signature for an event which is fired when a resource string was loaded.
+  /// </summary>
+  /// <param name="Sender">The control which fired the event.</param>
+  /// <param name="pCommand">the command for which the string was loaded.</param>
+  /// <param name="pResourceID">The ID of the resource string that was loaded.</param>
+  /// <param name="pString">The default string as it was loaded from the instance, empty if no resource string could be found.</param>
+  /// <seealso cref="OnLoadResourceString" />
+  /// <author>marder@jam-software.com</author>
+  TUILoadResourceStringEvent = procedure(const Sender: TUIRibbon; const pCommand: TUICommand; pResourceID: Integer; var pString: string) of object;
+
+  TUIRibbon = class(TWinControl, IUIApplication)
   {$REGION 'Internal Declarations'}
   strict private
     type
@@ -54,7 +106,38 @@ type
     FLoaded: Boolean;
     /// member variable for the property RibbonSettingsFilePath
     fRibbonSettingsFilePath: string;
-    function GetCommand(const CommandId: Cardinal): TUICommand;
+    /// member variable for the property RibbonMapper
+    fRibbonMapper: TRibbonMarkupElementList;
+    /// <summary>
+    ///  The set of currently active Ribbon application modes.
+    /// </summary>
+    /// <remarks>
+    ///  The Ribbon Framework doesn't provide a property or getter method to
+    ///  retrieve the current active application modes so we store that
+    ///  information using an additional field.
+    /// </remarks>
+    fApplicationModes: TRibbonApplicationModes;
+    /// member variable for the property ActionManager
+    fActionManager: TActionManager;
+    /// Handles the recent items in the backstage menu of the ribbon bar
+    fRecentItems: TUICommandRecentItems;
+
+    /// <summary>
+    ///  Sets the application modes for this Ribbon form.
+    /// </summary>
+    /// <param name="pAppModes"></param>
+    /// <returns>None</returns>
+    /// <remarks>
+    ///  This method simplifies setting of Ribbon application modes. One can
+    ///  define it's own application modes, e.g. like this
+    ///    MyRibbonAppMode = (foo = 0, bar = 1);
+    ///  and then call SetApplicationModes which converts the set type into
+    ///  an array which is required by the Ribbon Framework API.
+    /// </remarks>
+    procedure Set_ApplicationModes(const pAppModes: TRibbonApplicationModes);
+    procedure SetApplicationModes(const Modes: Cardinal); overload;
+
+    function Get_Command(const CommandId: Cardinal): TUICommand;
     function GetBackgroundHsbColor: TUIHsbColor;
     function GetHighlightHsbColor: TUIHsbColor;
     function GetTextHsbColor: TUIHsbColor;
@@ -80,6 +163,7 @@ type
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   private
+    fOnLoadResourceString: TUILoadResourceStringEvent;
     { IUIApplication }
     function OnViewChanged(ViewId: UInt32; TypeId: _UIViewType;
       const View: IUnknown; Verb: _UIViewVerb; ReasonCode: Int32): HRESULT; stdcall;
@@ -112,6 +196,23 @@ type
     ///  Save the Ribbon settings.
     /// </summary>
     procedure SaveRibbonSettings();
+    /// <summary>
+    /// Loads a resource string an fires the <see cref="OnLoadResourceString"> event.
+    /// </summary>
+    /// <param name="pCommand">The command for which the resource string is loaded.</param>
+    /// <param name="pResourceID">The ID of the resource string.</param>
+    /// <returns>string</returns>
+    /// <remarks></remarks>
+    /// <exception>TODO</exception>
+    /// <seealso cref="TODO" />
+    /// <author>marder@jam-software.com</author>
+    function DoLoadResourceString(const pCommand: TUICommand; pResourceID: Integer): string; virtual;
+    /// This function is called for every <see "TUICommand"> which is created.
+    procedure DoCommandCreated(const pCommand: TUICommand);
+    /// <summary>
+    ///  Localize the given Ribbon command using the resource identifiers of the given markup item.
+    /// </summary>
+    procedure LocalizeRibbonElement(const pCommand: TUICommand; const pMarkupItem: TRibbonMarkupElement);
   {$ENDREGION 'Internal Declarations'}
   public
 
@@ -124,17 +225,12 @@ type
       after construction.
       NOTE: Ribbon functionality will be disabled when the Available-property
       returns False. }
-    constructor Create(const Parent: TWinControl;
-      const OnCommandCreate: TUIRibbomCommandEvent); reintroduce; overload;
+    constructor Create(const pParent: TWinControl; const pOnCommandCreate: TUIRibbomCommandEvent); reintroduce; overload;
 
     destructor Destroy; override;
 
     { Loads the ribbon. }
     procedure Load(); overload;
-
-    { Loads the ribbon with the given resource name from the given resource. }
-    procedure Load(const ResourceName: String;
-      const ResourceInstance: THandle = 0); overload;
 
     { Invalidates on or more aspects from a UI command. This will cause a
       repaint of the specified command. The command will be queried for new
@@ -147,6 +243,15 @@ type
           the property to invalidate. }
     procedure InvalidateUICommand(const Command: TUICommand;
       const Aspects: TUICommandInvalidations); overload;
+
+    /// <summary>
+    ///  Looks up the corresponding TAction for a given Ribbon Command ID.
+    /// </summary>
+    /// <param name="pIdentifier">The Ribbon command identifier.</param>
+    /// <param name="pMatchedAction">Out parameter for the resulting TAction.</param>
+    /// <returns>True if a corresponding TAction was found, false otherwise.</returns>
+    /// <author>marder@jam-software.com</author>
+    function GetActionForCommand(const pCommand: TUICommand): TCustomAction;
 
     { Invalidates a property from a UI command. This will cause a repaint of
       the specified command.
@@ -165,7 +270,6 @@ type
       integer values between 0 and 31, or you can pass a single Cardinal value
       where each bit represents an application mode. }
     procedure SetApplicationModes(const Modes: array of Integer); overload;
-    procedure SetApplicationModes(const Modes: Cardinal); overload;
 
     { Saves to ribbon settings to a file or stream. The settings that are saved
       include the visibility and collapsed state of the ribbon, the location
@@ -186,8 +290,10 @@ type
     { Handles a keyboard shortcut by checking if any command handles the
       given shortcut. Returns True if the shortcut is handled.
       You usually don't need to call this method yourself. If your form
-      descends from TUIRibbonForm, then this is taken care of automatically. }
-    function HandleShortCut(const ShortCut: TShortCut): Boolean;
+      descends from TUIRibbonForm or maps action to ribbon commands
+      then this is taken care of automatically. }
+    function HandleShortCut(const ShortCut: TShortCut): Boolean; overload;
+    function HandleShortCut(const pMessage: TWMKey): Boolean; overload;
 
     { Tries to retrieve a command with the specified ID from the list of Commands. }
     function TryGetCommand(const CommandId: Cardinal; out Command: TUICommand): boolean;
@@ -222,6 +328,26 @@ type
     /// <param name="pExceptCommandId">Optional. The ID of the context tab that should be excluded from hiding.</param>
     procedure HideAllContextTabs(pExceptCommandId: Cardinal = High(Cardinal));
 
+    /// <summary>
+    ///  Looks up the corresponding Ribbon Command for a given TAction.
+    /// </summary>
+    /// <param name="pAction"></param>
+    /// <returns>TUICommand</returns>
+    function GetCommand(pAction: TCustomAction): TUICommand; overload;
+
+    /// <summary>
+    ///  Sets the "Recent items" list in the application menu.
+    /// </summary>
+    /// <param name="pAction">The related action for the recent items.</param>
+    /// <param name="pPaths">The list of paths that shall be added to the list.</param>
+    procedure SetRecentItems(pAction: TAction; pPaths: TStrings); overload;
+
+    /// <summary>
+    ///  Get the currently selected "recent item".
+    /// </summary>
+    /// <returns>TUIRecentItem</returns>
+    function GetSelectedRecentItem(): TUIRecentItem;
+
     { Whether the UI Ribbon Framework is available on the system.
       Returns False when the application is not running on Windows 7 or
       Windows Vista with the Platform update. In that case, all ribbon
@@ -246,7 +372,7 @@ type
       already in use (that is, visible on the ribbon). Commands that are
       unique to the application menu, popup menus or the items of drop-down
       buttons, will only be added once they are needed. }
-    property Commands[const CommandId: Cardinal]: TUICommand read GetCommand; default;
+    property Commands[const CommandId: Cardinal]: TUICommand read Get_Command; default;
 
     { Background, Highlight and Text Color of the ribbon in HSB (Hue,
       Saturation, Brightness) format. }
@@ -263,6 +389,24 @@ type
     { Low-level access to the Ribbon Framework. }
     property Framework: IUIFramework read FFramework;
 
+    /// <summary>
+    ///  Gets or sets the currently active Ribbon application modes.
+    /// </summary>
+    /// <seealso>TRibbonApplicationModes</seealso>
+    property ApplicationModes: TRibbonApplicationModes read fApplicationModes write Set_ApplicationModes;
+
+    /// <summary>
+    ///  Gets or sets the mapping dictionary, which is automatically created by
+    ///  the "Ribbon Designer" of the "Windows Ribbon Framework".
+    /// </summary>
+    /// <remarks>
+    ///  The mapping dictionary is contained in the pascal file, created by the
+    ///  the "Ribbon Designer" of the "Windows Ribbon Framework". It contains
+    ///  the required mapping between Ribbon command identifier and the
+    ///  corresponding Action of the assigned ActionManager.
+    /// </remarks>
+    property RibbonMapper: TRibbonMarkupElementList read fRibbonMapper write fRibbonMapper;
+
   published
 
     { The name of the Ribbon resource as it is stored in the resource file. }
@@ -277,10 +421,25 @@ type
     /// </summary>
     property RibbonSettingsFilePath: string read fRibbonSettingsFilePath write fRibbonSettingsFilePath;
 
+    /// <summary>
+    ///  Gets or sets the TActionManager component that is assigned to this Ribbon form.
+    /// </summary>
+    /// <remarks>
+    ///  The Actions defined in the TActionManager component are used to connect
+    ///  the Ribbon commands to the Actions of the application automatically.
+    ///  You will have to assign the regarding ActionManager in the Main unit of
+    ///  your application, e.g. like this:
+    ///   Self.RibbonActionManager := MyActionManager;
+    /// </remarks>
+    property ActionManager: TActionManager read fActionManager write fActionManager;
+
     { The event that is fired when the Ribbon Framework creates a command. }
     property OnCommandCreate: TUIRibbomCommandEvent read FOnCommandCreate write FOnCommandCreate;
     { The event that is fired when the Ribbon Framework has been loaded. }
     property OnLoaded: TNotifyEvent read FOnLoaded write FOnLoaded;
+    /// This event is fired when a resource string was loaded, it allows the resource string to be changed.
+    /// <seealso cref="OnLoadResourceString" />
+    property OnLoadResourceString: TUILoadResourceStringEvent read fOnLoadResourceString write fOnLoadResourceString;
   end;
 
   procedure Register;
@@ -295,11 +454,47 @@ uses
   Dialogs,
   PropSys,
   Forms,
+  Menus,
+  GraphUtil,
   UITypes,
+  UIRibbonActions,
   UIRibbonUtils;
 
 type
   TUICommandAccess = class(TUICommand);
+
+
+{ TRibbonMarkupElement }
+
+constructor TRibbonMarkupElement.Create(pActionName: string; pActionID: integer;
+      pLabelTitleResourceID: integer = -1;
+      pLabelDescriptionResourceID: integer = -1;
+      pTooltipTitleResourceID: integer = -1;
+      pTooltipDescriptionResourceID: integer = -1);
+begin
+  Self.Name := pActionName;
+  Self.ID := pActionID;
+  Self.LabelTitleResourceID := pLabelTitleResourceID;
+  Self.LabelDescriptionResourceID := pLabelDescriptionResourceID;
+  Self.TooltipTitleResourceID := pTooltipTitleResourceID;
+  Self.TooltipDescriptionResourceID := pTooltipDescriptionResourceID;
+end;
+
+{ TRibbonMarkupElementList }
+
+function TRibbonMarkupElementList.TryGetItem(pID: integer; out pItem: TRibbonMarkupElement): boolean;
+var
+  lElement: TRibbonMarkupElement;
+begin
+  Assert(Assigned(Self), 'No ribbon mapper assigned!');
+  for lElement in Self do
+    if lElement.ID = pID then begin
+      pItem := lElement;
+      Exit(true);
+    end;
+  Exit(false);
+end;
+
 
 { TUIRibbon }
 
@@ -370,24 +565,100 @@ begin
   end;
 end;
 
-constructor TUIRibbon.Create(const Parent: TWinControl;
-  const OnCommandCreate: TUIRibbomCommandEvent);
+constructor TUIRibbon.Create(const pParent: TWinControl; const pOnCommandCreate: TUIRibbomCommandEvent);
 begin
-  Create(Parent);
-  FOnCommandCreate := OnCommandCreate;
+  Create(pParent);
+  FOnCommandCreate := pOnCommandCreate;
 end;
 
 destructor TUIRibbon.Destroy;
 begin
   SaveRibbonSettings(); // Save quick toolbar, etc.
   FFramework := nil;
+  FreeAndNil(fRibbonMapper);
   FreeAndNil(FCommands);
   inherited;
+end;
+
+procedure TUIRibbon.DoCommandCreated(const pCommand: TUICommand);
+const
+  sNoMappingFound = 'Action "%s" that maps to Ribbon command with ID %d was not found! Please ensure to update your Ribbon.Markup.xml file if you have renamed an Action.';
+var
+  lMarkupItem : TRibbonMarkupElement;
+  lAction     : TCustomAction;
+begin
+  // When a Ribbon command is created, we check if there is a corresponding
+  // TAction element available. If so, we assign the properties of that action
+  // (Caption, Hint, etc.) to that ribbon element.
+  if not Assigned(Self.RibbonMapper) or not Self.RibbonMapper.TryGetItem(pCommand.CommandId, lMarkupItem) then // Get the corresponding TAction for the given Ribbon command
+    exit;
+
+  case pCommand.CommandType of
+    TUICommandType.ctAction,
+    TUICommandType.ctDecimal,
+    TUICommandType.ctBoolean,
+    TUICommandType.ctColorAnchor,
+    TUICommandType.ctRecentItems:
+    begin
+      lAction := Self.GetActionForCommand(pCommand);
+      if not Assigned(lAction) then
+        raise Exception.Create(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))
+      else
+        pCommand.Assign(lAction);
+    end;
+	// Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
+	// If not found, at least try to localize it.
+    TUICommandType.ctAnchor: begin
+      lAction := Self.GetActionForCommand(pCommand);
+      if Assigned(lAction) then
+        pCommand.Assign(lAction)
+      else
+        Self.LocalizeRibbonElement(pCommand, lMarkupItem);
+    end
+  else
+    // If none of the types above, at least try to localize that command by
+    // extracting the corresponding resource strings from the resource file.
+    Self.LocalizeRibbonElement(pCommand, lMarkupItem);
+  end;
+  if Assigned(FOnCommandCreate) then
+    FOnCommandCreate(Self, pCommand);
+end;
+
+function TUIRibbon.DoLoadResourceString(const pCommand: TUICommand; pResourceID: Integer): string;
+var
+  lBuffer : array[0..255] of char;
+  lResultCharCount : integer;
+begin
+  lResultCharCount := LoadString(HInstance, pResourceID,  lBuffer, sizeof(lBuffer));
+  if lResultCharCount <> 0 then
+    Result := lBuffer;
+  if Assigned(Self.OnLoadResourceString) then
+    OnLoadResourceString(Self, pCommand, pResourceID, Result);
 end;
 
 procedure TUIRibbon.EnableContextTab(const pCommandId: Integer);
 begin
   SetContextTabAvailability(pCommandId, TUIContextAvailability.caAvailable);
+end;
+
+function TUIRibbon.GetActionForCommand(const pCommand: TUICommand): TCustomAction;
+var
+  lIndex: integer;
+  lElement: TRibbonMarkupElement;
+begin
+  if not Assigned(fActionManager) then Exit(nil);
+
+  if not RibbonMapper.TryGetItem(pCommand.CommandId, lElement) or lElement.Name.IsEmpty() then Exit(nil);
+  for lIndex := 0 to fActionManager.ActionCount - 1 do begin
+    // Compare Markup Symbol name against action name.
+    if SameText(fActionManager.Actions[lIndex].Name, lElement.Name) then begin
+      // Prevent invalid type cast exception
+      if not (fActionManager.Actions[lIndex] is TCustomAction) then Exit(nil);
+      // Cast and return the corresponding action
+      Exit(fActionManager.Actions[lIndex] as TCustomAction);
+    end;
+  end;
+  Exit(nil); // if no corresponding action found, exit with nil
 end;
 
 function TUIRibbon.GetBackgroundColor: TColor;
@@ -413,12 +684,27 @@ begin
   end;
 end;
 
+function TUIRibbon.GetCommand(pAction: TCustomAction): TUICommand;
+var
+  lElement: TRibbonMarkupElement;
+begin
+  if (not Self.Visible) then
+    exit(nil);
+  for lElement in Self.RibbonMapper do begin
+    if (lElement.Name = pAction.Name) then begin
+      Self.TryGetCommand(lElement.ID, Result);
+      Exit(Result);
+    end;
+  end;
+  Exit(nil);
+end;
+
 function TUIRibbon.TryGetCommand(const CommandId: Cardinal; out Command: TUICommand): boolean;
 begin
   Result := FCommands.TryGetValue(CommandId, Command);
 end;
 
-function TUIRibbon.GetCommand(const CommandId: Cardinal): TUICommand;
+function TUIRibbon.Get_Command(const CommandId: Cardinal): TUICommand;
 begin
   if (not TryGetCommand(CommandId, Result)) then
     raise EInvalidOperation.CreateFmt('Command %d does not exist', [CommandId]);
@@ -505,6 +791,16 @@ begin
   Result := False;
 end;
 
+function TUIRibbon.HandleShortCut(const pMessage: TWMKey): Boolean;
+var
+  lShiftState: TShiftState;
+  lShortCut: TShortCut;
+begin
+  lShiftState := KeyDataToShiftState(pMessage.KeyData);
+  lShortCut := Menus.ShortCut(pMessage.CharCode, lShiftState);
+  Result := (lShortCut <> scNone) and Self.HandleShortCut(lShortCut);
+end;
+
 procedure TUIRibbon.HideAllContextTabs(pExceptCommandId: Cardinal);
 var
   lCommand: TUICommand;
@@ -560,24 +856,6 @@ begin
   end;
 end;
 
-procedure TUIRibbon.Load();
-var
-  Inst: THandle;
-begin
-  if (Available) and (inherited Visible) and not (FLoaded) then
-  begin
-    if (FResourceInstance = 0) then
-      Inst := HInstance
-    else
-      Inst := FResourceInstance;
-    FFramework.LoadUI(Inst, PChar(FResourceName + '_RIBBON'));
-    FLoaded := True;
-    if Assigned(FOnLoaded) then
-      FOnLoaded(Self);
-    LoadRibbonSettings();
-  end;
-end;
-
 function TUIRibbon.GetRibbonSettingsFilePath(): string;
 const
   cRibbonSettingsDefaultFileName = 'RibbonOptions.xml';
@@ -597,6 +875,11 @@ begin
   Exit(fRibbonSettingsFilePath);
 end;
 
+function TUIRibbon.GetSelectedRecentItem: TUIRecentItem;
+begin
+  Result := (fRecentItems.ActionLink as TUICommandRecentItemsActionLink).Selected;
+end;
+
 function TUIRibbon.LoadSettings(const Filename: String): Boolean;
 var
   Stream: TFileStream;
@@ -609,12 +892,47 @@ begin
   end;
 end;
 
-procedure TUIRibbon.Load(const ResourceName: String;
-  const ResourceInstance: THandle);
+procedure TUIRibbon.Load();
+resourcestring
+  sErrorLoadingRibbonRessource = 'An error occurred while trying to load the Ribbon resource "%s": %s';
+var
+  Inst: THandle;
+  lForm: TCustomForm;
 begin
-  FResourceName := ResourceName;
-  FResourceInstance := ResourceInstance;
-  Load();
+  if (Available) and (inherited Visible) and not (FLoaded) then
+  begin
+    if (FResourceInstance = 0) then
+      Inst := HInstance
+    else
+      Inst := FResourceInstance;
+    try
+      FFramework.LoadUI(Inst, PChar(FResourceName + '_RIBBON'));
+      FLoaded := True;
+      if Assigned(FOnLoaded) then
+        FOnLoaded(Self);
+      LoadRibbonSettings();
+    except
+      on E: EOleException do begin
+        E.Message := Format(sErrorLoadingRibbonRessource, [Self.ResourceName, e.Message]);
+        raise e;
+      end;
+    end;//try..except
+
+    lForm := GetParentForm(Self);
+    // Set the background color for the form if not yet defined. Use the same
+    // color as the ribbon bar, just a bit more brightened, if themes are enabled.
+    if (lForm.Color = clBtnFace) or (lForm.Color = clWindow) then begin
+      if TOSVersion.Check(6, 2) then
+        // For Windows 8 and later, we simply set a nearly white background. This is
+        // because some changes to the ribbon color attributes have been introduced
+        // with Windows 8, due to that we get bogus color values when querying the
+        // BackgroundColor property. See the following thread:
+        // http://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/b38da1e9-34a0-440a-bdf0-bb293940dd0c/win8-ribbon-colors
+        lForm.Color := RGB(254,254,254)
+      else
+        lForm.Color := GraphUtil.GetHighLightColor(Self.BackgroundColor);//  TColorHelper.IncreaseRgbValues(FRibbon.BackgroundColor, 17, 12, 10)
+    end;//if clBtnFace
+  end;
 end;
 
 function TUIRibbon.LoadRibbonSettings(): boolean;
@@ -646,6 +964,25 @@ begin
   end;
 end;
 
+procedure TUIRibbon.LocalizeRibbonElement(const pCommand: TUICommand; const pMarkupItem: TRibbonMarkupElement);
+begin
+  // Caption
+  if (pMarkupItem.LabelTitleResourceID <> -1) then
+    pCommand.Caption := DoLoadResourceString(pCommand, pMarkupItem.LabelTitleResourceID);
+  // Description
+  if (pMarkupItem.LabelDescriptionResourceID <> -1) and (pCommand.CommandType = TUICommandType.ctAction) then
+    (pCommand as TUICommandAction).LabelDescription := DoLoadResourceString(pCommand, pMarkupItem.LabelDescriptionResourceID);
+  // ToolTip title
+  if (pMarkupItem.TooltipTitleResourceID <> -1) then
+    pCommand.TooltipTitle := DoLoadResourceString(pCommand, pMarkupItem.TooltipTitleResourceID);
+  // ToolTip description
+  if (pMarkupItem.TooltipDescriptionResourceID <> -1) then
+    pCommand.TooltipDescription := DoLoadResourceString(pCommand, pMarkupItem.TooltipDescriptionResourceID);
+
+  if (pCommand.CommandType = TUICommandType.ctAnchor) and (not pCommand.Caption.IsEmpty()) then
+    pCommand.Keytip := Trim(pCommand.Caption)[1];
+end;
+
 procedure TUIRibbon.InvalidateUICommand(const Command: TUICommand;
   const Aspects: TUICommandInvalidations);
 var
@@ -675,8 +1012,7 @@ begin
     if (not FCommands.TryGetValue(CommandId, Command)) then
     begin
       Command := CommandClass.Create(Self, CommandId);
-      if Assigned(FOnCommandCreate) then
-        FOnCommandCreate(Self, Command);
+      DoCommandCreated(Command);
     end;
     CommandHandler := Command;
     TUICommandAccess(Command).Alive := True;
@@ -763,7 +1099,7 @@ end;
 procedure TUIRibbon.SaveRibbonSettings;
 begin
   // If Ribbons are not available, do not continue.
-  if not Self.Visible then
+  if not fLoaded then
     exit;
   // Save ribbon user settings
   try
@@ -784,7 +1120,7 @@ var
   ComStream: IStream;
 begin
   Result := Assigned(FRibbon);
-  if (Result) then
+  if (Result) and fLoaded then
   begin
     ComStream := TStreamAdapter.Create(Stream, soReference);
     Result := Succeeded(FRibbon.SaveSettingsToStream(ComStream));
@@ -795,11 +1131,30 @@ procedure TUIRibbon.SetApplicationModes(const Modes: Cardinal);
 begin
   if (FAvailable) then
   begin
+    Load();
     if (Modes = 0) then
       FFramework.SetModes(1)
     else
       FFramework.SetModes(Modes);
   end;
+end;
+
+procedure TUIRibbon.Set_ApplicationModes(const pAppModes: TRibbonApplicationModes);
+var
+  lIndex: integer;
+  lElement: TRibbonApplicationMode;
+  lArray: array of Integer;
+begin
+  if (not Self.Visible) then
+    exit;
+  lIndex := 0;
+  for lElement in pAppModes do begin
+    SetLength(lArray, lIndex+1);
+    lArray[lIndex] := lElement;
+    Inc(lIndex);
+  end;
+  Self.SetApplicationModes(lArray);
+  fApplicationModes := pAppModes;
 end;
 
 procedure TUIRibbon.SetBackgroundColor(const Value: TColor);
@@ -882,6 +1237,27 @@ begin
   end;
 end;
 
+procedure TUIRibbon.SetRecentItems(pAction: TAction; pPaths: TStrings);
+var
+  lItem: TUIRecentItem;
+  lPath: string;
+begin
+  if (not Self.Visible) then
+    exit;
+
+  if not Assigned(fRecentItems) then begin
+    fRecentItems := Self.GetCommand(pAction) as TUICommandRecentItems;
+  end;
+
+  fRecentItems.Items.Clear();
+
+  for lPath in pPaths do begin
+    lItem := TUIRecentItem.Create;
+    lItem.LabelText := lPath;
+    fRecentItems.Items.Add(lItem);
+  end;
+end;
+
 procedure TUIRibbon.SetTextColor(const Value: TColor);
 begin
   SetTextHsbColor(ColorToHsb(Value));
@@ -897,8 +1273,10 @@ var
   PropertyStore: IPropertyStore;
   PropValue: TPropVariant;
 begin
+  if Value then
+    Self.Load();
   inherited Visible := Value;
-  if Assigned(FRibbon) and Supports(FRibbon, IPropertyStore, PropertyStore) then
+  if Assigned(FRibbon) and Supports(FRibbon, IPropertyStore, PropertyStore) and FLoaded then
   begin
     UIInitPropertyFromBoolean(UI_PKEY_Viewable, Value, PropValue);
     PropertyStore.SetValue(TPropertyKey(UI_PKEY_Viewable), PropValue);

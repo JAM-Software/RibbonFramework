@@ -214,6 +214,13 @@ type
     constructor Create(const Ribbon: TObject{TUIRibbon}; const CommandId: Cardinal); reintroduce; virtual;
     destructor Destroy; override;
 
+    /// <summary>
+    /// Allows to assign the values of a VCL action to a ribbon command
+    /// </summary>
+    /// <param name="pAction">The action from whcih teh values should be taken.</param>
+    /// <remarks></remarks>
+    procedure Assign(const pAction: TCustomAction); reintroduce;
+
     { The command type for this class. You can inspect this before casting a
       command object to its actual type. For example. if CommandType returns
       ctBoolean, you can safely cast this object to a TUICommandBoolean. }
@@ -1250,9 +1257,8 @@ uses
   SysUtils,
   WinApiEx,
   PngImage,
-  {$IF RTLVersion >= 23}
+  Controls,
   UITypes,
-  {$IFEND}
   UIRibbon,
   UIRibbonActions;
 
@@ -1748,6 +1754,62 @@ end;
 function TUICommand._Release: Integer;
 begin
   Result := -1;
+end;
+
+procedure TUICommand.Assign(const pAction: TCustomAction);
+const
+  cAmpersand = '&';
+begin
+  // Trigger assigned OnUpdate method to determine whether the Ribbon command
+  // shall be enabled or disabled (greyed out).
+  pAction.Update;
+  Self.Enabled := pAction.Enabled and pAction.Visible;
+  // Assign general properties of the TAction to the Ribbon command
+  Self.ActionLink.Action := pAction;
+
+  // Caption of the Ribbon
+  Self.Caption := Trim(pAction.Caption.Replace('...', ''));// Remve trailing dots, they are uncommon in ribbon bars
+  // Tooltip Title (bold string above the actual Tooltip)
+  // Using the value of caption here because common Microsoft products do this as well.
+  Self.TooltipTitle := pAction.Caption;
+  // For some reasons, the Windows Ribbon Framework makes the ToolTipTitle
+  // invisible, if it equals the Commands Caption property. To aovid this, we
+  // assign an additional space to the end of the string here.
+  Self.TooltipTitle := Self.TooltipTitle + ' ';
+
+  // If corresponding Action has a shortcut, we append it in text form to the TooltipTitle.
+  if pAction.ShortCut <> 0 then
+  begin
+    Self.ShortCut := pAction.ShortCut;
+    Self.TooltipTitle := Format('%s (%s)', [pAction.Caption, ShortCutToText(pAction.ShortCut)]);
+  end;
+  // If action caption contains an ampersand (&), use the char following that
+  // ampersand as Keytip for the ribbon element so that ALT+Char can be used the
+  // same way as on regular VCL controls.
+  if pAction.Caption.Contains(cAmpersand) then
+  begin
+    Self.Keytip := UpperCase(pAction.Caption[pAction.Caption.IndexOf(cAmpersand) + 2]);
+  end;
+  // Use the long hint of the action as TooltipDescription. If no separate
+  // strings for Long and Short hint are provided, the regular string is used.
+  Self.TooltipDescription := GetLongHint(pAction.Hint);
+  // Some extra handling for the regular ribbon buttons (ctAction).
+  if Self.CommandType = TUICommandType.ctAction then
+  begin
+    // Regular ribbon buttons may also have a "Description" (this is not the
+    // tooltip that any ribbon element has), which is displayed right beneath
+    // the caption of large buttons in sub menus such as the application menu.
+    // Use the short hint of the action as TooltipDescription. If no separate
+    // strings for Long and Short hint are provided, the regular string is used.
+    (Self as TUICommandAction).LabelDescription := GetShortHint(pAction.Hint);
+  end;
+  // Some extra handling for Ribbon toggle buttons (ctBoolean)
+  if Self.CommandType = TUICommandType.ctBoolean then
+  begin
+    // Toggle buttons have a "Checked" property, set it to the same state as
+    // its corresponding TAction element has.
+    (Self as TUICommandBoolean).Checked := pAction.Checked;
+  end;
 end;
 
 procedure TUICommand.CachePropertyValue(const Key: TUIPropertyKey;

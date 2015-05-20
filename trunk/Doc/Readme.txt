@@ -15,3 +15,5 @@ Version history:
             Patrick Kolla-ten Venne. Many thanks for this! 
 12/17/2012: Version 1.2: Added Delphi XE3 compatibility (thanks to Cherryl
             Martin for pointing this out).
+01/14/2015: The project was adopted by JAM Software which continues maintaining
+            this project. A V2.0 is expected in summer 2015.            

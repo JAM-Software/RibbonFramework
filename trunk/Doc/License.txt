@@ -1,8 +1,7 @@
 Windows Ribbon Framework for Delphi.
-Email: erik@bilsen.com
-Website: www.bilsen.com/windowsribbon
+Website: https://code.google.com/p/delphi-ribbon-framework/
 
-Copyright (C) 2014 by Erik van Bilsen.
+Copyright (C) 2015 by Erik van Bilsen, Joachim Marder
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -869,7 +869,7 @@ begin
     // Portable editions have their settings stored beside the executable.
     if not FileExists(fRibbonSettingsFilePath) then begin
       // If no settings file found beside the executable, we use appdata path, e.g.
-      // "C:\Users\foo\AppData\Roaming\JAM Software\My Application"
+      // "C:\Users\foo\AppData\Roaming\My Application"
       fRibbonSettingsFilePath := IncludeTrailingPathDelimiter(GetHomePath) + Application.Title + PathDelim + lRibbonFilename;
     end;//if
   end;//if
@@ -1105,7 +1105,8 @@ begin
     exit;
   // Save ribbon user settings
   try
-    Self.SaveSettings(Self.RibbonSettingsFilePath);
+    ForceDirectories(ExtractfilePath(RibbonSettingsFilePath));
+    Self.SaveSettings(RibbonSettingsFilePath);
   except
     on E: EFileStreamError do
     begin

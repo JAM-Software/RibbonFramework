@@ -1595,6 +1595,7 @@ begin
 end;
 
 type
+
   { This notifier is used for delayed notification of TUICommand's of specific
     events. The notification will occur in the next message pump.
 
@@ -1622,14 +1623,17 @@ type
   TNotifierFlag = 0..31;
 
   TNotifier = class
-  {$REGION 'Internal Declarations'}
+  strict private
+    // Type for storing the TUICommands
+    // We use Pointer here as generic type, because for those the hash value is being calculated without using the object instance.
+    // Since the messages are processed delayed, it may happen that the object instance has already been destroyed.
+    type TClients = TDictionary<Pointer, Cardinal>;
   strict private
     FNotificationWindow: HWND;
-    FClients: TDictionary<TUICommand, Cardinal>;
+    FClients: TClients;
   strict private
     procedure WndProc(var Msg: TMessage);
     procedure Notify(const Command: TUICommand; const Flag: TNotifierFlag);
-  {$ENDREGION 'Internal Declarations'}
   public
     constructor Create;
     destructor Destroy; override;
@@ -1656,7 +1660,7 @@ constructor TNotifier.Create;
 begin
   inherited;
   FNotificationWindow := AllocateHWnd(WndProc);
-  FClients := TDictionary<TUICommand, Cardinal>.Create;
+  FClients := TClients.Create();
 end;
 
 destructor TNotifier.Destroy;
@@ -2027,7 +2031,7 @@ var
   Prop: TPair<TUIPropertyKey, TValue>;
   Dec: TDecimal;
 begin
-  if (Flag = NOTIFY_CACHED_PROPERTIES) then
+  if (Flag = NOTIFY_CACHED_PROPERTIES) and Assigned(FCachedProperties) then
   begin
     for Prop in FCachedProperties do
     begin

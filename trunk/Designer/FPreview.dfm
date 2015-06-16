@@ -23,10 +23,6 @@ object FormPreview: TFormPreview
     TabOrder = 0
     object TabSheetAppModes: TTabSheet
       Caption = 'Application Modes'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object LabelAppModes: TLabel
         Left = 0
         Top = 0
@@ -55,10 +51,6 @@ object FormPreview: TFormPreview
     object TabSheetContextTabs: TTabSheet
       Caption = 'Contextual Tabs'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object LabelContextTabs: TLabel
         Left = 0
         Top = 0
@@ -87,10 +79,6 @@ object FormPreview: TFormPreview
     object TabSheetContextPopups: TTabSheet
       Caption = 'Context Popups'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object LabelContextPopups: TLabel
         Left = 0
         Top = 0
@@ -119,10 +107,6 @@ object FormPreview: TFormPreview
     object TabSheetColorize: TTabSheet
       Caption = 'Colorize'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object GroupBoxSamples: TGroupBox
         Left = 3
         Top = 3

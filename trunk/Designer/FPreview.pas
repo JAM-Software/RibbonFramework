@@ -134,23 +134,23 @@ const
 procedure TFormPreview.CheckListBoxAppModesClickCheck(Sender: TObject);
 var
   I, J: Integer;
-  AppModes: Cardinal;
+  AppModes: TRibbonApplicationModes;
 begin
-  AppModes := 0;
+  AppModes := [];
   for I := 0 to CheckListBoxAppModes.Count - 1 do
     if (CheckListBoxAppModes.Checked[I]) then
     begin
       J := Integer(CheckListBoxAppModes.Items.Objects[I]);
-      AppModes := AppModes or (1 shl J);
+      Include(AppModes, J);
     end;
 
-  if (AppModes = 0) then
+  if (AppModes = []) then
   begin
-    AppModes := 1;
+    Include(AppModes, 1);
     CheckListBoxAppModes.Checked[0] := True;
   end;
 
-  Ribbon.SetApplicationModes(AppModes);
+  Ribbon.ApplicationModes := AppModes;
 end;
 
 procedure TFormPreview.CheckListBoxContextTabsClickCheck(Sender: TObject);

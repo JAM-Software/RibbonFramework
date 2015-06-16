@@ -305,8 +305,8 @@ begin
     Self.Selected.Description := (lItem as TUIRecentItem).Description;
     Self.Selected.Pinned := (lItem as TUIRecentItem).Pinned;
 
-  if Assigned(Action) then
-    Action.Execute;
+    if Assigned(Action) then
+      Action.Execute;
   finally
     FreeAndNil(fSelected);
   end;

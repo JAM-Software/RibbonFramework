@@ -26,6 +26,7 @@ type
     property Client: TUICommand read FClient;
   public
     constructor Create(const AClient: TUICommand); reintroduce;
+    function Update: Boolean; override;
   end;
 
   TUICommandEmptyActionLink = class(TUICommandActionLink)
@@ -155,6 +156,14 @@ begin
   // The Windows ribbon framework does not off to make a button invisible at runtime, so we at least disable the button
   if not Value then
     FClient.Enabled := False;
+end;
+
+function TUICommandActionLink.Update: Boolean;
+begin
+  if Assigned(Self.Action) then
+    Result := inherited Update()
+  else
+    Result := False;
 end;
 
 procedure TUICommandActionLink.SetHint(const Value: String);

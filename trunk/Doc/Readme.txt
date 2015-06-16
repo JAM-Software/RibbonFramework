@@ -2,7 +2,12 @@ Please see http://www.bilsen.com/windowsribbon for detailed information
 about this library.
 
 Version history:
-5/27/2011:  Version 1.0: Initial release by Erik van Bilsen.
+XX/07/2105: TUIRibbon is now a control that can be placed on a VCL form.
+            TUIRibbonForm is deprecated and no longer needed. 
+01/14/2015: The project was adopted by JAM Software which continues maintaining
+            this project. A V2.0 is expected in summer 2015.            
+12/17/2012: Version 1.2: Added Delphi XE3 compatibility (thanks to Cherryl
+            Martin for pointing this out).
 7/30/2011:  Version 1.1: Added support for linking UI Commands to Delphi
             actions. See the "Text Pad with Action List" sample application
             and the web site for information on how to do this.
@@ -13,7 +18,5 @@ Version history:
             enable a more traditional user interface.
             These changes were inspired by contributions from
             Patrick Kolla-ten Venne. Many thanks for this! 
-12/17/2012: Version 1.2: Added Delphi XE3 compatibility (thanks to Cherryl
-            Martin for pointing this out).
-01/14/2015: The project was adopted by JAM Software which continues maintaining
-            this project. A V2.0 is expected in summer 2015.            
+5/27/2011:  Version 1.0: Initial release by Erik van Bilsen.
+            

@@ -4,15 +4,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, UIRibbonForm;
+  Dialogs, UIRibbon;
 
 type
-  TFormMain = class(TUIRibbonForm)
+  TFormMain = class(TForm)
+    Ribbon: TUIRibbon;
   private
     { Private declarations }
   public
-    { Public declarations }
-    class function RibbonResourceName: String; override;
   end;
 
 var
@@ -23,10 +22,5 @@ implementation
 {$R *.dfm}
 
 { TFormMain }
-
-class function TFormMain.RibbonResourceName: String;
-begin
-  Result := 'SIMPLERIBBON';
-end;
 
 end.

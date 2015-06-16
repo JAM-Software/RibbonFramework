@@ -10,7 +10,8 @@ uses
   UIRibbonUtils in '..\..\..\Lib\UIRibbonUtils.pas',
   UIRibbonApi in '..\..\..\Lib\UIRibbonApi.pas',
   UIRibbonCommands in '..\..\..\Lib\UIRibbonCommands.pas',
-  WinApiEx in '..\..\..\Lib\WinApiEx.pas';
+  WinApiEx in '..\..\..\Lib\WinApiEx.pas',
+  UIRibbonActions in '..\..\..\Lib\UIRibbonActions.pas';
 
 {$R *.res}
 

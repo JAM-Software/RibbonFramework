@@ -98,7 +98,7 @@ type
     FFramework: IUIFramework;
     FRibbon: IUIRibbon;
     FResourceName: String;
-    FResourceInstance: Integer;
+    FResourceInstance: THandle;
     FCommands: TObjectDictionary<Cardinal, TUICommand>;
     FAvailable: Boolean;
     FOnCommandCreate: TUIRibbomCommandEvent;
@@ -333,7 +333,7 @@ type
     /// </summary>
     /// <param name="pAction"></param>
     /// <returns>TUICommand</returns>
-    function GetCommand(pAction: TCustomAction): TUICommand; overload;
+    function GetCommand(pAction: TCustomAction): TUICommand;
 
     /// <summary>
     ///  Sets the "Recent items" list in the application menu.
@@ -412,7 +412,7 @@ type
     { The name of the Ribbon resource as it is stored in the resource file. }
     property ResourceName: String read FResourceName write FResourceName;
     { The module instance from which to load the Ribbon resource. }
-    property ResourceInstance: Integer read FResourceInstance write FResourceInstance;
+    property ResourceInstance: THandle read FResourceInstance write FResourceInstance stored False;
 
     /// <summary>
     ///  Filename of the XML settings file that is used to store ribbon specific
@@ -492,6 +492,7 @@ begin
       pItem := lElement;
       Exit(true);
     end;
+  pItem := TRibbonMarkupElement.Create('', 0);
   Exit(false);
 end;
 
@@ -949,7 +950,7 @@ begin
     exit(false);
   // Otherwise, try to load the file.
   Result := Self.LoadSettings(lSettingsFileFullPath);
-  Assert(Result, 'Loading ribbon settings failed with unknown error.');
+  Assert(Result, 'Loading ribbon settings failed with unknown error. File: ' + lSettingsFileFullPath);
 end;
 
 function TUIRibbon.LoadSettings(const Stream: TStream): Boolean;
@@ -1014,6 +1015,7 @@ begin
       Command := CommandClass.Create(Self, CommandId);
       DoCommandCreated(Command);
     end;
+
     CommandHandler := Command;
     TUICommandAccess(Command).Alive := True;
     Result := S_OK;

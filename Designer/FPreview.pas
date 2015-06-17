@@ -86,7 +86,6 @@ type
     procedure CommandCreated(const Sender: TUIRibbon; const Command: TUICommand);
   private
     { Private declarations }
-    FInstance: THandle;
     FDocument: TRibbonDocument;
     FXmlDoc: TXmlDocument;
     FAllApplicationModes: Cardinal;
@@ -174,7 +173,7 @@ constructor TFormPreview.Create(const Instance: THandle;
   const Document: TRibbonDocument);
 begin
   inherited Create(nil);
-  FInstance := Instance;
+  Ribbon.ResourceInstance := Instance;
   FDocument := Document;
   FCommandMap := TDictionary<String, Cardinal>.Create;
   FGalleryCommand := TUICommandAnchor.Create(Ribbon, 50001);
@@ -192,7 +191,7 @@ end;
 
 destructor TFormPreview.Destroy;
 begin
-  FreeLibrary(FInstance);
+  FreeLibrary(Ribbon.ResourceInstance);
   FXmlDoc.Free;
   FCommandMap.Free;
   inherited;

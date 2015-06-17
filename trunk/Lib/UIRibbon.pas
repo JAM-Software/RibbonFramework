@@ -49,7 +49,12 @@ type
   end;
 
   TRibbonMarkupElementList = class(TList<TRibbonMarkupElement>)
+  private
+    fResourceName: string;
+  public
     function TryGetItem(pID: integer; out pItem: TRibbonMarkupElement): boolean;
+    constructor Create(pResourceName: string);
+    property ResourceName: string read fResourceName write fResourceName;
   end;
 
 
@@ -481,6 +486,12 @@ begin
 end;
 
 { TRibbonMarkupElementList }
+
+constructor TRibbonMarkupElementList.Create(pResourceName: string);
+begin
+  inherited Create();
+  fResourceName := pResourceName;
+end;
 
 function TRibbonMarkupElementList.TryGetItem(pID: integer; out pItem: TRibbonMarkupElement): boolean;
 var

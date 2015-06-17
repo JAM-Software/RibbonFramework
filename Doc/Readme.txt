@@ -2,8 +2,11 @@ Please see http://www.bilsen.com/windowsribbon for detailed information
 about this library.
 
 Version history:
-XX/07/2105: TUIRibbon is now a control that can be placed on a VCL form.
+06/18/2105: TUIRibbon is now a control that can be placed on a VCL form.
             TUIRibbonForm is deprecated and no longer needed. 
+			Automatic mapping between VCL actions done if a TActionManager is 
+			assigned to the TUIRibbon control and the name of the ribbon command 
+			matches the name of the VCL action.
 01/14/2015: The project was adopted by JAM Software which continues maintaining
             this project. A V2.0 is expected in summer 2015.            
 12/17/2012: Version 1.2: Added Delphi XE3 compatibility (thanks to Cherryl

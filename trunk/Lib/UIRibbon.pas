@@ -50,7 +50,7 @@ type
   TRibbonMarkupElementList = class(TList<TRibbonMarkupElement>)
   strict private
     fResourceName: string;
-    class var fContainer: TList<TRibbonMarkupElementList>;
+    class var fContainer: TObjectList<TRibbonMarkupElementList>;
     class constructor Create;
     class destructor Destroy;
   public
@@ -224,6 +224,18 @@ type
     ///  Localize the given Ribbon command using the resource identifiers of the given markup item.
     /// </summary>
     procedure LocalizeRibbonElement(const pCommand: TUICommand; const pMarkupItem: TRibbonMarkupElement);
+
+    /// <summary>
+    ///  Gets or sets the mapping dictionary, which is automatically created by
+    ///  the "Ribbon Designer" of the "Windows Ribbon Framework".
+    /// </summary>
+    /// <remarks>
+    ///  The mapping dictionary is contained in the pascal file, created by the
+    ///  the "Ribbon Designer" of the "Windows Ribbon Framework". It contains
+    ///  the required mapping between Ribbon command identifier and the
+    ///  corresponding Action of the assigned ActionManager.
+    /// </remarks>
+    property RibbonMapper: TRibbonMarkupElementList read fRibbonMapper write fRibbonMapper;
   {$ENDREGION 'Internal Declarations'}
   public
 
@@ -406,18 +418,6 @@ type
     /// <seealso>TRibbonApplicationModes</seealso>
     property ApplicationModes: TRibbonApplicationModes read fApplicationModes write Set_ApplicationModes;
 
-    /// <summary>
-    ///  Gets or sets the mapping dictionary, which is automatically created by
-    ///  the "Ribbon Designer" of the "Windows Ribbon Framework".
-    /// </summary>
-    /// <remarks>
-    ///  The mapping dictionary is contained in the pascal file, created by the
-    ///  the "Ribbon Designer" of the "Windows Ribbon Framework". It contains
-    ///  the required mapping between Ribbon command identifier and the
-    ///  corresponding Action of the assigned ActionManager.
-    /// </remarks>
-    property RibbonMapper: TRibbonMarkupElementList read fRibbonMapper write fRibbonMapper;
-
   published
 
     { The name of the Ribbon resource as it is stored in the resource file. }
@@ -498,7 +498,7 @@ begin
   inherited Create();
   fResourceName := pResourceName;
   if not Assigned(fContainer) then
-    fContainer := TList<TRibbonMarkupElementList>.Create();
+    fContainer := TObjectList<TRibbonMarkupElementList>.Create(True);
   fContainer.Add(Self);
 end;
 
@@ -617,7 +617,6 @@ destructor TUIRibbon.Destroy;
 begin
   SaveRibbonSettings(); // Save quick toolbar, etc.
   FFramework := nil;
-  FreeAndNil(fRibbonMapper);
   FreeAndNil(FCommands);
   inherited;
 end;
@@ -943,6 +942,8 @@ var
 begin
   if (Available) and (inherited Visible) and not (FLoaded) then
   begin
+    // Load mapper for mapping between commands and VCL actions
+    fRibbonMapper := TRibbonMarkupElementList.LookupListByResourceName(FResourceName);
     if (FResourceInstance = 0) then
       Inst := HInstance
     else

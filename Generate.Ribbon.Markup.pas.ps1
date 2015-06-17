@@ -1,70 +1,82 @@
-﻿# This PowerShell script converts an XML of the Windows Ribbon Framework 
-# into a binary RES file that needs to be linked into the final EXE file.
-# Authors: Daniel Lemke, Sascha Schaefer at JAM Software, Germany
-
-
-# Stop on errors
+﻿# Stop on errors
 $ErrorActionPreference = "Stop"
 
-$appDir = get-location
-$prefix =  $args[0]
-$workingDir = $args[1]
-$RessourceName = $args[2]
-$UICCDir = $args[3]
+$xmlFilePath = $args[0]
 
+# Determine the current working directory from the given xml file path
+$workingDir = ([System.IO.Path]::GetDirectoryName($xmlFilePath))
+if ([string]::IsNullOrEmpty($workingDir))
+{
+    $workingDir = "."
+}
+$workingDir = $workingDir + ([System.IO.Path]::DirectorySeparatorChar)
 
-function FindUICCExe($pUICCDir)
+# Prepare file paths for the files that we want to create
+$pasFilePath = $workingDir + ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath) + ".pas")
+$bmlFilePath = $workingDir + ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath) + ".bml")
+$rcFilePath = $workingDir + ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath) + ".rc")
+$headerFilePath = $workingDir + ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath) + ".h")
+$resFileName = ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath) + ".res")
+$unitName = ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath))
+
+$RessourceName = $args[1]
+$UICCDir = $args[2]
+
+# Checks if a file exists under a given location. If yes, the path to this file is returned. If not, we lookup several known locations and return those, if the file is found.
+function FindFileInLocation($pLocation, $pFileName)
 {   
     # First check if a valid path was passed via the command line
-    $lUICCmd = $pUICCDir + "\UICC.exe"
-    if (Test-Path $lUICCmd)
+    $lPath = $pLocation + "\" +$pFileName
+    if (Test-Path $lPath)
     {
-        return $lUICCmd
+        return $lPath
     }
+    # Check if the file exists under %PATH%
+    if (Get-Command $pFileName -ErrorAction SilentlyContinue)
+    {
+        return "$pFileName"
+    }    
     # If not, check a few known locations for uicc.exe
-    elseif (Test-Path "${env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Bin\uicc.exe")
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Bin\$pFileName")
     {
-        return "${env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Bin\uicc.exe"
+        return "${env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Bin\$pFileName"
     }
-    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\8.0\bin\x86\uicc.exe")
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\8.0\bin\x86\$pFileName")
     {
-        return "${env:ProgramFiles(x86)}\Windows Kits\8.0\bin\x86\uicc.exe"
+        return "${env:ProgramFiles(x86)}\Windows Kits\8.0\bin\x86\$pFileName"
     }
-    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\8.1\bin\x86\uicc.exe")
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\8.1\bin\$pFileName")
     {
-        return "${env:ProgramFiles(x86)}\Windows Kits\8.1\bin\x86\uicc.exe"
-    }
-    # Check %PATH%
-    elseif (Test-Path "UICC.exe")
-    {
-        return "UICC.exe"
-    }
+        return "${env:ProgramFiles(x86)}\Windows Kits\8.1\bin\x86\$pFileName"
+    }    
     else
     {
         # Nothing found -> exit
-        write "Cannot find UICC.exe."
+        write "Cannot find $pFileName. Aborting execution."
         exit
     }
 }
 
-$UICCmd = FindUICCExe("$UICCDir")
-write-host "UICC.exe found: Using $UICCmd"
+# Find UICC.exe
+$UICCCmd = FindFileInLocation -pLocation $UICCDir -pFileName "UICC.exe"
+write-host "UICC.exe found: Using $UICCCmd"
 
+# Use the provided xml file to Create the .bml, .h and .rc file
+& $UICCCmd "/W0" "$xmlFilePath" "$bmlFilePath" "/header:$headerFilePath" "/res:$rcFilePath" "/name:$RessourceName"
 
-# Create the .bml, .h and .rc file
-& $UICCmd "/W0" "$workingDir\$prefix.Ribbon.Markup.xml" "$workingDir\$prefix.Ribbon.Markup.bml" "/header:$workingDir\$prefix.Ribbon.Markup.h" "/res:$workingDir\$prefix.Ribbon.Markup.rc" "/name:$RessourceName"
+# Find rc.exe (Use the same locations as UICC.exe)
+$RCCmd = FindFileInLocation -pLocation $UICCDir -pFileName "rc.exe"
+write-host "RC.exe found: Using $RCCmd"
 
 # Create the .RES resource file
-$rcName = $prefix + ".Ribbon.Markup.rc"
-rc "$workingDir\$rcName"
+rc "$rcFilePath"
 
 # Create a new Markup .pas file that will contain the Ribbon command constants.
 
-$markupFileName = "$prefix.Ribbon.Markup.pas"
 [System.Collections.ArrayList]$markupContent = New-Object([System.Collections.ArrayList])
 
 $FileTopPart = @"
-unit $prefix.Ribbon.Markup;
+unit $unitName;
 
 // *****************************************************************************
 // * This is an automatically generated source file for UI Element definition  *
@@ -73,18 +85,19 @@ unit $prefix.Ribbon.Markup;
 
 interface
 
-{`$R '$prefix.Ribbon.Markup.res'}
+{`$R '$resFileName'}
 
 uses
 	Generics.Collections, SysUtils, UIRibbon;
 
 const
 "@
-Set-Content -Path "$workingDir\$markupFileName" -Value $FileTopPart
+
+write-host "Setting content to " + $pasFilePath
+Set-Content -Path "$pasFilePath" -Value $FileTopPart
 
 # Get content of the header file (e.g. TreeSize.Ribbon.Markup.h).
-$headerFileName = "$prefix.Ribbon.Markup.h"
-$data = Get-Content "$workingDir\$headerFileName"
+$data = Get-Content "$headerFilePath"
 
 foreach ($line in $data)
 {
@@ -94,7 +107,7 @@ foreach ($line in $data)
 		$commandId = ([regex]"\b\d{1,5}\b").match($line).groups[0].value
 		$commandName = ([regex]"\b\w+\b").match($line).groups[0].value
 		$appendLine = "  $commandName = $commandId;"
-		Add-Content "$workingDir\$markupFileName" "$appendLine"
+		Add-Content "$pasFilePath" "$appendLine"
         $dummy = $markupContent.Add($appendLine);
 	}
 }
@@ -111,7 +124,7 @@ begin
   Result := TRibbonMarkupElementList.Create();
 "@
 
-Add-Content "$workingDir\$markupFileName" $FileMiddlePart
+Add-Content "$pasFilePath" $FileMiddlePart
     
 
 # Add the mapping by using the previously generated markup content
@@ -133,7 +146,7 @@ foreach ($line in $markupContent)
 		if (($commandName) -and ($commandID))
 		{
 			$appendLine = "  Result.Add(TRibbonMarkupElement.Create('$commandName', $commandId, $LabelTitleResourceID, $LabelDescriptionResourceID, $TooltipTitleResourceID, $TooltipDescriptionResourceID));"
-			Add-Content "$workingDir\$markupFileName" "$appendLine"
+			Add-Content "$pasFilePath" "$appendLine"
 			$LabelTitleResourceID = -1
             $LabelDescriptionResourceID = -1
             $TooltipTitleResourceID = -1
@@ -168,7 +181,7 @@ foreach ($line in $markupContent)
 if (($commandName) -and ($commandID))
 {
 	$appendLine = "  Result.Add(TRibbonMarkupElement.Create('$commandName', $commandId, $LabelTitleResourceID, $TooltipTitleResourceID));"    
-	Add-Content "$workingDir\$markupFileName" "$appendLine"	
+	Add-Content "$pasFilePath" "$appendLine"	
 }
 
 # Add the ending part
@@ -178,5 +191,5 @@ end;
 end.
 "@
 
-Add-Content "$workingDir\$markupFileName" $FileEndPart 
-write-host "Ribbon pascal markup file generation successful: '$markupFileName'"
+Add-Content "$pasFilePath" $FileEndPart 
+write-host "Ribbon pascal markup file generation successful: '$pasFilePath'"

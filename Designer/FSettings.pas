@@ -32,7 +32,6 @@ type
     OpenDialog: TOpenDialog;
     procedure EditPathChange(Sender: TObject);
     procedure EditRibbonCompilerRightButtonClick(Sender: TObject);
-    procedure EditResourceCompilerRightButtonClick(Sender: TObject);
     procedure EditDelphiCompilerRightButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -77,15 +76,6 @@ begin
   UpdateControls;
 end;
 
-procedure TFormSettings.EditResourceCompilerRightButtonClick(Sender: TObject);
-begin
-  OpenDialog.Filter := 'RC.exe|RC.exe';
-  OpenDialog.InitialDir := ExtractFilePath(EditResourceCompiler.Text);
-  OpenDialog.FileName := ExtractFileName(EditResourceCompiler.Text);
-  if (OpenDialog.Execute) then
-    EditResourceCompiler.Text := OpenDialog.FileName;
-end;
-
 procedure TFormSettings.EditRibbonCompilerRightButtonClick(Sender: TObject);
 begin
   OpenDialog.Filter := 'UICC.exe|UICC.exe';
@@ -108,6 +98,7 @@ end;
 
 procedure TFormSettings.UpdateControls;
 begin
+  EditResourceCompiler.Text := IncludeTrailingPathDelimiter(ExtractFilePath(EditRibbonCompiler.Text)) + 'RC.exe';
   ButtonOk.Enabled :=
     TFile.Exists(EditRibbonCompiler.Text) and
     TFile.Exists(EditResourceCompiler.Text) and

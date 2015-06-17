@@ -396,6 +396,8 @@ end;
 procedure TFormMain.FormActivate(Sender: TObject);
 begin
   MemoMessages.SelLength := 0;
+  if ParamStr(1) <> '' then
+    OpenFile(ParamStr(1));
 end;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);

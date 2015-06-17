@@ -63,14 +63,12 @@ object FormSettings: TFormSettings
       Top = 48
       Width = 370
       Height = 21
-      Images = ImageList
+      Enabled = False
       RightButton.HotImageIndex = 1
       RightButton.ImageIndex = 0
       RightButton.PressedImageIndex = 1
       RightButton.Visible = True
       TabOrder = 1
-      OnChange = EditPathChange
-      OnRightButtonClick = EditResourceCompilerRightButtonClick
     end
     object EditDelphiCompiler: TButtonedEdit
       Left = 163
@@ -112,7 +110,7 @@ object FormSettings: TFormSettings
     Left = 120
     Top = 28
     Bitmap = {
-      494C010102000800240010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102000800280010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

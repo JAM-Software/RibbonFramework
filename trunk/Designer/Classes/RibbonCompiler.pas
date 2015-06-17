@@ -63,8 +63,7 @@ uses
 
 function TRibbonCompiler.Compile(const Document: TRibbonDocument): TRibbonCompileResult;
 var
-  DocDir, BmlFilename, RcFilename, HeaderFilename, DprFilename: String;
-  PasFilename: String;
+  DocDir, DprFilename: String;
 begin
   try
     if (Document.Filename = '') or (not TFile.Exists(Document.Filename)) then
@@ -80,22 +79,14 @@ begin
     end;
 
     DoMessage(mkInfo, RS_STARTING_RIBBON_COMPILER);
-    DocDir := ExtractFilePath(Document.Filename);
-    BmlFilename := ChangeFileExt(Document.Filename, '.bml');
-    RcFilename := ChangeFileExt(Document.Filename, '.rc');
-    HeaderFilename := ChangeFileExt(Document.Filename, '.h');
-    if (not Execute(TSettings.Instance.RibbonCompilerPath, DocDir,
-      ['"' + Document.Filename + '"', '"' + BmlFilename + '"',
-       '/res:"' + RcFilename + '"', '/header:"' + HeaderFilename + '"']))
-    then
-      Exit(crRibbonCompilerError);
-
     DoMessage(mkInfo, '');
     DoMessage(mkInfo, RS_STARTING_RESOURCE_COMPILER);
-    if (not Execute(TSettings.Instance.ResourceCompilerPath, DocDir,
-      ['"' + RcFilename + '"']))
+
+    DocDir := ExtractFilePath(Document.Filename);
+
+    if (not Execute('powershell -f D:\Projects\delphi-ribbon-framework\Generate.Ribbon.Markup.pas.ps1', DocDir, [Document.Filename, 'APPLICATION', TSettings.Instance.RibbonCompilerPath]))
     then
-      Exit(crResourceCompilerError);
+      Exit(crRibbonCompilerError);
 
     DoMessage(mkInfo, RS_STARTING_DELPHI_COMPILER);
     DprFilename := ChangeFileExt(Document.Filename, '.dpr');
@@ -104,10 +95,6 @@ begin
       ['"' + DprFilename + '"']))
     then
       Exit(crDelphiCompilerError);
-
-    PasFilename := ChangeFileExt(Document.Filename, '.pas');
-    if (not ConvertHeaderFile(HeaderFilename, PasFilename)) then
-      Exit(crHeaderConversionError);
 
     DoMessage(mkInfo, '');
     FOutputDllPath := ChangeFileExt(DprFilename, '.dll');

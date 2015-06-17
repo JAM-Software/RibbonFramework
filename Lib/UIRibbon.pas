@@ -516,6 +516,8 @@ class function TRibbonMarkupElementList.LookupListByResourceName(const pResource
 var
   lElement: TRibbonMarkupElementList;
 begin
+  if not Assigned(fContainer) then
+    Exit(nil);
   for lElement in fContainer do begin
     if SameText(pResourceName, lElement.ResourceName) then
       Exit(lElement);

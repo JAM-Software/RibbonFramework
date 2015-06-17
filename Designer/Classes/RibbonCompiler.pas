@@ -32,7 +32,6 @@ type
     function Execute(const Application, CurrentDir: String;
       const Parameters: array of String): Boolean;
     procedure CreateDelphiProject(const Filename: String);
-    function ConvertHeaderFile(const HeaderFilename, PasFilename: String): Boolean;
   {$ENDREGION 'Internal Declarations'}
   public
     function Compile(const Document: TRibbonDocument): TRibbonCompileResult;
@@ -122,79 +121,6 @@ procedure TRibbonCompiler.DoMessage(const MsgType: TMessageKind;
 begin
   if Assigned(FOnMessage) then
     FOnMessage(Self, MsgType, Msg);
-end;
-
-function TRibbonCompiler.ConvertHeaderFile(const HeaderFilename,
-  PasFilename: String): Boolean;
-var
-  HeaderFile, PasFile: TextFile;
-  S: String;
-  I: Integer;
-begin
-  Result := False;
-  if (not FileExists(HeaderFilename)) then
-    Exit;
-
-  AssignFile(HeaderFile, HeaderFilename);
-  Reset(HeaderFile);
-  try
-    AssignFile(PasFile, PasFilename);
-    Rewrite(PasFile);
-    try
-      WriteLn(PasFile, 'unit ', ChangeFileExt(ExtractFileName(PasFilename), ''), ';');
-      WriteLn(PasFile, '');
-      WriteLn(PasFile, '// *****************************************************************************');
-      WriteLn(PasFile, '// * This is an automatically generated source file for UI Element definition  *');
-      WriteLn(PasFile, '// * resource symbols and values. Please do not modify manually.               *');
-      WriteLn(PasFile, '// *****************************************************************************');
-      WriteLn(PasFile, '');
-      WriteLn(PasFile, 'interface');
-      WriteLn(PasFile, '');
-      WriteLn(PasFile, 'const');
-      while (not Eof(HeaderFile)) do
-      begin
-        ReadLn(HeaderFile, S);
-        S := Trim(S);
-        if (Copy(S, 1, 8) = '#define ') then
-        begin
-          Delete(S, 1, 8);
-          I := Pos(' ', S);
-          if (I > 0) then
-          begin
-            Insert(' =', S, I);
-            I := Pos('/*', S);
-            if (I > 0) then
-            begin
-              S[I + 1] := '/';
-              Dec(I);
-              while (I > 1) and (S[I] = ' ') do
-                Dec(I);
-              Insert(';', S, I + 1);
-              I := Pos('*/', S);
-              if (I > 0) then
-              begin
-                SetLength(S, I - 1);
-                S := Trim(S);
-              end;
-            end
-            else
-              S := S + ';';
-            WriteLn(PasFile, '  ', S);
-          end;
-        end;
-      end;
-      WriteLn(PasFile, '');
-      WriteLn(PasFile, 'implementation');
-      WriteLn(PasFile, '');
-      WriteLn(PasFile, 'end.');
-    finally
-      CloseFile(PasFile);
-    end;
-  finally
-    CloseFile(HeaderFile);
-  end;
-
-  Result := True;
 end;
 
 procedure TRibbonCompiler.CreateDelphiProject(const Filename: String);

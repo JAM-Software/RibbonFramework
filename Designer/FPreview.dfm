@@ -15,7 +15,7 @@ object FormPreview: TFormPreview
   TextHeight = 13
   object PageControl: TPageControl
     Left = 0
-    Top = 0
+    Top = 117
     Width = 635
     Height = 462
     ActivePage = TabSheetColorize
@@ -26,7 +26,7 @@ object FormPreview: TFormPreview
       object LabelAppModes: TLabel
         Left = 0
         Top = 0
-        Width = 198
+        Width = 627
         Height = 13
         Align = alTop
         Caption = '* There are no application modes defined'
@@ -54,7 +54,7 @@ object FormPreview: TFormPreview
       object LabelContextTabs: TLabel
         Left = 0
         Top = 0
-        Width = 188
+        Width = 627
         Height = 13
         Align = alTop
         Caption = '* There are no contextual tabs defined'
@@ -82,7 +82,7 @@ object FormPreview: TFormPreview
       object LabelContextPopups: TLabel
         Left = 0
         Top = 0
-        Width = 182
+        Width = 627
         Height = 13
         Align = alTop
         Caption = '* There are no context popus defined'
@@ -711,5 +711,13 @@ object FormPreview: TFormPreview
         end
       end
     end
+  end
+  object Ribbon: TUIRibbon
+    Left = 0
+    Top = 0
+    Width = 635
+    Height = 117
+    ResourceName = 'APPLICATION'
+    OnCommandCreate = CommandCreated
   end
 end

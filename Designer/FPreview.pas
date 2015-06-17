@@ -8,7 +8,7 @@ uses
   StdCtrls, CheckLst, RibbonMarkup, BasicXml, Generics.Collections, ExtCtrls;
 
 type
-  TFormPreview = class(TUIRibbonForm)
+  TFormPreview = class(TForm)
     PageControl: TPageControl;
     TabSheetAppModes: TTabSheet;
     TabSheetContextTabs: TTabSheet;
@@ -75,6 +75,7 @@ type
     UpDownTextS: TUpDown;
     EditTextB: TEdit;
     UpDownTextB: TUpDown;
+    Ribbon: TUIRibbon;
     procedure CheckListBoxAppModesClickCheck(Sender: TObject);
     procedure CheckListBoxContextTabsClickCheck(Sender: TObject);
     procedure ListBoxContextPopupsClick(Sender: TObject);
@@ -82,6 +83,7 @@ type
     procedure EditBackgroundColorChange(Sender: TObject);
     procedure EditHighlightColorChange(Sender: TObject);
     procedure EditTextColorChange(Sender: TObject);
+    procedure CommandCreated(const Sender: TUIRibbon; const Command: TUICommand);
   private
     { Private declarations }
     FInstance: THandle;
@@ -98,15 +100,10 @@ type
     procedure InitializeContextualTabs;
     procedure InitializeContextPopups;
     procedure InitializeColorization;
-  strict protected
-    procedure CommandCreated(const Sender: TUIRibbon;
-      const Command: TUICommand); override;
   public
     { Public declarations }
     constructor Create(const Instance: THandle; const Document: TRibbonDocument); reintroduce;
     destructor Destroy; override;
-
-    function RibbonInstance: THandle; override;
   end;
 
 resourcestring
@@ -488,9 +485,5 @@ begin
   end;
 end;
 
-function TFormPreview.RibbonInstance: THandle;
-begin
-  Result := FInstance;
-end;
 
 end.

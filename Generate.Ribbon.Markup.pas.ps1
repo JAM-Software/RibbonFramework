@@ -19,7 +19,7 @@ $headerFilePath = $workingDir + ([System.IO.Path]::GetFileNameWithoutExtension($
 $resFileName = ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath) + ".res")
 $unitName = ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath))
 
-$RessourceName = $args[1]
+$ResourceName = $args[1]
 $UICCDir = $args[2]
 
 # Checks if a file exists under a given location. If yes, the path to this file is returned. If not, we lookup several known locations and return those, if the file is found.
@@ -62,7 +62,7 @@ $UICCCmd = FindFileInLocation -pLocation $UICCDir -pFileName "UICC.exe"
 write-host "UICC.exe found: Using $UICCCmd"
 
 # Use the provided xml file to Create the .bml, .h and .rc file
-& $UICCCmd "/W0" "$xmlFilePath" "$bmlFilePath" "/header:$headerFilePath" "/res:$rcFilePath" "/name:$RessourceName"
+& $UICCCmd "/W0" "$xmlFilePath" "$bmlFilePath" "/header:$headerFilePath" "/res:$rcFilePath" "/name:$ResourceName"
 
 # Find rc.exe (Use the same locations as UICC.exe)
 $RCCmd = FindFileInLocation -pLocation $UICCDir -pFileName "rc.exe"
@@ -121,7 +121,7 @@ implementation
 
 function GetElements(): TRibbonMarkupElementList;
 begin
-  Result := TRibbonMarkupElementList.Create();
+  Result := TRibbonMarkupElementList.Create('$ResourceName');
 "@
 
 Add-Content "$pasFilePath" $FileMiddlePart

@@ -33,6 +33,7 @@ uses
   UIRibbonCommands;
 
 type
+  /// This record stores information about a single ellemt in a ribbon UI
   TRibbonMarkupElement = record
   public
     Name: string;
@@ -41,19 +42,24 @@ type
     LabelDescriptionResourceID: integer;
     TooltipTitleResourceID: integer;
     TooltipDescriptionResourceID: integer;
-    constructor Create(pActionName: string; pActionID: integer;
-      pLabelTitleResourceID: integer = -1;
-      pLabelDescriptionResourceID: integer = -1;
-      pTooltipTitleResourceID: integer = -1;
-      pTooltipDescriptionResourceID: integer = -1);
+    /// Returns an initializes record of this type
+    constructor Create(pActionName: string; pActionID: integer; pLabelTitleResourceID: integer = -1; pLabelDescriptionResourceID: integer = -1; pTooltipTitleResourceID: integer = -1; pTooltipDescriptionResourceID: integer = -1);
   end;
 
+  /// This class stores elements of the type <see cref="TRibbonMarkupElement>
   TRibbonMarkupElementList = class(TList<TRibbonMarkupElement>)
-  private
+  strict private
     fResourceName: string;
+    class var fContainer: TList<TRibbonMarkupElementList>;
+    class constructor Create;
+    class destructor Destroy;
   public
+    class function LookupListByResourceName(const pResourceName: string): TRibbonMarkupElementList;
     function TryGetItem(pID: integer; out pItem: TRibbonMarkupElement): boolean;
+    /// Creates an instance of this class
+    /// <param name="pResourceName">The name of the resource of the ribbon to which this list of ribbon elements belongs</param>
     constructor Create(pResourceName: string);
+    /// The name of the resource of the ribbon to which this list of ribbon elements belongs
     property ResourceName: string read fResourceName write fResourceName;
   end;
 
@@ -491,6 +497,30 @@ constructor TRibbonMarkupElementList.Create(pResourceName: string);
 begin
   inherited Create();
   fResourceName := pResourceName;
+  if not Assigned(fContainer) then
+    fContainer := TList<TRibbonMarkupElementList>.Create();
+  fContainer.Add(Self);
+end;
+
+class constructor TRibbonMarkupElementList.Create;
+begin
+  fContainer := nil;
+end;
+
+class destructor TRibbonMarkupElementList.Destroy;
+begin
+  FreeAndNil(fContainer);
+end;
+
+class function TRibbonMarkupElementList.LookupListByResourceName(const pResourceName: string): TRibbonMarkupElementList;
+var
+  lElement: TRibbonMarkupElementList;
+begin
+  for lElement in fContainer do begin
+    if SameText(pResourceName, lElement.ResourceName) then
+      Exit(lElement);
+  end;
+  Exit(nil); // No match found
 end;
 
 function TRibbonMarkupElementList.TryGetItem(pID: integer; out pItem: TRibbonMarkupElement): boolean;
@@ -926,7 +956,7 @@ begin
     except
       on E: EOleException do begin
         E.Message := Format(sErrorLoadingRibbonRessource, [Self.ResourceName, e.Message]);
-        raise e;
+        raise;
       end;
     end;//try..except
 

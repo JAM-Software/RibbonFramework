@@ -6,7 +6,7 @@ The [Windows Ribbon Framework](http://msdn.microsoft.com/en-us/library/dd371191(
 
 ![Screenshot](https://raw.githubusercontent.com/TurboPack/RibbonFramework/master/Doc/screenshot_ribbon.gif)
 
-This had the advantage that your ribbon will always look and behave exactly as Microsoft intended it. This also makes it easier to take advantage of improvements that Microsoft will make to the Ribbon Framework in the future. A further advantage is that you can use this library in open source projects since it does not depend on commercial third party libraries.
+This has the advantage that your ribbon will always look and behave exactly as Microsoft intended it. This also makes it easier to take advantage of improvements that Microsoft will make to the Ribbon Framework in the future. A further advantage is that you can use this library in open source projects since it does not depend on commercial third party libraries.
 
 There are also some disadvantages though. The most notable one is that applications using the Windows Ribbon Framework will only display a ribbon when running on Windows 7 or later, or on Windows Vista with the Platform Update. If your application needs to support older Windows versions too, then you will also need to provide an additional "traditional" user interface, for example consisting of menus and toolbars.
 

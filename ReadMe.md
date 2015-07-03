@@ -45,4 +45,4 @@ Creating and adding a ribbon for your existing form:
   4. Drag the TUIRibbon control from RAD Studios's tool palette on your form
   5. Assign your TActionManager to the ActionManager property of the TUIRibbon control
 
-Please refer to our [wiki](https://github.com/TurboPack/RibbonFramework/wiki) for details instructions.
+Please refer to our [wiki](https://github.com/TurboPack/RibbonFramework/wiki) for detailed instructions.

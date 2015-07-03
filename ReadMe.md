@@ -23,6 +23,26 @@ This Delphi library is much more than a simple header translation. It has the fo
   * A feature-complete semi-visual Ribbon Designer. This application lets you create the Ribbon XML files without needing to write XML. You can completely design and test the ribbon in this application. It will also compile the Ribbon to a resource file and create Delphi source files with the constants you need to access the ribbon commands.
   * The Ribbon Designer comes with a WordPad template that lets you quickly create a Ribbon that looks virtually identical to the WordPad accessory that comes with Windows 7.
 
+
 ## Download ##
 
 [Download latest version](https://github.com/TurboPack/RibbonFramework/releases/latest)
+
+
+## Getting Started ##
+
+Installing the Windows Ribbon Framework for Delphi:
+  1. Open the project "Package\UIRibbonPackage.dproj"
+  2. Right click on "UIRibbonPackage.bpl" and click "Install"
+  3. Go to "Tools > Options > Environment Options > Delphi Options > Library > Library Path > [...]"
+     Browse to the "Lib" folder of this framework, press "OK", "Add", "OK", "OK"
+
+Creating and adding a ribbon for your existing form:
+  1. Run "Designer\Bin\RibbonDesigner.exe" and create your ribbon
+     Name of the ribbon commands equal to the VCL actions they should trigger.
+  2. Save the ribbon XML file to your project's folder and hit the "Build" button
+  3. Add the resulting .PAS file to the uses of your form
+  4. Drag the TUIRibbon control from RAD Studios's tool palette on your form
+  5. Assign your TActionManager to the ActionManager property of the TUIRibbon control
+
+Please refer to our [wiki](https://github.com/TurboPack/RibbonFramework/wiki) for details instructions.

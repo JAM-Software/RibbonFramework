@@ -28,7 +28,6 @@ uses
   Controls,
   Classes,
   ActnList,
-  ActnMan,
   UIRibbonApi,
   UIRibbonCommands;
 
@@ -129,7 +128,7 @@ type
     /// </remarks>
     fApplicationModes: TRibbonApplicationModes;
     /// member variable for the property ActionManager
-    fActionManager: TActionManager;
+    fActionManager: TCustomActionList;
     /// Handles the recent items in the backstage menu of the ribbon bar
     fRecentItems: TUICommandRecentItems;
 
@@ -442,7 +441,7 @@ type
     ///  your application, e.g. like this:
     ///   Self.RibbonActionManager := MyActionManager;
     /// </remarks>
-    property ActionManager: TActionManager read fActionManager write fActionManager;
+    property ActionManager: TCustomActionList read fActionManager write fActionManager;
 
     { The event that is fired when the Ribbon Framework creates a command. }
     property OnCommandCreate: TUIRibbomCommandEvent read FOnCommandCreate write FOnCommandCreate;
@@ -1086,8 +1085,10 @@ begin
       case Verb of
         { The view was newly created. }
         UIViewVerbCreate:
-          Result := S_OK;
-
+          begin
+            FRibbon := View as IUIRibbon;
+            Result := S_OK;
+          end;
         { The view has been resized. For the Ribbon view, the application should
           call GetHeight to determine the height of the ribbon. }
         UIViewVerbSize:

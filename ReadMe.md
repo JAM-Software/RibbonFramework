@@ -23,3 +23,6 @@ This Delphi library is much more than a simple header translation. It has the fo
   * A feature-complete semi-visual Ribbon Designer. This application lets you create the Ribbon XML files without needing to write XML. You can completely design and test the ribbon in this application. It will also compile the Ribbon to a resource file and create Delphi source files with the constants you need to access the ribbon commands.
   * The Ribbon Designer comes with a WordPad template that lets you quickly create a Ribbon that looks virtually identical to the WordPad accessory that comes with Windows 7.
 
+## Download ##
+
+[Download latest version](https://github.com/TurboPack/RibbonFramework/releases/latest)

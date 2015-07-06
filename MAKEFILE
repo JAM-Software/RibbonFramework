@@ -1,0 +1,23 @@
+EMBARCADERO = $(PROGRAMFILES)\Embarcadero\RAD Studio
+STUDIO = $(PROGRAMFILES)\Embarcadero\Studio
+BDSCOMMONDIRMAIN = %PUBLIC%\Documents\Embarcadero\Studio\
+
+clean: 
+	DEL /S *.EXE
+	
+_XE7: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
+	SET BDS=$(STUDIO)\15.0
+	msbuild "Package\UIRibbonPackage.dproj"
+	$(MAKE) _samples
+
+_XE5: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
+	SET BDS=$(EMBARCADERO)\12.0
+	msbuild "Package\UIRibbonPackage.dproj"
+	$(MAKE) _samples
+
+"Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\Medium Level\01 Simple Ribbon\*.dproj" "Samples\Medium Level\01 Simple Ribbon\*.pas" "Samples\Medium Level\01 Simple Ribbon\*.dpr"
+	msbuild "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.dproj"
+
+_samples: "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe"
+	
+_continuousbuilds: clean _XE5 _XE7 

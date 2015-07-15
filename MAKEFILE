@@ -5,6 +5,11 @@ BDSCOMMONDIRMAIN = %PUBLIC%\Documents\Embarcadero\Studio\
 clean: 
 	DEL /S *.EXE
 	
+_XE8: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
+	SET BDS=$(STUDIO)\16.0
+	msbuild "Package\UIRibbonPackage.dproj"
+	$(MAKE) _samples
+
 _XE7: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
 	SET BDS=$(STUDIO)\15.0
 	msbuild "Package\UIRibbonPackage.dproj"
@@ -16,7 +21,7 @@ _XE5: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
 	$(MAKE) _samples
 
 "Designer\Bin\RibbonDesigner.exe": Designer\*.pas Designer\*.dfm Designer\*.dpr Designer\*.dproj 
-	SET BDS=$(EMBARCADERO)\15.0
+	SET BDS=$(STUDIO)\15.0
 	msbuild "Designer\UIRibbonPackage.dproj"
 
 "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\Medium Level\01 Simple Ribbon\*.dproj" "Samples\Medium Level\01 Simple Ribbon\*.pas" "Samples\Medium Level\01 Simple Ribbon\*.dpr"

@@ -15,9 +15,16 @@ _XE5: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
 	msbuild "Package\UIRibbonPackage.dproj"
 	$(MAKE) _samples
 
+"Designer\Bin\RibbonDesigner.exe": Designer\*.pas Designer\*.dfm Designer\*.dpr Designer\*.dproj 
+	SET BDS=$(EMBARCADERO)\15.0
+	msbuild "Designer\UIRibbonPackage.dproj"
+
 "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\Medium Level\01 Simple Ribbon\*.dproj" "Samples\Medium Level\01 Simple Ribbon\*.pas" "Samples\Medium Level\01 Simple Ribbon\*.dpr"
 	msbuild "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.dproj"
 
-_samples: "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe"
+"Samples\Medium Level\02 Context Popup\ContextPopup.exe": "Samples\Medium Level\02 Context Popup\*.dproj" "Samples\Medium Level\02 Context Popup\*.pas" "Samples\Medium Level\02 Context Popup\*.dpr"
+	msbuild "Samples\Medium Level\02 Context Popup\ContextPopup.dproj"
+
+_samples: "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe" "Samples\Medium Level\02 Context Popup\ContextPopup.exe"
 	
-_continuousbuilds: clean _XE5 _XE7 
+_continuousbuilds: clean _XE5 _XE7 "Designer\Bin\RibbonDesigner.exe"

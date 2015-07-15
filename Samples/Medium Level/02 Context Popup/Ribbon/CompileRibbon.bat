@@ -1,2 +1,2 @@
-UICC ContextPopupUI.xml ContextPopupUI.bml /header:ContextPopupUI.h /res:ContextPopupUI.rc /name:CONTEXTPOPUP
+powershell -f "..\..\..\..\Designer\Bin\Generate.Ribbon.Markup.pas.ps1" ContextPopupUI.xml
 pause

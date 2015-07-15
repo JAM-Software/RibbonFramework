@@ -1,19 +1,16 @@
 program ContextPopup;
 
-{$R 'ContextPopupUI.res' 'Ribbon\ContextPopupUI.rc'}
-
 uses
   Forms,
   FMain in 'FMain.pas' {FormMain},
-  ContextPopupConst in 'Ribbon\ContextPopupConst.pas',
-  UIRibbonApi in '..\..\..\Lib\UIRibbonApi.pas',
+  UIRibbon in '..\..\..\Lib\UIRibbon.pas',
   UIRibbonForm in '..\..\..\Lib\UIRibbonForm.pas',
   UIRibbonUtils in '..\..\..\Lib\UIRibbonUtils.pas',
+  UIRibbonApi in '..\..\..\Lib\UIRibbonApi.pas',
   UIRibbonCommands in '..\..\..\Lib\UIRibbonCommands.pas',
-  UIRibbon in '..\..\..\Lib\UIRibbon.pas',
-  WinApiEx in '..\..\..\Lib\WinApiEx.pas';
-
-{$R *.res}
+  WinApiEx in '..\..\..\Lib\WinApiEx.pas',
+  UIRibbonActions in '..\..\..\Lib\UIRibbonActions.pas',
+  ContextPopupUI in 'Ribbon\ContextPopupUI.pas';
 
 begin
   ReportMemoryLeaksOnShutdown := True;

@@ -14,7 +14,7 @@ type
   strict private
     FSettingsFilename: String;
     FRibbonCompilerPath: String;
-    FResourceCompilerPath: String;
+    _FResourceCompilerPath: String; // No longer needed
     FDelphiCompilerPath: String;
   private
     constructor Create(const Dummy: Integer); overload;
@@ -32,7 +32,6 @@ type
     class property Instance: TSettings read FInstance;
 
     property RibbonCompilerPath: String read FRibbonCompilerPath write FRibbonCompilerPath;
-    property ResourceCompilerPath: String read FResourceCompilerPath write FResourceCompilerPath;
     property DelphiCompilerPath: String read FDelphiCompilerPath write FDelphiCompilerPath;
   end;
 
@@ -87,10 +86,6 @@ begin
         FRibbonCompilerPath := TPath.Combine(SdkPath, 'UICC.exe');
         if (not TFile.Exists(FRibbonCompilerPath)) then
           FRibbonCompilerPath := '';
-
-        FResourceCompilerPath := TPath.Combine(SdkPath, 'RC.exe');
-        if (not TFile.Exists(FResourceCompilerPath)) then
-          FResourceCompilerPath := '';
       end;
     end;
 
@@ -114,13 +109,6 @@ begin
         if (BdsPath <> '') then
         begin
           BdsPath := TPath.Combine(BdsPath, 'bin');
-          if (FResourceCompilerPath = '') then
-          begin
-            FResourceCompilerPath := TPath.Combine(BdsPath, 'RC.exe');
-            if (not TFile.Exists(FResourceCompilerPath)) then
-              FResourceCompilerPath := '';
-          end;
-
           if (FDelphiCompilerPath = '') then
           begin
             FDelphiCompilerPath := TPath.Combine(BdsPath, 'DCC32.exe');
@@ -182,8 +170,6 @@ begin
         begin
           if (Name = SN_RIBBON_COMPILER) and FileExists(Value) then
             FRibbonCompilerPath := Value
-          else if (Name = SN_RESOURCE_COMPILER) and FileExists(Value) then
-            FResourceCompilerPath := Value
           else if (Name = SN_DELPHI_COMPILER) and FileExists(Value) then
             FDelphiCompilerPath := Value;
         end;
@@ -217,7 +203,7 @@ begin
     Writer.Indent := True;
     Writer.WriteStartElement(EN_SETTINGS);
     SaveSetting(SN_RIBBON_COMPILER, FRibbonCompilerPath);
-    SaveSetting(SN_RESOURCE_COMPILER, FResourceCompilerPath);
+    SaveSetting(SN_RESOURCE_COMPILER, _FResourceCompilerPath);
     SaveSetting(SN_DELPHI_COMPILER, FDelphiCompilerPath);
     Writer.WriteEndElement;
     Xml := Writer.AsXml;
@@ -236,8 +222,7 @@ end;
 
 function TSettings.ToolsAvailable: Boolean;
 begin
-  Result := (FRibbonCompilerPath <> '') and (FResourceCompilerPath <> '')
-    and (FDelphiCompilerPath <> '');
+  Result := (FRibbonCompilerPath <> '') and (FDelphiCompilerPath <> '');
 end;
 
 end.

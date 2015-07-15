@@ -30,23 +30,16 @@ object FormSettings: TFormSettings
       Height = 13
       Caption = 'Ribbon Compiler'
     end
-    object Label2: TLabel
-      Left = 12
-      Top = 51
-      Width = 89
-      Height = 13
-      Caption = 'Resource Compiler'
-    end
     object Label3: TLabel
       Left = 12
-      Top = 78
+      Top = 63
       Width = 145
       Height = 13
       Caption = 'Delphi Command Line Compiler'
     end
-    object EditRibbonCompiler: TButtonedEdit
+    object EditDelphiCompiler: TButtonedEdit
       Left = 163
-      Top = 21
+      Top = 60
       Width = 370
       Height = 21
       Images = ImageList
@@ -56,23 +49,11 @@ object FormSettings: TFormSettings
       RightButton.Visible = True
       TabOrder = 0
       OnChange = EditPathChange
-      OnRightButtonClick = EditRibbonCompilerRightButtonClick
+      OnRightButtonClick = EditDelphiCompilerRightButtonClick
     end
-    object EditResourceCompiler: TButtonedEdit
+    object EditRibbonCompiler: TButtonedEdit
       Left = 163
-      Top = 48
-      Width = 370
-      Height = 21
-      Enabled = False
-      RightButton.HotImageIndex = 1
-      RightButton.ImageIndex = 0
-      RightButton.PressedImageIndex = 1
-      RightButton.Visible = True
-      TabOrder = 1
-    end
-    object EditDelphiCompiler: TButtonedEdit
-      Left = 163
-      Top = 75
+      Top = 22
       Width = 370
       Height = 21
       Images = ImageList
@@ -80,9 +61,9 @@ object FormSettings: TFormSettings
       RightButton.ImageIndex = 0
       RightButton.PressedImageIndex = 1
       RightButton.Visible = True
-      TabOrder = 2
+      TabOrder = 1
       OnChange = EditPathChange
-      OnRightButtonClick = EditDelphiCompilerRightButtonClick
+      OnRightButtonClick = EditRibbonCompilerRightButtonClick
     end
   end
   object ButtonOk: TButton

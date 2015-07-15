@@ -21,15 +21,13 @@ type
   TFormSettings = class(TForm)
     GroupBoxPaths: TGroupBox;
     Label1: TLabel;
-    EditRibbonCompiler: TButtonedEdit;
-    Label2: TLabel;
-    EditResourceCompiler: TButtonedEdit;
     EditDelphiCompiler: TButtonedEdit;
     Label3: TLabel;
     ImageList: TImageList;
     ButtonOk: TButton;
     ButtonCancel: TButton;
     OpenDialog: TOpenDialog;
+    EditRibbonCompiler: TButtonedEdit;
     procedure EditPathChange(Sender: TObject);
     procedure EditRibbonCompilerRightButtonClick(Sender: TObject);
     procedure EditDelphiCompilerRightButtonClick(Sender: TObject);
@@ -57,7 +55,6 @@ begin
   inherited Create(nil);
   FSettings := Settings;
   EditRibbonCompiler.Text := FSettings.RibbonCompilerPath;
-  EditResourceCompiler.Text := FSettings.ResourceCompilerPath;
   EditDelphiCompiler.Text := FSettings.DelphiCompilerPath;
   UpdateControls;
 end;
@@ -90,7 +87,6 @@ begin
   if (ModalResult = mrOk) then
   begin
     FSettings.RibbonCompilerPath := EditRibbonCompiler.Text;
-    FSettings.ResourceCompilerPath := EditResourceCompiler.Text;
     FSettings.DelphiCompilerPath := EditDelphiCompiler.Text;
     FSettings.Save;
   end;
@@ -98,10 +94,8 @@ end;
 
 procedure TFormSettings.UpdateControls;
 begin
-  EditResourceCompiler.Text := IncludeTrailingPathDelimiter(ExtractFilePath(EditRibbonCompiler.Text)) + 'RC.exe';
   ButtonOk.Enabled :=
     TFile.Exists(EditRibbonCompiler.Text) and
-    TFile.Exists(EditResourceCompiler.Text) and
     TFile.Exists(EditDelphiCompiler.Text);
 end;
 

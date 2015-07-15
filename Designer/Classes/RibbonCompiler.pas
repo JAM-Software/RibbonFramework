@@ -83,7 +83,7 @@ begin
 
     DocDir := ExtractFilePath(Document.Filename);
 
-    if (not Execute('powershell -f Generate.Ribbon.Markup.pas.ps1', DocDir, [Document.Filename, 'APPLICATION', TSettings.Instance.RibbonCompilerPath]))
+    if (not Execute('powershell -f "' + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'Generate.Ribbon.Markup.pas.ps1"', DocDir, [QuotedStr(Document.Filename), 'APPLICATION', QuotedStr(TSettings.Instance.RibbonCompilerPath)]))
     then
       Exit(crRibbonCompilerError);
 

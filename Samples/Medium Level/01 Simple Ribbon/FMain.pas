@@ -9,9 +9,6 @@ uses
 type
   TFormMain = class(TForm)
     Ribbon: TUIRibbon;
-  private
-    { Private declarations }
-  public
   end;
 
 var
@@ -20,7 +17,5 @@ var
 implementation
 
 {$R *.dfm}
-
-{ TFormMain }
 
 end.

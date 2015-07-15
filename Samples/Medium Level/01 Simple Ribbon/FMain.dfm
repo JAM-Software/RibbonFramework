@@ -18,6 +18,6 @@ object FormMain: TFormMain
     Top = 0
     Width = 635
     Height = 117
-    ResourceName = 'SIMPLERIBBON'
+    ResourceName = 'APPLICATION'
   end
 end

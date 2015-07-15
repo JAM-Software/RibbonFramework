@@ -55,7 +55,6 @@
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <BRCC_CompilerToUse>rc</BRCC_CompilerToUse>
@@ -66,9 +65,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <RcCompile Include="Ribbon\SimpleRibbonUI.rc">
-            <Form>SimpleRibbonUI.res</Form>
-        </RcCompile>
         <DCCReference Include="FMain.pas">
             <Form>FormMain</Form>
         </DCCReference>

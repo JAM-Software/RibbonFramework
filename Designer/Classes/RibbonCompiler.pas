@@ -83,7 +83,7 @@ begin
 
     DocDir := ExtractFilePath(Document.Filename);
 
-    if (not Execute('powershell -f D:\Projects\delphi-ribbon-framework\Generate.Ribbon.Markup.pas.ps1', DocDir, [Document.Filename, 'APPLICATION', TSettings.Instance.RibbonCompilerPath]))
+    if (not Execute('powershell -f Generate.Ribbon.Markup.pas.ps1', DocDir, [Document.Filename, 'APPLICATION', TSettings.Instance.RibbonCompilerPath]))
     then
       Exit(crRibbonCompilerError);
 

@@ -1,7 +1,7 @@
 object FormMain: TFormMain
   Left = 0
   Top = 0
-  Caption = 'Context Popup'
+  Caption = 'Click one button in ribbon, then right click in form'
   ClientHeight = 337
   ClientWidth = 635
   Color = clBtnFace
@@ -14,4 +14,14 @@ object FormMain: TFormMain
   OnContextPopup = FormContextPopup
   PixelsPerInch = 96
   TextHeight = 13
+  object Ribbon: TUIRibbon
+    Left = 0
+    Top = 0
+    Width = 635
+    Height = 117
+    ResourceName = 'APPLICATION'
+    OnLoaded = RibbonLoaded
+    ExplicitLeft = 8
+    ExplicitTop = 128
+  end
 end

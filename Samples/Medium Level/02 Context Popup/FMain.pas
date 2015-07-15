@@ -4,23 +4,20 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, UIRibbonForm, UIRibbonCommands;
+  Dialogs, UIRibbonCommands, UIRibbon, Vcl.ExtCtrls;
 
 type
-  TFormMain = class(TUIRibbonForm)
+  TFormMain = class(TForm)
+    Ribbon: TUIRibbon;
     procedure FormContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
+    procedure RibbonLoaded(Sender: TObject);
   private
     { Private declarations }
     FCurrentContext: Integer;
     FCommandContexts: array [0..3] of TUICommandBoolean;
   private
     procedure ContextToggle(const Args: TUICommandBooleanEventArgs);
-  strict protected
-    procedure RibbonLoaded; override;
-  public
-    { Public declarations }
-    class function RibbonResourceName: String; override;
   end;
 
 var
@@ -31,7 +28,7 @@ implementation
 {$R *.dfm}
 
 uses
-  ContextPopupConst;
+  ContextPopupUI;
 
 { TFormMain }
 
@@ -55,7 +52,7 @@ begin
   Ribbon.ShowContextPopup(FCurrentContext, P);
 end;
 
-procedure TFormMain.RibbonLoaded;
+procedure TFormMain.RibbonLoaded(Sender: TObject);
 const
   CONTEXTS: array [0..3] of Integer = (
     IDC_CMD_CONTEXT1, IDC_CMD_CONTEXT2, IDC_CMD_CONTEXT3, IDC_CMD_CONTEXT4);
@@ -75,11 +72,6 @@ begin
 
   { Check the first button }
   FCommandContexts[0].Checked := True;
-end;
-
-class function TFormMain.RibbonResourceName: String;
-begin
-  Result := 'CONTEXTPOPUP';
 end;
 
 end.

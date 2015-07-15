@@ -56,6 +56,10 @@ function FindFileInLocation($pLocation, $pFileName)
     {
         return "${env:ProgramFiles(x86)}\Windows Kits\8.1\bin\x86\$pFileName"
     }    
+    elseif (Test-Path "$PSScriptRoot\$pFileName")
+    {
+        return "$PSScriptRoot\$pFileName"
+    }    
     else
     {
         # Nothing found -> exit

@@ -22,7 +22,7 @@ _XE5: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
 
 "Designer\Bin\RibbonDesigner.exe": Designer\*.pas Designer\*.dfm Designer\*.dpr Designer\*.dproj 
 	SET BDS=$(STUDIO)\15.0
-	msbuild "Designer\UIRibbonPackage.dproj"
+	msbuild "Designer\RibbonDesigner.dproj"
 
 "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\Medium Level\01 Simple Ribbon\*.dproj" "Samples\Medium Level\01 Simple Ribbon\*.pas" "Samples\Medium Level\01 Simple Ribbon\*.dpr"
 	msbuild "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.dproj"

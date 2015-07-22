@@ -632,36 +632,35 @@ begin
   // When a Ribbon command is created, we check if there is a corresponding
   // TAction element available. If so, we assign the properties of that action
   // (Caption, Hint, etc.) to that ribbon element.
-  if not Assigned(Self.RibbonMapper) or not Self.RibbonMapper.TryGetItem(pCommand.CommandId, lMarkupItem) then // Get the corresponding TAction for the given Ribbon command
-    exit;
-
-  case pCommand.CommandType of
-    TUICommandType.ctAction,
-    TUICommandType.ctDecimal,
-    TUICommandType.ctBoolean,
-    TUICommandType.ctColorAnchor,
-    TUICommandType.ctRecentItems:
-    begin
-      lAction := Self.GetActionForCommand(pCommand);
-      if not Assigned(lAction) then
-        raise Exception.Create(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))
-      else
-        pCommand.Assign(lAction);
+  if Assigned(Self.RibbonMapper) and Self.RibbonMapper.TryGetItem(pCommand.CommandId, lMarkupItem) then begin// Get the corresponding TAction for the given Ribbon command
+    case pCommand.CommandType of
+      TUICommandType.ctAction,
+      TUICommandType.ctDecimal,
+      TUICommandType.ctBoolean,
+      TUICommandType.ctColorAnchor,
+      TUICommandType.ctRecentItems:
+      begin
+        lAction := Self.GetActionForCommand(pCommand);
+        if not Assigned(lAction) then
+          raise Exception.Create(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))
+        else
+          pCommand.Assign(lAction);
+      end;
+    // Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
+    // If not found, at least try to localize it.
+      TUICommandType.ctAnchor: begin
+        lAction := Self.GetActionForCommand(pCommand);
+        if Assigned(lAction) then
+          pCommand.Assign(lAction)
+        else
+          Self.LocalizeRibbonElement(pCommand, lMarkupItem);
+      end
+    else
+      // If none of the types above, at least try to localize that command by
+      // extracting the corresponding resource strings from the resource file.
+      Self.LocalizeRibbonElement(pCommand, lMarkupItem);
     end;
-	// Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
-	// If not found, at least try to localize it.
-    TUICommandType.ctAnchor: begin
-      lAction := Self.GetActionForCommand(pCommand);
-      if Assigned(lAction) then
-        pCommand.Assign(lAction)
-      else
-        Self.LocalizeRibbonElement(pCommand, lMarkupItem);
-    end
-  else
-    // If none of the types above, at least try to localize that command by
-    // extracting the corresponding resource strings from the resource file.
-    Self.LocalizeRibbonElement(pCommand, lMarkupItem);
-  end;
+  end;//if RibbonMapper
   if Assigned(FOnCommandCreate) then
     FOnCommandCreate(Self, pCommand);
 end;

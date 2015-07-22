@@ -12,8 +12,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, GraphUtil, StdCtrls, RichEdit, RichEditEx, UIRibbon,
-  UIRibbonForm, UIRibbonCommands, UIRibbonActions, ActnList, StdActns,
-  System.Actions;
+  UIRibbonCommands, UIRibbonActions, ActnList, StdActns, System.Actions;
 
 type
   TFormMain = class(TForm)

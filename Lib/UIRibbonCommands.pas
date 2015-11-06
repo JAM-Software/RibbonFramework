@@ -3730,7 +3730,7 @@ begin
         Result := UIInitPropertyFromString(Key, Val.AsString, Value);
 
       VT_UI4:
-        Result := UIInitPropertyFromUInt32(Key, Val.AsInteger, Value);
+        Result := UIInitPropertyFromUInt32(Key, cardinal(Val.AsInteger), Value);
 
       VT_UNKNOWN:
         begin

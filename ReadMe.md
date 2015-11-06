@@ -46,3 +46,4 @@ Creating and adding a ribbon for your existing form:
   5. Assign your TActionManager to the ActionManager property of the TUIRibbon control
 
 Please refer to our [wiki](https://github.com/TurboPack/RibbonFramework/wiki) for detailed instructions.
+This framework was originally developed by [Eric Bilsen](http://www.bilsen.com/windowsribbon)

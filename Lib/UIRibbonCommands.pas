@@ -14,7 +14,8 @@ uses
   RichEdit,
   PropSys,
   ActnList,
-  UIRibbonApi;
+  UIRibbonApi,
+  PNGImage;
 
 const
   WM_RIBBONCMD_NOTIFY = WM_USER + 241;
@@ -135,6 +136,9 @@ type
 {$REGION 'Abstract base command'}
   TUIImage = class;
 
+  TUICommandUpdateImageEvent = procedure (Sender: TObject; const PropKey: TUIPropertyKey;
+    out NewValue: TPropVariant; var Handled: boolean) of object;
+
   { Abstract base class for Ribbon Commands. }
   TUICommand = class abstract(TComponent, IUICommandHandler)
   {$REGION 'Internal Declarations'}
@@ -161,6 +165,7 @@ type
       vpTooltipDescription, vpLabelDescription, vpMinValue, vpMaxValue,
       vpIncrement, vpDecimalPlaces, vpRepresentativeString, vpFormatString);
     FActionLink: TActionLink;
+    FOnUpdateImage: TUICommandUpdateImageEvent;
     procedure SetAlive(const Value: Boolean);
   strict private
     function GetEnabled: Boolean;
@@ -301,6 +306,10 @@ type
       together, you would use:
         FCmdPaste.ActionLink.Action := ActionPaste. }
     property ActionLink: TActionLink read GetActionLink;
+
+    { Can be used to dynamically generate an image for a command.}
+    property OnUpdateImage: TUICommandUpdateImageEvent read FOnUpdateImage write
+      FOnUpdateImage;
 
     (************************************************************************
      * A note about command events
@@ -1256,7 +1265,6 @@ uses
   Menus,
   SysUtils,
   WinApiEx,
-  PngImage,
   Controls,
   UITypes,
   UIRibbon,
@@ -1861,7 +1869,15 @@ procedure TUICommand.DoUpdate(const Prop: TUIProperty;
   procedure UpdateImage(var Image: TUIImage; const PropKey: TUIPropertyKey);
   var
     Handle: IUIImage;
+    Handled: Boolean;
   begin
+    if assigned(FOnUpdateImage) then begin
+      Handled := False;
+      FOnUpdateImage(Self, PropKey, NewValue, Handled);
+      if Handled then
+        Exit;
+    end;
+
     if ((Image = nil) or (Image.Handle = nil)) and Assigned(CurrentValue) then
     begin
       UIPropertyToImage(PropKey, CurrentValue^, Handle);

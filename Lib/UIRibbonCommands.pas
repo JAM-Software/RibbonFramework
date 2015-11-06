@@ -3730,7 +3730,7 @@ begin
         Result := UIInitPropertyFromString(Key, Val.AsString, Value);
 
       VT_UI4:
-        Result := UIInitPropertyFromUInt32(Key, Val.AsInteger, Value);
+        Result := UIInitPropertyFromUInt32(Key, cardinal(Val.AsInteger), Value);
 
       VT_UNKNOWN:
         begin
@@ -3940,6 +3940,9 @@ begin
   if ((FEnumIndex + celt) <= FItems.Count) then
   begin
     Inc(FEnumIndex, celt);
+    // Sometimes, `celt` can be -1
+    if FEnumIndex < 0 then
+      FEnumIndex := 0;
     Result := S_OK;
   end
   else

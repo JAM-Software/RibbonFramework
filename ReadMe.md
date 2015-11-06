@@ -47,3 +47,5 @@ Creating and adding a ribbon for your existing form:
 
 Please refer to our [wiki](https://github.com/TurboPack/RibbonFramework/wiki) for detailed instructions.
 This framework was originally developed by [Eric Bilsen](http://www.bilsen.com/windowsribbon)
+
+[License file](https://raw.githubusercontent.com/TurboPack/RibbonFramework/master/Doc/License.txt)

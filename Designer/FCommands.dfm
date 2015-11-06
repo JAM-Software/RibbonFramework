@@ -541,6 +541,15 @@ object FrameCommands: TFrameCommands
         TabOrder = 20
         OnChange = EditKeyTipSymbolChange
       end
+      object BtnGenerateID: TButton
+        Left = 295
+        Top = 200
+        Width = 116
+        Height = 21
+        Caption = 'Generate unused ID'
+        TabOrder = 25
+        OnClick = BtnGenerateIDClick
+      end
     end
     object PanelImages: TPanel
       Left = 0

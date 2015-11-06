@@ -102,6 +102,7 @@ type
     N1: TMenuItem;
     MenuMoveDown: TMenuItem;
     MenuMoveUp: TMenuItem;
+    BtnGenerateID: TButton;
     procedure ListViewCommandsSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure EditNameChange(Sender: TObject);
@@ -133,6 +134,7 @@ type
     procedure EditNameKeyPress(Sender: TObject; var Key: Char);
     procedure ActionMoveUpExecute(Sender: TObject);
     procedure ActionMoveDownExecute(Sender: TObject);
+    procedure BtnGenerateIDClick(Sender: TObject);
   private
     { Private declarations }
     FDocument: TRibbonDocument;
@@ -249,6 +251,18 @@ begin
   FFrameLargeHCImages := TFrameImageList.Create(Self);
   FFrameLargeHCImages.Name := 'FrameLargeHCImages';
   FFrameLargeHCImages.Parent := PanelLargeHCImages;
+end;
+
+procedure TFrameCommands.BtnGenerateIDClick(Sender: TObject);
+var
+  command: TRibbonCommand;
+  highID : integer;
+begin
+  highID := 1;
+  for command in FDocument.Application.Commands do
+    if command.Id > highID then
+      highID := command.Id;
+  EditId.Text := IntToStr(highID + 1);
 end;
 
 procedure TFrameCommands.Deactivate;

@@ -1064,6 +1064,8 @@ type
     { Creates a collection based on an exiting IUICollection object }
     constructor Create(const Handle: IUICollection); overload;
 
+    destructor Destroy; override;
+
     { Starts a batch of updates to the collection. The control that uses this
       collection (like a gallery) will not be updated until EndUpdate is
       called. }
@@ -3730,7 +3732,7 @@ begin
         Result := UIInitPropertyFromString(Key, Val.AsString, Value);
 
       VT_UI4:
-        Result := UIInitPropertyFromUInt32(Key, Val.AsInteger, Value);
+        Result := UIInitPropertyFromUInt32(Key, cardinal(Val.AsInteger), Value);
 
       VT_UNKNOWN:
         begin
@@ -3782,6 +3784,18 @@ begin
   Assert(Assigned(Handle));
   inherited Create;
   FHandle := Handle;
+end;
+
+destructor TUICollection.Destroy;
+begin
+  //Extra ugly hack to reduce refcount by 1 if currently it is 2.
+  //Refcount is increased to 2 in UIInitPropertyFromInterface but I don't understand
+  //how it should drop back to 1. In some collections it does, in some it doesn't.
+  if FHandle._AddRef = 3 then
+    FHandle._Release;
+  FHandle._Release;
+
+  inherited;
 end;
 
 procedure TUICollection.Delete(const Index: Integer);

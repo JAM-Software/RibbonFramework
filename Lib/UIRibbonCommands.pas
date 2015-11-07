@@ -2057,7 +2057,7 @@ begin
 
         VT_I4,
         VT_UI4:
-          UIInitPropertyFromUInt32(Prop.Key, Cardinal(Prop.Value.AsInteger), Val);
+          UIInitPropertyFromUInt32(Prop.Key, UInt32(Prop.Value.AsInteger), Val);
 
         VT_LPWSTR:
           UIInitPropertyFromString(Prop.Key, Prop.Value.AsString, Val);
@@ -3730,7 +3730,7 @@ begin
         Result := UIInitPropertyFromString(Key, Val.AsString, Value);
 
       VT_UI4:
-        Result := UIInitPropertyFromUInt32(Key, Val.AsInteger, Value);
+        Result := UIInitPropertyFromUInt32(Key, UInt32(Val.AsInteger), Value);
 
       VT_UNKNOWN:
         begin

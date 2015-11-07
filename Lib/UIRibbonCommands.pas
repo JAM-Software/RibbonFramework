@@ -3940,6 +3940,9 @@ begin
   if ((FEnumIndex + celt) <= FItems.Count) then
   begin
     Inc(FEnumIndex, celt);
+    // Sometimes, `celt` can be -1
+    if FEnumIndex < 0 then
+      FEnumIndex := 0;
     Result := S_OK;
   end
   else

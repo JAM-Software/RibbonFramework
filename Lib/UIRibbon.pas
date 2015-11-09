@@ -982,6 +982,8 @@ function TUIRibbon.LoadRibbonSettings(): boolean;
 var
   lSettingsFileFullPath: string;
 begin
+  Exit; // disable automatic load
+
   // If Ribbons are not available, do not continue.
   if not Self.Visible then
     exit(false);
@@ -1148,6 +1150,8 @@ end;
 
 procedure TUIRibbon.SaveRibbonSettings;
 begin
+  Exit; // disable automatic save
+
   // If Ribbons are not available, do not continue.
   if not fLoaded then
     exit;

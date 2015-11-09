@@ -3732,13 +3732,9 @@ begin
         Result := UIInitPropertyFromString(Key, Val.AsString, Value);
 
       VT_UI4:
-<<<<<<< HEAD
-        Result := UIInitPropertyFromUInt32(Key, cardinal(Val.AsInteger), Value);
-=======
         Result := UIInitPropertyFromUInt32(Key, UInt32(Val.AsInteger), Value);
->>>>>>> refs/remotes/TurboPack/master
 
-      VT_UNKNOWN:
+      VT_UNKNOWN:
         begin
           Intf := Val.AsInterface;
           Result := UIInitPropertyFromInterface(Key, Intf, Value);

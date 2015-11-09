@@ -57,3 +57,8 @@ __recovery/
 
 # Castalia statistics file
 *.stat
+MSDN Samples/ContextPopup.zip
+MSDN Samples/FontControl.zip
+MSDN Samples/DropDownColorPicker.zip
+MSDN Samples/Gallery.zip
+MSDN Samples/SimpleRibbon.zip

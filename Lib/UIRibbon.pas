@@ -1003,7 +1003,11 @@ begin
   if (Result) then
   begin
     ComStream := TStreamAdapter.Create(Stream, soReference);
+  {$IFNDEF FullDebugMode}
     Result := Succeeded(FRibbon.LoadSettingsFromStream(ComStream));
+  {$ELSE}
+    {$MESSAGE WARN 'Cannot save ribbon state in FullDebugMode'}
+  {$ENDIF}
   end;
 end;
 
@@ -1170,7 +1174,11 @@ begin
   if (Result) and fLoaded then
   begin
     ComStream := TStreamAdapter.Create(Stream, soReference);
+  {$IFNDEF FullDebugMode}
     Result := Succeeded(FRibbon.SaveSettingsToStream(ComStream));
+  {$ELSE}
+    {$MESSAGE WARN 'Cannot save ribbon state in FullDebugMode'}
+  {$ENDIF FullDebugMode}
   end;
 end;
 

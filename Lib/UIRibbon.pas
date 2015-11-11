@@ -99,6 +99,9 @@ type
   /// <author>marder@jam-software.com</author>
   TUILoadResourceStringEvent = procedure(const Sender: TUIRibbon; const pCommand: TUICommand; pResourceID: Integer; var pString: string) of object;
 
+  TUIRibbonOption = (roAutoPreserveState);
+  TUIRibbonOptions = set of TUIRibbonOption;
+
   TUIRibbon = class(TWinControl, IUIApplication)
   {$REGION 'Internal Declarations'}
   strict private
@@ -131,6 +134,8 @@ type
     fActionManager: TCustomActionList;
     /// Handles the recent items in the backstage menu of the ribbon bar
     fRecentItems: TUICommandRecentItems;
+    /// Ribbon configuration options.
+    fOptions: TUIRibbonOptions;
 
     /// <summary>
     ///  Sets the application modes for this Ribbon form.
@@ -443,6 +448,16 @@ type
     /// </remarks>
     property ActionManager: TCustomActionList read fActionManager write fActionManager;
 
+    /// <summary>
+    ///   Configuration options affecting the component behaviour.
+    /// </summary>
+    /// <remarks>
+    ///   roAutoPreserveState - If set (default), ribbon settings are automatically
+    ///                         saved to/loaded from RibbonSettingsFilePath.
+    ///                         <seealso cref="RibbonSettingsFilePath" />
+    /// </remarks>
+    property Options: TUIRibbonOptions read fOptions write fOptions default [roAutoPreserveState];
+
     { The event that is fired when the Ribbon Framework creates a command. }
     property OnCommandCreate: TUIRibbomCommandEvent read FOnCommandCreate write FOnCommandCreate;
     { The event that is fired when the Ribbon Framework has been loaded. }
@@ -566,6 +581,8 @@ begin
   Top := 0;
   ControlStyle := ControlStyle + [csActionClient];
 
+  Options := [roAutoPreserveState];
+
   FResourceInstance := 0;
   FResourceName := 'APPLICATION';
   FCommands := TObjectDictionary<Cardinal, TUICommand>.Create([doOwnsValues]);
@@ -616,7 +633,8 @@ end;
 
 destructor TUIRibbon.Destroy;
 begin
-  SaveRibbonSettings(); // Save quick toolbar, etc.
+  if roAutoPreserveState in Options then
+    SaveRibbonSettings(); // Save quick toolbar, etc.
   FFramework := nil;
   FreeAndNil(FCommands);
   inherited;
@@ -953,7 +971,8 @@ begin
       FLoaded := True;
       if Assigned(FOnLoaded) then
         FOnLoaded(Self);
-      LoadRibbonSettings();
+      if roAutoPreserveState in Options then
+        LoadRibbonSettings();
     except
       on E: EOleException do begin
         E.Message := Format(sErrorLoadingRibbonRessource, [Self.ResourceName, e.Message]);

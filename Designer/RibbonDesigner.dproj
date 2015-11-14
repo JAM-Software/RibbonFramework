@@ -61,6 +61,9 @@
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_ExeOutput>Bin</DCC_ExeOutput>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <Debugger_RunParams>&quot;..\..\Samples\High Level\02 Text Pad with Action List\Ribbon\RibbonMarkup.xml&quot;</Debugger_RunParams>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_DependencyCheckOutputName>Bin\RibbonDesigner.exe</DCC_DependencyCheckOutputName>
         <DCC_ExeOutput>Bin</DCC_ExeOutput>

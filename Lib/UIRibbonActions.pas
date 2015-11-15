@@ -172,19 +172,16 @@ var
 begin
   if IsHintLinked then
   begin
-    if assigned(FClient.OnUpdateHint) then
-      FClient.OnUpdateHint(FClient, Value)
+    I := Pos('|', Value);
+    if (I = 0) then
+      FClient.TooltipTitle := Value
     else
     begin
-      I := Pos('|', Value);
-      if (I = 0) then
-        FClient.TooltipTitle := Value
-      else
-      begin
-        FClient.TooltipTitle := Copy(Value, 1, I - 1);
-        FClient.TooltipDescription := Copy(Value, I + 1, MaxInt);
-      end;
+      FClient.TooltipTitle := Copy(Value, 1, I - 1);
+      FClient.TooltipDescription := Copy(Value, I + 1, MaxInt);
     end;
+    if assigned(FClient.OnUpdateHint) then
+      FClient.OnUpdateHint(FClient, Value)
   end;
 end;
 

@@ -139,6 +139,8 @@ type
   TUICommandUpdateImageEvent = procedure (Sender: TObject; const PropKey: TUIPropertyKey;
     out NewValue: TPropVariant; var Handled: boolean) of object;
 
+  TUICommandUpdateHintEvent = procedure (Sender: TObject; const Value: string) of object;
+
   { Abstract base class for Ribbon Commands. }
   TUICommand = class abstract(TComponent, IUICommandHandler)
   {$REGION 'Internal Declarations'}
@@ -165,6 +167,7 @@ type
       vpTooltipDescription, vpLabelDescription, vpMinValue, vpMaxValue,
       vpIncrement, vpDecimalPlaces, vpRepresentativeString, vpFormatString);
     FActionLink: TActionLink;
+    FOnUpdateHint: TUICommandUpdateHintEvent;
     FOnUpdateImage: TUICommandUpdateImageEvent;
     procedure SetAlive(const Value: Boolean);
   strict private
@@ -310,6 +313,13 @@ type
     { Can be used to dynamically generate an image for a command.}
     property OnUpdateImage: TUICommandUpdateImageEvent read FOnUpdateImage write
       FOnUpdateImage;
+
+    { Allows you to override automation action.Hint changes.
+      If assigned, event handler should process hint and set up command properties
+      accordingly. If not assigned , internal processing is done in
+      UIRibbonActions.pas/TUICommandActionLink.SetHint. }
+    property OnUpdateHint: TUICommandUpdateHintEvent read FOnUpdateHint write
+      FOnUpdateHint;
 
     (************************************************************************
      * A note about command events

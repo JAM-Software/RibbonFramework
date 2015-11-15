@@ -114,15 +114,13 @@ foreach ($line in $data)
 {
 	if ($line.Contains("#define"))
 	{
-		$line = $line.TrimStart("#define")
-		$commandId = ([regex]"\b\d{1,5}\b").match($line).groups[0].value
-		$commandName = ([regex]"\b\w+\b").match($line).groups[0].value
-		$appendLine = "  $commandName = $commandId;"
-		Add-Content "$pasFilePath" "$appendLine"
+        $part = $line.TrimStart("#define").Split(" ")
+		$appendLine = "  " + $part[1] + " = " + $part[2] + ";"
         $dummy = $markupContent.Add($appendLine);
 	}
 }
 
+Add-Content $pasFilePath $($markupContent -join [Environment]::NewLine)
 # Add some additional predefined text.
 $FileMiddlePart = @"
 

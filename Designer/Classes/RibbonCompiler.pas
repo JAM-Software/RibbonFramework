@@ -223,7 +223,7 @@ begin
         AppRunning := WaitForSingleObject(ProcessInfo.hProcess, 10);
         if (AppRunning <> WAIT_TIMEOUT) then
         begin
-          PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) div 10, @BytesRead, @BytesAvail, @BytesLeft);
+          PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) div 10, @BytesRead, @BytesAvail, @BytesLeft); // Read smaller chunks for continuous output
           LogBuffer;
           Break;
         end;

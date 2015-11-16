@@ -165,13 +165,15 @@ var
   ReadPipe, WritePipe: THandle;
   CmdLine, Param: String;
   AppRunning, BytesRead, BytesAvail, BytesLeft: Cardinal;
-  Buffer: array [0..79] of AnsiChar;
+  Buffer: array [0..1023] of AnsiChar;
   ExitCode: Cardinal;
 
   procedure LogBuffer;
   var
     S: String;
   begin
+    if BytesRead = 0 then
+      exit;
     Buffer[BytesRead] := #0;
     {$WARNINGS OFF}
     S := String(Buffer);
@@ -221,22 +223,16 @@ begin
         AppRunning := WaitForSingleObject(ProcessInfo.hProcess, 10);
         if (AppRunning <> WAIT_TIMEOUT) then
         begin
-          PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) - 1, @BytesRead, @BytesAvail, @BytesLeft);
+          PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) div 10, @BytesRead, @BytesAvail, @BytesLeft);
           LogBuffer;
           Break;
         end;
 
-        repeat
-          BytesRead := 0;
-          if (not ReadFile(ReadPipe, Buffer[0], SizeOf(Buffer) - 1, BytesRead, nil)) then
-            Break;
-          if (BytesRead = 0) then
-            Break;
-          LogBuffer;
-        until (BytesRead < SizeOf(Buffer) - 1);
-        if (BytesRead = 0) then
+        BytesRead := 0;
+        if (not ReadFile(ReadPipe, Buffer[0], SizeOf(Buffer) - 1, BytesRead, nil)) then
           Break;
-      until (AppRunning <> WAIT_TIMEOUT);
+        LogBuffer;
+      until (BytesRead = 0);
       Result := GetExitCodeProcess(ProcessInfo.hProcess, ExitCode);
       Result := Result and (ExitCode = 0);
     finally

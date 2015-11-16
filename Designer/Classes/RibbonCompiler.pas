@@ -165,7 +165,7 @@ var
   ReadPipe, WritePipe: THandle;
   CmdLine, Param: String;
   AppRunning, BytesRead, BytesAvail, BytesLeft: Cardinal;
-  Buffer: array [0..4095] of AnsiChar;
+  Buffer: array [0..79] of AnsiChar;
   ExitCode: Cardinal;
 
   procedure LogBuffer;
@@ -233,7 +233,7 @@ begin
           if (BytesRead = 0) then
             Break;
           LogBuffer;
-        until (BytesRead < SizeOf(Buffer));
+        until (BytesRead < SizeOf(Buffer) - 1);
         if (BytesRead = 0) then
           Break;
       until (AppRunning <> WAIT_TIMEOUT);

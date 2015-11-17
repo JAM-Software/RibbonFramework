@@ -467,8 +467,6 @@ type
     property OnLoadResourceString: TUILoadResourceStringEvent read fOnLoadResourceString write fOnLoadResourceString;
   end;
 
-  procedure Register;
-
 implementation
 
 uses
@@ -1377,11 +1375,6 @@ end;
 function TUIRibbon._Release: Integer;
 begin
   Result := -1;
-end;
-
-procedure Register;
-begin
-  RegisterComponents('Windows Ribbon Framework for Delphi', [TUIRibbon]);
 end;
 
 end.

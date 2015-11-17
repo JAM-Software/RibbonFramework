@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{C09C936A-32A5-4FF5-A854-1D67DB9550DA}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="UIRibbonCR.cbproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="UIRibbonCD.cbproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="UIRibbonCR">
+        <MSBuild Projects="UIRibbonCR.cbproj"/>
+    </Target>
+    <Target Name="UIRibbonCR:Clean">
+        <MSBuild Projects="UIRibbonCR.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="UIRibbonCR:Make">
+        <MSBuild Projects="UIRibbonCR.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="UIRibbonCD">
+        <MSBuild Projects="UIRibbonCD.cbproj"/>
+    </Target>
+    <Target Name="UIRibbonCD:Clean">
+        <MSBuild Projects="UIRibbonCD.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="UIRibbonCD:Make">
+        <MSBuild Projects="UIRibbonCD.cbproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="UIRibbonCR;UIRibbonCD"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="UIRibbonCR:Clean;UIRibbonCD:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="UIRibbonCR:Make;UIRibbonCD:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -87,6 +87,7 @@
         <DCCReference Include="..\Lib\UIRibbonApi.pas"/>
         <DCCReference Include="..\Lib\UIRibbonUtils.pas"/>
         <DCCReference Include="..\Lib\WinApiEx.pas"/>
+        <DCCReference Include="..\Lib\UIRibbon.Register.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

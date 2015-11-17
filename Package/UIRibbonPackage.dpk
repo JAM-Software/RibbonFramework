@@ -38,6 +38,7 @@ contains
   UIRibbonActions in '..\Lib\UIRibbonActions.pas',
   UIRibbonApi in '..\Lib\UIRibbonApi.pas',
   UIRibbonUtils in '..\Lib\UIRibbonUtils.pas',
-  WinApiEx in '..\Lib\WinApiEx.pas';
+  WinApiEx in '..\Lib\WinApiEx.pas',
+  UIRibbon.Register in '..\Lib\UIRibbon.Register.pas';
 
 end.

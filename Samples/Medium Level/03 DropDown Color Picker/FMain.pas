@@ -4,10 +4,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, UIRibbonForm, UIRibbonCommands, RibbonConsts, uRenderer;
+  Dialogs, UIRibbon, UIRibbonCommands, RibbonConsts, uRenderer;
 
 type
-  TFormMain = class(TUIRibbonForm)
+  TFormMain = class(TForm)
+    Ribbon: TUIRibbon;
     procedure FormPaint(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
@@ -21,10 +22,8 @@ type
     procedure CmdUpdateExecute(const Args: TUICommandActionEventArgs);
     procedure CmdClearExecute(const Args: TUICommandActionEventArgs);
     procedure ColorPickerExecute(const Args: TUICommandColorEventArgs);
-  strict protected
-    procedure RibbonLoaded; override;
-  public
-    { Public declarations }
+  published
+     procedure RibbonLoaded(Sender: TObject);
   end;
 
 var
@@ -88,7 +87,7 @@ begin
   end;
 end;
 
-procedure TFormMain.RibbonLoaded;
+procedure TFormMain.RibbonLoaded(Sender: TObject);
 const
   STANDARD_COLORS: array [0..9] of TColor = (
     $0000C0, // Dark red

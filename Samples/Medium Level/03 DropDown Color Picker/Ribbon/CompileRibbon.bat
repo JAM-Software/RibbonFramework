@@ -1,2 +1,2 @@
-UICC ribbonmarkup.xml ribbonmarkup.bml /header:ribbonmarkup.h /res:ribbonmarkup.rc
+powershell -f "..\..\..\..\Designer\Bin\Generate.Ribbon.Markup.pas.ps1" ribbonmarkup.xml
 pause

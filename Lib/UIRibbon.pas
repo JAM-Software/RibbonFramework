@@ -195,6 +195,7 @@ type
     procedure SetHighlightColor(const Value: TColor);
     procedure SetTextColor(const Value: TColor);
   protected
+    procedure Loaded(); override;
     procedure AddCommand(const Command: TUICommand);
     function GetColor(const PropKey: TUIPropertyKey): TUIHsbColor;
     procedure SetColor(const PropKey: TUIPropertyKey; const Value: TUIHsbColor);
@@ -993,6 +994,12 @@ begin
         lForm.Color := GraphUtil.GetHighLightColor(Self.BackgroundColor);//  TColorHelper.IncreaseRgbValues(FRibbon.BackgroundColor, 17, 12, 10)
     end;//if clBtnFace
   end;
+end;
+
+procedure TUIRibbon.Loaded;
+begin
+  inherited;
+  Load();
 end;
 
 function TUIRibbon.LoadRibbonSettings(): boolean;

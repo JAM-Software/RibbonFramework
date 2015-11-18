@@ -1,2 +1,2 @@
-UICC GalleryUI.xml GalleryUI.bml /header:GalleryUI.h /res:GalleryUI.rc
+powershell -f "..\..\..\..\Designer\Bin\Generate.Ribbon.Markup.pas.ps1" GalleryUI.xml
 pause

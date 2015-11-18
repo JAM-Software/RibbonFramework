@@ -68,9 +68,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <RcCompile Include="Ribbon\GalleryRes.rc">
-            <Form>GalleryRes.res</Form>
-        </RcCompile>
         <DCCReference Include="FMain.pas">
             <Form>FormMain</Form>
         </DCCReference>
@@ -82,7 +79,6 @@
         <DCCReference Include="..\..\..\Lib\UIRibbonForm.pas"/>
         <DCCReference Include="..\..\..\Lib\UIRibbonUtils.pas"/>
         <DCCReference Include="..\..\..\Lib\WinApiEx.pas"/>
-        <DCCReference Include="..\..\..\Lib\UIRibbonActions.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

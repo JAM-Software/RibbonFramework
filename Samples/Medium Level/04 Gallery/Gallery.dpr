@@ -1,7 +1,6 @@
 program Gallery;
 
-{$R 'GalleryRes.res' 'Ribbon\GalleryRes.rc'}
-
+{$R 'GalleryRes.res'}
 uses
   Forms,
   FMain in 'FMain.pas' {FormMain},

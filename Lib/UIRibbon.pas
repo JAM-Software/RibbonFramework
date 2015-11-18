@@ -944,7 +944,7 @@ var
 begin
   Stream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
   try
-    Result := LoadSettings(Stream);
+    Result := (Stream.Size = 0) or LoadSettings(Stream);
   finally
     Stream.Free;
   end;
@@ -1012,7 +1012,7 @@ begin
   // Get the path for the settings file (beside executable or %appdata%)
   lSettingsFileFullPath := GetRibbonSettingsFilePath();
   // If file not exists or is just a dummy file (portable editions), exit here.
-  if not FileExists(RibbonSettingsFilePath) { or (FileSize(lSettingsFileFullPath) = 0)} then
+  if not FileExists(RibbonSettingsFilePath) then
     exit(false);
   // Otherwise, try to load the file.
   Result := Self.LoadSettings(lSettingsFileFullPath);

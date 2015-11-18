@@ -4,11 +4,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, UIRibbonForm, UIRibbonCommands, UIRibbonUtils, uRenderer,
+  Dialogs, UIRibbon, UIRibbonCommands, UIRibbonUtils, uRenderer,
   RibbonConst;
 
 type
-  TFormMain = class(TUIRibbonForm)
+  TFormMain = class(TForm)
+    Ribbon: TUIRibbon;
     procedure FormPaint(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
@@ -34,10 +35,8 @@ type
     procedure PopulateBorderSizesGallery;
     procedure PopulateLayoutsGallery;
     procedure PopulateSizeAndColorGallery;
-  strict protected
-    procedure RibbonLoaded; override;
-  public
-    { Public declarations }
+  published
+    procedure RibbonLoaded(Sender: TObject);
   end;
 
 var

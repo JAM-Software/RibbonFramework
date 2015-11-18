@@ -15,4 +15,14 @@ object FormMain: TFormMain
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
+  object Ribbon: TUIRibbon
+    Left = 0
+    Top = 0
+    Width = 861
+    Height = 117
+    ResourceName = 'APPLICATION'
+    OnLoaded = RibbonLoaded
+    ExplicitLeft = 8
+    ExplicitTop = 224
+  end
 end

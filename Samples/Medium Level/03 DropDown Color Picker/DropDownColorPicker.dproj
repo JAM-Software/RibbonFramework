@@ -82,9 +82,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <RcCompile Include="Ribbon\ribbonmarkup.rc">
-            <Form>ribbonmarkup.res</Form>
-        </RcCompile>
         <DCCReference Include="FMain.pas">
             <Form>FormMain</Form>
         </DCCReference>

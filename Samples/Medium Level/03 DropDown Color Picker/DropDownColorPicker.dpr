@@ -1,6 +1,6 @@
 program DropDownColorPicker;
 
-{$R 'ribbonmarkup.res' 'Ribbon\ribbonmarkup.rc'}
+
 
 uses
   Forms,

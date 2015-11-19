@@ -1,8 +1,6 @@
 program FontControl;
 
-
-
-{$R 'RibbonMarkup.res' 'Ribbon\RibbonMarkup.rc'}
+{$R 'Ribbon\ribbonmarkup.RES'}
 
 uses
   Forms,

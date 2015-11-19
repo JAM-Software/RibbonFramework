@@ -4,15 +4,17 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, RichEdit, UIRibbonForm, UIRibbonCommands,
+  Dialogs, StdCtrls, ComCtrls, RichEdit, UIRibbon, UIRibbonCommands,
   uRichEditManager, RibbonConst, WinApiEx;
 
 type
-  TFormMain = class(TUIRibbonForm)
+  TFormMain = class(TForm)
     RichEdit: TRichEdit;
+    Ribbon: TUIRibbon;
     procedure RichEditSelectionChange(Sender: TObject);
-    procedure RichEditContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
+    procedure RichEditContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+    procedure RibbonLoaded(SEnder: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     FRichEditManager: TRichEditManager;
@@ -20,12 +22,6 @@ type
   private
     procedure CmdFontChanged(const Args: TUICommandFontEventArgs);
     procedure ShowMiniToolbar(const Pos: TPoint);
-  strict protected
-    procedure RibbonLoaded; override;
-  public
-    { Public declarations }
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   end;
 
 var
@@ -45,21 +41,15 @@ begin
   FRichEditManager.SetValues(CharFormat);
 end;
 
-constructor TFormMain.Create(AOwner: TComponent);
-begin
-  inherited;
-  FRichEditManager := TRichEditManager.Create(RichEdit);
-end;
-
-destructor TFormMain.Destroy;
+procedure TFormMain.FormDestroy(Sender: TObject);
 begin
   FRichEditManager.Free;
-  inherited;
 end;
 
 procedure TFormMain.RibbonLoaded;
 begin
   inherited;
+  FRichEditManager := TRichEditManager.Create(RichEdit);
   FCmdFont := Ribbon[IDC_CMD_FONTCONTROL] as TUICommandFont;
   FCmdFont.Font.Assign(FRichEditManager.GetValues);
   FCmdFont.OnChanged := CmdFontChanged;

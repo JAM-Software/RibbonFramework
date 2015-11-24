@@ -12,19 +12,21 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, GraphUtil, StdCtrls, RichEdit, RichEditEx, UIRibbon,
-  UIRibbonForm, UIRibbonCommands;
+  UIRibbonCommands;
 
 type
-  TFormMain = class(TUIRibbonForm)
+  TFormMain = class(TForm)
     StatusBar: TStatusBar;
     RichEdit: TRichEdit;
     FindDialog: TFindDialog;
     PrintDialog: TPrintDialog;
+    Ribbon: TUIRibbon;
     procedure RichEditSelectionChange(Sender: TObject);
     procedure FindDialogFind(Sender: TObject);
     procedure RichEditChange(Sender: TObject);
-    procedure RichEditContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
+    procedure RichEditContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+    procedure RibbonLoaded(Sender: TObject);
+    procedure CommandCreated(const Sender: TUIRibbon; const Command: TUICommand);
   private
     { Private declarations }
     FRichEditEx: TRichEditEx;
@@ -78,10 +80,6 @@ type
     procedure PrintPreviewExecute(const Args: TUICommandActionEventArgs);
     procedure ClosePrintPreviewExecute(const Args: TUICommandActionEventArgs);
     procedure ExitExecute(const Args: TUICommandActionEventArgs);
-  strict protected
-    procedure RibbonLoaded; override;
-    procedure CommandCreated(const Sender: TUIRibbon;
-      const Command: TUICommand); override;
   public
     { Public declarations }
     constructor Create(Owner: TComponent); override;

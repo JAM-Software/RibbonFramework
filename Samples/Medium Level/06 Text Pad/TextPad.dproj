@@ -41,6 +41,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_UnitSearchPath>..\..\..\Lib;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
@@ -83,9 +84,6 @@
         <RcCompile Include="Galleries.rc">
             <Form>Galleries.res</Form>
         </RcCompile>
-        <RcCompile Include="..\..\..\Lib\UIRibbon.rc">
-            <Form>UIRibbon.res</Form>
-        </RcCompile>
         <DCCReference Include="FMain.pas">
             <Form>FormMain</Form>
         </DCCReference>
@@ -97,7 +95,6 @@
         <DCCReference Include="..\..\..\Lib\WinApiEx.pas"/>
         <DCCReference Include="Ribbon\RibbonMarkup.pas"/>
         <DCCReference Include="RichEditEx.pas"/>
-        <DCCReference Include="..\..\..\Lib\UIRibbonActions.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

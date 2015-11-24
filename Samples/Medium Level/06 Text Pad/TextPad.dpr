@@ -1,7 +1,6 @@
 program TextPad;
 
 {$R 'Galleries.res' 'Galleries.rc'}
-{$R 'UIRibbon.res' '..\..\..\Lib\UIRibbon.rc'}
 
 uses
   Forms,

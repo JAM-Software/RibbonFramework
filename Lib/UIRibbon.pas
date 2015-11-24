@@ -195,7 +195,7 @@ type
     procedure SetHighlightColor(const Value: TColor);
     procedure SetTextColor(const Value: TColor);
   protected
-    procedure Loaded(); override;
+    procedure CreateWnd(); override;
     procedure AddCommand(const Command: TUICommand);
     function GetColor(const PropKey: TUIPropertyKey): TUIHsbColor;
     procedure SetColor(const PropKey: TUIPropertyKey; const Value: TUIHsbColor);
@@ -996,7 +996,7 @@ begin
   end;
 end;
 
-procedure TUIRibbon.Loaded;
+procedure TUIRibbon.CreateWnd;
 begin
   inherited;
   Load();

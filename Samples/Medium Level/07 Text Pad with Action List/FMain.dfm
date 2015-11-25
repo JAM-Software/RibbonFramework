@@ -23,9 +23,9 @@ object FormMain: TFormMain
   object RichEdit: TRichEdit
     AlignWithMargins = True
     Left = 40
-    Top = 20
+    Top = 137
     Width = 703
-    Height = 496
+    Height = 379
     Margins.Left = 40
     Margins.Top = 20
     Margins.Right = 40
@@ -43,6 +43,16 @@ object FormMain: TFormMain
     OnChange = RichEditChange
     OnContextPopup = RichEditContextPopup
     OnSelectionChange = RichEditSelectionChange
+  end
+  object Ribbon: TUIRibbon
+    Left = 0
+    Top = 0
+    Width = 783
+    Height = 117
+    ResourceName = 'APPLICATION'
+    ActionManager = Actions
+    OnCommandCreate = CommandCreated
+    OnLoaded = RibbonLoaded
   end
   object Actions: TActionList
     Left = 64

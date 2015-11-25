@@ -1,4 +1,4 @@
-unit RibbonMarkup;
+unit ribbonmarkup;
 
 // *****************************************************************************
 // * This is an automatically generated source file for UI Element definition  *
@@ -6,6 +6,11 @@ unit RibbonMarkup;
 // *****************************************************************************
 
 interface
+
+{$R 'ribbonmarkup.res'}
+
+uses
+	Generics.Collections, SysUtils, UIRibbon;
 
 const
   CmdTabHome = 2;
@@ -638,4 +643,107 @@ const
 
 implementation
 
+function RegisterRibbonElements(): TRibbonMarkupElementList;
+begin
+  Result := TRibbonMarkupElementList.Create('');
+  Result.Add(TRibbonMarkupElement.Create('CmdTabHome', 2, 60001, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupClipboard', 3, 60002, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdPaste', 4, 60007, -1, 60008, 60009));
+  Result.Add(TRibbonMarkupElement.Create('CmdPasteSpecial', 5, 60018, -1, -1, 60019));
+  Result.Add(TRibbonMarkupElement.Create('CmdPasteMore', 6, -1, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdCut', 7, 60024, -1, 60025, 60026));
+  Result.Add(TRibbonMarkupElement.Create('CmdCopy', 8, 60031, -1, 60032, 60033));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupFont', 9, 60038, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdFont', 10, 60043, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupParagraph', 11, 60044, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdOutdent', 12, 60049, -1, 60050, 60051));
+  Result.Add(TRibbonMarkupElement.Create('CmdIndent', 13, 60057, -1, 60058, 60059));
+  Result.Add(TRibbonMarkupElement.Create('CmdList', 14, 60065, -1, 60066, 60067));
+  Result.Add(TRibbonMarkupElement.Create('CmdLineSpacing', 15, 60073, -1, 60074, 60075));
+  Result.Add(TRibbonMarkupElement.Create('CmdLineSpacing1_0', 16, 60081, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdLineSpacing1_15', 17, 60082, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdLineSpacing1_5', 18, 60083, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdLineSpacing2', 19, 60084, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdLineSpacingAfter', 20, 60085, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdAlignLeft', 21, 60086, -1, 60087, 60088));
+  Result.Add(TRibbonMarkupElement.Create('CmdAlignCenter', 22, 60094, -1, 60095, 60096));
+  Result.Add(TRibbonMarkupElement.Create('CmdAlignRight', 23, 60102, -1, 60103, 60104));
+  Result.Add(TRibbonMarkupElement.Create('CmdAlignJustify', 24, 60110, -1, 60111, 60112));
+  Result.Add(TRibbonMarkupElement.Create('CmdParagraph', 25, 60118, -1, 60119, 60120));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupInsert', 26, 60125, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdInsertPicture', 27, 60130, -1, 60131, 60132));
+  Result.Add(TRibbonMarkupElement.Create('CmdInsertPictureMore', 28, -1, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdChangePicture', 29, 60141, -1, 60142, 60143));
+  Result.Add(TRibbonMarkupElement.Create('CmdResizePicture', 30, 60148, -1, 60149, 60150));
+  Result.Add(TRibbonMarkupElement.Create('CmdPaintDrawing', 31, 60155, -1, 60156, 60157));
+  Result.Add(TRibbonMarkupElement.Create('CmdDateAndTime', 32, 60166, -1, 60167, 60168));
+  Result.Add(TRibbonMarkupElement.Create('CmdInsertObject', 33, 60177, -1, 60178, 60179));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupEditing', 34, 60188, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdFind', 35, 60193, -1, 60194, 60195));
+  Result.Add(TRibbonMarkupElement.Create('CmdReplace', 36, 60200, -1, 60201, 60202));
+  Result.Add(TRibbonMarkupElement.Create('CmdSelectAll', 37, 60208, -1, -1, 60209));
+  Result.Add(TRibbonMarkupElement.Create('CmdTabView', 38, 60214, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupZoom', 39, 60215, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdZoomIn', 40, 60220, -1, 60221, 60222));
+  Result.Add(TRibbonMarkupElement.Create('CmdZoomOut', 41, 60231, -1, 60232, 60233));
+  Result.Add(TRibbonMarkupElement.Create('CmdZoom100Percent', 42, 60242, -1, 60243, 60244));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupShowOrHide', 43, 60253, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdRuler', 44, 60254, -1, 60255, 60256));
+  Result.Add(TRibbonMarkupElement.Create('CmdStatusBar', 45, 60257, -1, 60258, 60259));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupSettings', 46, 60260, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdWordWrap', 47, 60261, -1, 60262, 60263));
+  Result.Add(TRibbonMarkupElement.Create('CmdNoWrap', 48, 60268, -1, 60269, 60270));
+  Result.Add(TRibbonMarkupElement.Create('CmdWrapToWindow', 49, 60271, -1, 60272, 60273));
+  Result.Add(TRibbonMarkupElement.Create('CmdWrapToRuler', 50, 60274, -1, 60275, 60276));
+  Result.Add(TRibbonMarkupElement.Create('CmdMeasurementUnits', 51, 60277, -1, 60278, 60279));
+  Result.Add(TRibbonMarkupElement.Create('CmdInches', 52, 60284, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdCentimeters', 53, 60285, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdPoints', 54, 60286, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdPicas', 55, 60287, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdApplicationMenu', 56, -1, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdRecentItems', 57, 60288, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdNew', 58, 60289, -1, 60290, 60291));
+  Result.Add(TRibbonMarkupElement.Create('CmdOpen', 59, 60300, -1, 60301, 60302));
+  Result.Add(TRibbonMarkupElement.Create('CmdSave', 60, 60311, -1, 60312, 60313));
+  Result.Add(TRibbonMarkupElement.Create('CmdSaveAs', 61, 60322, -1, -1, 60323));
+  Result.Add(TRibbonMarkupElement.Create('CmdSaveAsMore', 62, -1, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdHeaderSave', 63, 60332, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdRichTextDocument', 64, 60333, 60334, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdOfficeOpenXMLDocument', 65, 60343, 60344, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdOpenDocumentText', 66, 60353, 60354, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdPlainTextDocument', 67, 60363, 60364, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdOtherFormats', 68, 60373, 60374, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdPrint', 69, 60383, 60384, 60385, 60386));
+  Result.Add(TRibbonMarkupElement.Create('CmdPrintMore', 70, -1, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdHeaderPrint', 71, 60395, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdQuickPrint', 72, 60396, 60397, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdPrintPreview', 73, 60406, 60407, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdPageSetup', 74, 60416, -1, -1, 60417));
+  Result.Add(TRibbonMarkupElement.Create('CmdEmail', 75, 60426, -1, -1, 60427));
+  Result.Add(TRibbonMarkupElement.Create('CmdAbout', 76, 60436, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdExit', 77, 60445, -1, -1, 60446));
+  Result.Add(TRibbonMarkupElement.Create('CmdTabPrintPreview', 78, 60455, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupPrint', 79, 60456, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdViewOnePage', 80, 60461, -1, 60462, 60463));
+  Result.Add(TRibbonMarkupElement.Create('CmdViewTwoPages', 81, 60468, -1, 60469, 60470));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupPreview', 82, 60475, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdPreviousPage', 83, 60480, -1, 60481, 60482));
+  Result.Add(TRibbonMarkupElement.Create('CmdNextPage', 84, 60489, -1, 60490, 60491));
+  Result.Add(TRibbonMarkupElement.Create('CmdGroupClose', 85, 60498, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdClosePrintPreview', 86, 60499, -1, 60500, 60501));
+  Result.Add(TRibbonMarkupElement.Create('CmdQuickAccessToolbar', 87, 60510, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdUndo', 88, 60511, -1, 60512, 60513));
+  Result.Add(TRibbonMarkupElement.Create('CmdRedo', 89, 60519, -1, 60520, 60521));
+  Result.Add(TRibbonMarkupElement.Create('CmdHelp', 90, 60527, -1, 60528, 60529));
+  Result.Add(TRibbonMarkupElement.Create('CmdContextPopupEditText', 91, -1, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdContextPopupEditPicture', 92, -1, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdObjectProperties', 93, 60530, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdOpenObject', 94, 60531, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdLinks', 95, 60532, -1, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdContextPopupObject', 96, -1, -1));
+end;
+initialization
+
+  RegisterRibbonElements();
+  
 end.

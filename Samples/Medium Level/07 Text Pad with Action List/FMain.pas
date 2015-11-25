@@ -12,10 +12,10 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, GraphUtil, StdCtrls, RichEdit, RichEditEx, UIRibbon,
-  UIRibbonForm, UIRibbonCommands, UIRibbonActions, ActnList, StdActns;
+  UIRibbonCommands, UIRibbonActions, ActnList, StdActns;
 
 type
-  TFormMain = class(TUIRibbonForm)
+  TFormMain = class(TForm)
     StatusBar: TStatusBar;
     RichEdit: TRichEdit;
     Actions: TActionList;
@@ -44,6 +44,7 @@ type
     ActionPrintPreview: TAction;
     ActionClosePrintPreview: TAction;
     ActionExit: TFileExit;
+    Ribbon: TUIRibbon;
     procedure RichEditSelectionChange(Sender: TObject);
     procedure RichEditChange(Sender: TObject);
     procedure RichEditContextPopup(Sender: TObject; MousePos: TPoint;
@@ -61,6 +62,8 @@ type
     procedure ActionQuickPrintExecute(Sender: TObject);
     procedure ActionPrintPreviewExecute(Sender: TObject);
     procedure ActionClosePrintPreviewExecute(Sender: TObject);
+    procedure RibbonLoaded(Sender: TObject);
+    procedure CommandCreated(const Sender: TUIRibbon; const Command: TUICommand);
   private
     { Private declarations }
     FRichEditEx: TRichEditEx;
@@ -95,10 +98,6 @@ type
     procedure UpdateRibbonControls;
     procedure PopulateListGallery;
     procedure FontChanged(const Args: TUICommandFontEventArgs);
-  strict protected
-    procedure RibbonLoaded; override;
-    procedure CommandCreated(const Sender: TUIRibbon;
-      const Command: TUICommand); override;
   public
     { Public declarations }
     constructor Create(Owner: TComponent); override;
@@ -111,7 +110,7 @@ var
 implementation
 
 {$R *.dfm}
-{$R 'Ribbon\RibbonMarkup.res'}
+
 
 uses
   RibbonMarkup;

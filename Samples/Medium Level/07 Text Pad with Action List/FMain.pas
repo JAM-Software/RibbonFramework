@@ -12,16 +12,16 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, GraphUtil, StdCtrls, RichEdit, RichEditEx, UIRibbon,
-  UIRibbonCommands, UIRibbonActions, ActnList, StdActns;
+  UIRibbonCommands, UIRibbonActions, ActnList, StdActns, System.Actions;
 
 type
   TFormMain = class(TForm)
     StatusBar: TStatusBar;
     RichEdit: TRichEdit;
     Actions: TActionList;
-    ActionCut: TEditCut;
-    ActionCopy: TEditCopy;
-    ActionPaste: TEditPaste;
+    CmdCut: TEditCut;
+    CmdCopy: TEditCopy;
+    CmdPaste: TEditPaste;
     ActionNotImplemented: TAction;
     ActionIndent: TAction;
     ActionOutdent: TAction;
@@ -36,7 +36,7 @@ type
     ActionAlignRight: TAction;
     ActionAlignJustify: TAction;
     ActionFind: TSearchFind;
-    ActionSelectAll: TEditSelectAll;
+    CmdSelectAll: TEditSelectAll;
     ActionUndo: TAction;
     ActionRedo: TAction;
     ActionPrint: TPrintDlg;
@@ -45,6 +45,7 @@ type
     ActionClosePrintPreview: TAction;
     ActionExit: TFileExit;
     Ribbon: TUIRibbon;
+    CmdPasteSpecial: TAction;
     procedure RichEditSelectionChange(Sender: TObject);
     procedure RichEditChange(Sender: TObject);
     procedure RichEditContextPopup(Sender: TObject; MousePos: TPoint;
@@ -67,10 +68,7 @@ type
   private
     { Private declarations }
     FRichEditEx: TRichEditEx;
-    FCmdPaste: TUICommandAction;
     FCmdPasteSpecial: TUICommandAction;
-    FCmdCut: TUICommandAction;
-    FCmdCopy: TUICommandAction;
     FCmdFont: TUICommandFont;
     FCmdOutdent: TUICommandAction;
     FCmdIndent: TUICommandAction;
@@ -86,7 +84,6 @@ type
     FCmdAlignJustify: TUICommandBoolean;
     FCmdFind: TUICommandAction;
     FCmdReplace: TUICommandAction;
-    FCmdSelectAll: TUICommandAction;
     FCmdUndo: TUICommandAction;
     FCmdRedo: TUICommandAction;
     FCmdPrint: TUICommandAction;
@@ -265,37 +262,6 @@ procedure TFormMain.CommandCreated(const Sender: TUIRibbon;
 begin
   inherited;
   case Command.CommandId of
-    CmdPaste:
-      begin
-        FCmdPaste := Command as TUICommandAction;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdPaste.ActionLink.Action := ActionPaste;
-      end;
-
-    CmdPasteSpecial:
-      begin
-        FCmdPasteSpecial := Command as TUICommandAction;
-        FCmdPasteSpecial.SetShortCut([ssCtrl, ssAlt], 'V');
-        FCmdPasteSpecial.ActionLink.Action := ActionNotImplemented;
-      end;
-
-    CmdCut:
-      begin
-        FCmdCut := Command as TUICommandAction;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdCut.ActionLink.Action := ActionCut;
-      end;
-
-    CmdCopy:
-      begin
-        FCmdCopy := Command as TUICommandAction;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdCopy.ActionLink.Action := ActionCopy;
-      end;
-
     CmdFont:
       begin
         FCmdFont := Command as TUICommandFont;
@@ -395,14 +361,6 @@ begin
         FCmdReplace := Command as TUICommandAction;
         FCmdReplace.SetShortCut([ssCtrl], 'H');
         FCmdReplace.ActionLink.Action := ActionNotImplemented;
-      end;
-
-    CmdSelectAll:
-      begin
-        FCmdSelectAll := Command as TUICommandAction;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdSelectAll.ActionLink.Action := ActionSelectAll;
       end;
 
     CmdUndo:
@@ -546,10 +504,10 @@ procedure TFormMain.RibbonLoaded;
 begin
   inherited;
   Color := ColorAdjustLuma(Ribbon.BackgroundColor, -25, False);
-  ActionCut.Control := RichEdit;
-  ActionCopy.Control := RichEdit;
-  ActionPaste.Control := RichEdit;
-  ActionSelectAll.Control := RichEdit;
+  CmdCut.Control := RichEdit;
+  CmdCopy.Control := RichEdit;
+  CmdPaste.Control := RichEdit;
+  CmdSelectAll.Control := RichEdit;
   UpdateRibbonControls;
 end;
 
@@ -575,13 +533,13 @@ var
 begin
   ParaFormat := FRichEditEx.ParaFormat;
 
-  ActionPaste.Enabled := FRichEditEx.CanPaste;
+  CmdPaste.Enabled := FRichEditEx.CanPaste;
 
   if Assigned(FCmdPasteSpecial) then
     FCmdPasteSpecial.Enabled := FRichEditEx.CanPaste;
 
-  ActionCopy.Enabled := (RichEdit.SelLength > 0);
-  ActionCut.Enabled := (RichEdit.SelLength > 0);
+  CmdCopy.Enabled := (RichEdit.SelLength > 0);
+  CmdCut.Enabled := (RichEdit.SelLength > 0);
 
   if Assigned(FCmdFont) then
     FCmdFont.Font.Assign(FRichEditEx.CharFormat);

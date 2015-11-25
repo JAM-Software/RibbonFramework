@@ -40,6 +40,7 @@ object FormMain: TFormMain
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 1
+    Zoom = 100
     OnChange = RichEditChange
     OnContextPopup = RichEditContextPopup
     OnSelectionChange = RichEditSelectionChange
@@ -57,21 +58,21 @@ object FormMain: TFormMain
   object Actions: TActionList
     Left = 64
     Top = 28
-    object ActionCut: TEditCut
+    object CmdCut: TEditCut
       Category = 'Edit'
       Caption = 'Cu&t'
       Hint = 'Cut|Cuts the selection and puts it on the Clipboard'
       ImageIndex = 0
       ShortCut = 16472
     end
-    object ActionCopy: TEditCopy
+    object CmdCopy: TEditCopy
       Category = 'Edit'
       Caption = '&Copy'
       Hint = 'Copy|Copies the selection and puts it on the Clipboard'
       ImageIndex = 1
       ShortCut = 16451
     end
-    object ActionPaste: TEditPaste
+    object CmdPaste: TEditPaste
       Category = 'Edit'
       Caption = '&Paste'
       Hint = 'Paste|Inserts Clipboard contents'
@@ -126,7 +127,7 @@ object FormMain: TFormMain
       ShortCut = 16454
       OnAccept = ActionFindAccept
     end
-    object ActionSelectAll: TEditSelectAll
+    object CmdSelectAll: TEditSelectAll
       Category = 'Edit'
       Caption = 'Select &All'
       Hint = 'Select All|Selects the entire document'
@@ -159,6 +160,11 @@ object FormMain: TFormMain
       Caption = 'E&xit'
       Hint = 'Exit|Quits the application'
       ImageIndex = 43
+    end
+    object CmdPasteSpecial: TAction
+      Category = 'Edit'
+      Caption = 'Paste special'
+      OnExecute = ActionNotImplementedExecute
     end
   end
 end

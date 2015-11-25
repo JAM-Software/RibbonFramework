@@ -40,6 +40,7 @@ object FormMain: TFormMain
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 1
+    Zoom = 100
     OnChange = RichEditChange
     OnContextPopup = RichEditContextPopup
     OnSelectionChange = RichEditSelectionChange

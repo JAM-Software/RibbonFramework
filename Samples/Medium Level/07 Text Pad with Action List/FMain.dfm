@@ -82,29 +82,33 @@ object FormMain: TFormMain
     object ActionNotImplemented: TAction
       OnExecute = ActionNotImplementedExecute
     end
-    object ActionIndent: TAction
+    object CmdIndent: TAction
       OnExecute = ActionIndentOutdentExecute
     end
-    object ActionOutdent: TAction
+    object CmdOutdent: TAction
       OnExecute = ActionIndentOutdentExecute
     end
     object ActionList: TAction
       OnExecute = ActionListExecute
     end
-    object ActionLineSpacing10: TAction
+    object CmdLineSpacing10: TAction
+      Caption = '1.0'
       OnExecute = ActionLineSpacingExecute
     end
-    object ActionLineSpacing115: TAction
+    object CmdLineSpacing115: TAction
+      Caption = '1.15'
       OnExecute = ActionLineSpacingExecute
     end
-    object ActionLineSpacing15: TAction
+    object CmdLineSpacing15: TAction
+      Caption = '1.5'
       OnExecute = ActionLineSpacingExecute
     end
-    object ActionLineSpacing20: TAction
+    object CmdLineSpacing20: TAction
+      Caption = '2.0'
       OnExecute = ActionLineSpacingExecute
     end
-    object ActionSpaceAfter: TAction
-      OnExecute = ActionSpaceAfterExecute
+    object CmdLineSpacingAfter: TAction
+      OnExecute = CmdLineSpacingAfterExecute
     end
     object ActionAlignLeft: TAction
       OnExecute = ActionAlignExecute
@@ -164,6 +168,7 @@ object FormMain: TFormMain
     object CmdPasteSpecial: TAction
       Category = 'Edit'
       Caption = 'Paste special'
+      ShortCut = 24662
       OnExecute = ActionNotImplementedExecute
     end
   end

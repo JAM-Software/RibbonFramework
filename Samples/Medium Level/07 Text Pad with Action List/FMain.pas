@@ -23,14 +23,14 @@ type
     CmdCopy: TEditCopy;
     CmdPaste: TEditPaste;
     ActionNotImplemented: TAction;
-    ActionIndent: TAction;
-    ActionOutdent: TAction;
+    CmdIndent: TAction;
+    CmdOutdent: TAction;
     ActionList: TAction;
-    ActionLineSpacing10: TAction;
-    ActionLineSpacing115: TAction;
-    ActionLineSpacing15: TAction;
-    ActionLineSpacing20: TAction;
-    ActionSpaceAfter: TAction;
+    CmdLineSpacing10: TAction;
+    CmdLineSpacing115: TAction;
+    CmdLineSpacing15: TAction;
+    CmdLineSpacing20: TAction;
+    CmdLineSpacingAfter: TAction;
     ActionAlignLeft: TAction;
     ActionAlignCenter: TAction;
     ActionAlignRight: TAction;
@@ -54,7 +54,7 @@ type
     procedure ActionIndentOutdentExecute(Sender: TObject);
     procedure ActionListExecute(Sender: TObject);
     procedure ActionLineSpacingExecute(Sender: TObject);
-    procedure ActionSpaceAfterExecute(Sender: TObject);
+    procedure CmdLineSpacingAfterExecute(Sender: TObject);
     procedure ActionAlignExecute(Sender: TObject);
     procedure ActionFindAccept(Sender: TObject);
     procedure ActionUndoExecute(Sender: TObject);
@@ -70,14 +70,7 @@ type
     FRichEditEx: TRichEditEx;
     FCmdPasteSpecial: TUICommandAction;
     FCmdFont: TUICommandFont;
-    FCmdOutdent: TUICommandAction;
-    FCmdIndent: TUICommandAction;
     FCmdList: TUICommandCollection;
-    FCmdLineSpacing1_0: TUICommandBoolean;
-    FCmdLineSpacing1_15: TUICommandBoolean;
-    FCmdLineSpacing1_5: TUICommandBoolean;
-    FCmdLineSpacing2: TUICommandBoolean;
-    FCmdSpaceAfter: TUICommandBoolean;
     FCmdAlignLeft: TUICommandBoolean;
     FCmdAlignCenter: TUICommandBoolean;
     FCmdAlignRight: TUICommandBoolean;
@@ -163,7 +156,7 @@ var
   ParaFormat: TParaFormat2;
 begin
   ParaFormat := FRichEditEx.ParaFormat;
-  if (Sender = ActionIndent) then
+  if (Sender = CmdIndent) then
     ParaFormat.dxStartIndent := ParaFormat.dxStartIndent + 500
   else if (ParaFormat.dxStartIndent >= 500) then
     ParaFormat.dxStartIndent := ParaFormat.dxStartIndent - 500;
@@ -176,11 +169,11 @@ var
   ParaFormat: TParaFormat2;
 begin
   ParaFormat := FRichEditEx.ParaFormat;
-  if (Sender = ActionLineSpacing10) then
+  if (Sender = CmdLineSpacing10) then
     ParaFormat.bLineSpacingRule := 0
-  else if (Sender = ActionLineSpacing15) then
+  else if (Sender = CmdLineSpacing15) then
     ParaFormat.bLineSpacingRule := 1
-  else if (Sender = ActionLineSpacing20) then
+  else if (Sender = CmdLineSpacing20) then
     ParaFormat.bLineSpacingRule := 2
   else
   begin
@@ -239,15 +232,15 @@ begin
   FRichEditEx.Redo;
 end;
 
-procedure TFormMain.ActionSpaceAfterExecute(Sender: TObject);
+procedure TFormMain.CmdLineSpacingAfterExecute(Sender: TObject);
 var
   ParaFormat: TParaFormat2;
 begin
   ParaFormat := FRichEditEx.ParaFormat;
-  if (FCmdSpaceAfter.Checked) then
-    ParaFormat.dySpaceAfter := 200
+  if (CmdLineSpacingAfter.Checked) then
+    ParaFormat.dySpaceAfter := 0
   else
-    ParaFormat.dySpaceAfter := 0;
+    ParaFormat.dySpaceAfter := 200;
   ParaFormat.dwMask := PFM_SPACEAFTER;
   FRichEditEx.ParaFormat := ParaFormat;
 end;
@@ -268,53 +261,11 @@ begin
         FCmdFont.OnChanged := FontChanged;
       end;
 
-    CmdIndent:
-      begin
-        FCmdIndent := Command as TUICommandAction;
-        FCmdIndent.ActionLink.Action := ActionIndent;
-      end;
-
-    CmdOutdent:
-      begin
-        FCmdOutdent := Command as TUICommandAction;
-        FCmdOutdent.ActionLink.Action := ActionOutdent;
-      end;
-
     CmdList:
       begin
         FCmdList := Command as TUICommandCollection;
         PopulateListGallery;
         FCmdList.ActionLink.Action := ActionList;
-      end;
-
-    CmdLineSpacing1_0:
-      begin
-        FCmdLineSpacing1_0 := Command as TUICommandBoolean;
-        FCmdLineSpacing1_0.ActionLink.Action := ActionLineSpacing10;
-      end;
-
-    CmdLineSpacing1_15:
-      begin
-        FCmdLineSpacing1_15 := Command as TUICommandBoolean;
-        FCmdLineSpacing1_15.ActionLink.Action := ActionLineSpacing115;
-      end;
-
-    CmdLineSpacing1_5:
-      begin
-        FCmdLineSpacing1_5 := Command as TUICommandBoolean;
-        FCmdLineSpacing1_5.ActionLink.Action := ActionLineSpacing15;
-      end;
-
-    CmdLineSpacing2:
-      begin
-        FCmdLineSpacing2 := Command as TUICommandBoolean;
-        FCmdLineSpacing2.ActionLink.Action := ActionLineSpacing20;
-      end;
-
-    CmdLineSpacingAfter:
-      begin
-        FCmdSpaceAfter := Command as TUICommandBoolean;
-        FCmdSpaceAfter.ActionLink.Action := ActionSpaceAfter;
       end;
 
     CmdAlignLeft:
@@ -504,10 +455,10 @@ procedure TFormMain.RibbonLoaded;
 begin
   inherited;
   Color := ColorAdjustLuma(Ribbon.BackgroundColor, -25, False);
-  CmdCut.Control := RichEdit;
-  CmdCopy.Control := RichEdit;
-  CmdPaste.Control := RichEdit;
-  CmdSelectAll.Control := RichEdit;
+//  CmdCut.Control := RichEdit;
+//  CmdCopy.Control := RichEdit;
+//  CmdPaste.Control := RichEdit;
+//  CmdSelectAll.Control := RichEdit;
   UpdateRibbonControls;
 end;
 
@@ -547,13 +498,13 @@ begin
   if Assigned(FCmdList) then
     FCmdList.SelectedItem := ParaFormat.wNumbering;
 
-  ActionLineSpacing10.Checked := (ParaFormat.bLineSpacingRule = 0);
-  ActionLineSpacing15.Checked := (ParaFormat.bLineSpacingRule = 1);
-  ActionLineSpacing20.Checked := (ParaFormat.bLineSpacingRule = 2);
-  ActionLineSpacing115.Checked := (ParaFormat.bLineSpacingRule > 2);
+  CmdLineSpacing10.Checked := (ParaFormat.bLineSpacingRule = 0);
+  CmdLineSpacing15.Checked := (ParaFormat.bLineSpacingRule = 1);
+  CmdLineSpacing20.Checked := (ParaFormat.bLineSpacingRule = 2);
+  CmdLineSpacing115.Checked := (ParaFormat.bLineSpacingRule > 2);
 
   { This is not accurate, but good enough for a demo }
-  ActionSpaceAfter.Checked := (ParaFormat.dySpaceAfter > 0);
+  CmdLineSpacingAfter.Checked := (ParaFormat.dySpaceAfter > 0);
 
   ActionAlignLeft.Checked := (ParaFormat.wAlignment = PFA_LEFT);
   ActionAlignCenter.Checked := (ParaFormat.wAlignment = PFA_CENTER);

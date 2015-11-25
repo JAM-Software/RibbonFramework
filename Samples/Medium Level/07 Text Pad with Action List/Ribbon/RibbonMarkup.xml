@@ -110,9 +110,9 @@
         <Image>Res/LineSpacing_SHC.bmp</Image>
       </Command.SmallHighContrastImages>
     </Command>
-    <Command Name="CmdLineSpacing1_0" LabelTitle="1.0"/>
-    <Command Name="CmdLineSpacing1_15" LabelTitle="1.15"/>
-    <Command Name="CmdLineSpacing1_5" LabelTitle="1.5"/>
+    <Command Name="CmdLineSpacing10" LabelTitle="1.0"/>
+    <Command Name="CmdLineSpacing115" LabelTitle="1.15"/>
+    <Command Name="CmdLineSpacing15" LabelTitle="1.5"/>
     <Command Name="CmdLineSpacing2" LabelTitle="2"/>
     <Command Name="CmdLineSpacingAfter" LabelTitle="Add 10pt space after paragraphs"/>
     <Command Name="CmdAlignLeft" LabelTitle="Align left" TooltipTitle="Align text left (Ctrl+L)" TooltipDescription="Align text to the left.">
@@ -893,9 +893,9 @@
             </SplitButtonGallery>
             <DropDownButton CommandName="CmdLineSpacing">
               <MenuGroup>
-                <ToggleButton CommandName="CmdLineSpacing1_0"/>
-                <ToggleButton CommandName="CmdLineSpacing1_15"/>
-                <ToggleButton CommandName="CmdLineSpacing1_5"/>
+                <ToggleButton CommandName="CmdLineSpacing10"/>
+                <ToggleButton CommandName="CmdLineSpacing115"/>
+                <ToggleButton CommandName="CmdLineSpacing15"/>
                 <ToggleButton CommandName="CmdLineSpacing2"/>
               </MenuGroup>
               <MenuGroup>

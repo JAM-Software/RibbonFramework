@@ -645,7 +645,7 @@ implementation
 
 function RegisterRibbonElements(): TRibbonMarkupElementList;
 begin
-  Result := TRibbonMarkupElementList.Create('');
+  Result := TRibbonMarkupElementList.Create('APPLICATION');
   Result.Add(TRibbonMarkupElement.Create('CmdTabHome', 2, 60001, -1, -1, -1));
   Result.Add(TRibbonMarkupElement.Create('CmdGroupClipboard', 3, 60002, -1, -1, -1));
   Result.Add(TRibbonMarkupElement.Create('CmdPaste', 4, 60007, -1, 60008, 60009));

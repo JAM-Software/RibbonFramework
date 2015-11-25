@@ -27,6 +27,11 @@ $resFileName = ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath) + ".
 $unitName = ([System.IO.Path]::GetFileNameWithoutExtension($xmlFilePath))
 
 $ResourceName = $args[1]
+if ([string]::IsNullOrEmpty($ResourceName))
+{
+  $ResourceName = "APPLICATION"
+}
+
 $UICCDir = $args[2]
 
 # Checks if a file exists under a given location. If yes, the path to this file is returned. If not, we lookup several known locations and return those, if the file is found.

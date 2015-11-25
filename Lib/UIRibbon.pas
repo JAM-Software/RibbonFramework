@@ -658,10 +658,10 @@ begin
       TUICommandType.ctRecentItems:
       begin
         lAction := Self.GetActionForCommand(pCommand);
-        if not Assigned(lAction) then
-          raise Exception.Create(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))
-        else
-          pCommand.Assign(lAction);
+        if Assigned(lAction) then
+          pCommand.Assign(lAction)
+        {$ifdef DEBUG}else
+          OutputDebugString(PChar(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))){$endif};
       end;
     // Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
     // If not found, at least try to localize it.

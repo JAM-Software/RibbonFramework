@@ -37,13 +37,13 @@ _XE5: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
 	msbuild "Samples\Medium Level\04 Gallery\Gallery.dproj"
 	
 "Samples\Medium Level\05 Font Control\Gallery.exe": "Samples\Medium Level\05 Font Control\*.dproj" "Samples\Medium Level\05 Font Control\*.pas" "Samples\Medium Level\05 Font Control\*.dpr"
-	msbuild "Samples\Medium Level\05 Font Control\Gallery.dproj"
+	msbuild "Samples\Medium Level\05 Font Control\FontControl.dproj"
 	
 "Samples\Medium Level\06 Text Pad\Gallery.exe": "Samples\Medium Level\06 Text Pad\*.dproj" "Samples\Medium Level\06 Text Pad\*.pas" "Samples\Medium Level\06 Text Pad\*.dpr"
-	msbuild "Samples\Medium Level\06 Text Pad\Gallery.dproj"
+	msbuild "Samples\Medium Level\06 Text Pad\TextPad.dproj"
 	
 "Samples\Medium Level\07 Text Pad with Action List\Gallery.exe": "Samples\Medium Level\07 Text Pad with Action List\*.dproj" "Samples\Medium Level\07 Text Pad with Action List\*.pas" "Samples\Medium Level\07 Text Pad with Action List\*.dpr"
-	msbuild "Samples\Medium Level\07 Text Pad with Action List\Gallery.dproj"
+	msbuild "Samples\Medium Level\07 Text Pad with Action List\TextPad.dproj"
 	
 _samples: "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe" "Samples\Medium Level\02 Context Popup\ContextPopup.exe" "Samples\Medium Level\03 DropDown Color Picker\DropDownColorPicker.exe" "Samples\Medium Level\04 Gallery\Gallery.exe" "Samples\Medium Level\05 Font Control\Gallery.exe" "Samples\Medium Level\06 Text Pad\Gallery.exe" "Samples\Medium Level\07 Text Pad with Action List\Gallery.exe"
 	

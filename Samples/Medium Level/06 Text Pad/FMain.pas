@@ -92,7 +92,6 @@ var
 implementation
 
 {$R *.dfm}
-{$R 'Ribbon\RibbonMarkup.res'}
 
 uses
   RibbonMarkup;

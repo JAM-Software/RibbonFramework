@@ -13,12 +13,10 @@ object FormMain: TFormMain
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object UIRibbon1: TUIRibbon
+  object Ribbon: TUIRibbon
     Left = 0
     Top = 0
     Width = 635
     Height = 117
-    ResourceName = 'SIMPLERIBBON'
-    ResourceInstance = 0
   end
 end

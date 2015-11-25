@@ -1,2 +1,2 @@
-UICC SimpleRibbonUI.xml SimpleRibbonUI.bml /header:SimpleRibbonUI.h /res:SimpleRibbonUI.rc /name:SIMPLERIBBON
+powershell -f "..\..\..\..\Designer\Bin\Generate.Ribbon.Markup.pas.ps1" SimpleRibbonUI.xml
 pause

@@ -1,7 +1,5 @@
 program SimpleRibbon;
 
-{$R 'SimpleRibbonUI.res' 'Ribbon\SimpleRibbonUI.rc'}
-
 uses
   Forms,
   FMain in 'FMain.pas' {FormMain},
@@ -10,7 +8,8 @@ uses
   UIRibbonUtils in '..\..\..\Lib\UIRibbonUtils.pas',
   UIRibbonApi in '..\..\..\Lib\UIRibbonApi.pas',
   UIRibbonCommands in '..\..\..\Lib\UIRibbonCommands.pas',
-  WinApiEx in '..\..\..\Lib\WinApiEx.pas';
+  WinApiEx in '..\..\..\Lib\WinApiEx.pas',
+  SimpleRibbonUI in 'Ribbon\SimpleRibbonUI.pas';
 
 {$R *.res}
 

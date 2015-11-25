@@ -7,7 +7,7 @@ uses
 
 type
   TFormMain = class(TForm)
-    UIRibbon1: TUIRibbon;
+    Ribbon: TUIRibbon;
   private
     { Private declarations }
   public

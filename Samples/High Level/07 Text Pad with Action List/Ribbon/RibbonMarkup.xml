@@ -1,0 +1,1098 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application xmlns="http://schemas.microsoft.com/windows/2009/Ribbon">
+  <Application.Commands>
+    <Command Name="CmdTabHome" LabelTitle="Home"/>
+    <Command Name="CmdGroupClipboard" LabelTitle="Clipboard">
+      <Command.SmallImages>
+        <Image>Res/Paste_S096.bmp</Image>
+        <Image MinDPI="120">Res/Paste_S120.bmp</Image>
+        <Image MinDPI="144">Res/Paste_S144.bmp</Image>
+        <Image MinDPI="192">Res/Paste_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdPaste" LabelTitle="Paste" TooltipTitle="Paste (Ctrl+V)" TooltipDescription="Paste the contents of the Clipboard.">
+      <Command.SmallImages>
+        <Image>Res/Paste_S096.bmp</Image>
+        <Image MinDPI="120">Res/Paste_S120.bmp</Image>
+        <Image MinDPI="144">Res/Paste_S144.bmp</Image>
+        <Image MinDPI="192">Res/Paste_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/Paste_L096.bmp</Image>
+        <Image MinDPI="120">Res/Paste_L120.bmp</Image>
+        <Image MinDPI="144">Res/Paste_L144.bmp</Image>
+        <Image MinDPI="192">Res/Paste_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdPasteSpecial" LabelTitle="Paste special" TooltipDescription="Paste special (Alt+Ctrl+V)">
+      <Command.SmallImages>
+        <Image>Res/PasteSpecial_S096.bmp</Image>
+        <Image MinDPI="120">Res/PasteSpecial_S120.bmp</Image>
+        <Image MinDPI="144">Res/PasteSpecial_S144.bmp</Image>
+        <Image MinDPI="192">Res/PasteSpecial_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdPasteMore"/>
+    <Command Name="CmdCut" LabelTitle="Cut" TooltipTitle="Cut (Ctrl+X)" TooltipDescription="Cut the selection from the document and put it on the Clipboard.">
+      <Command.SmallImages>
+        <Image>Res/Cut_S096.bmp</Image>
+        <Image MinDPI="120">Res/Cut_S120.bmp</Image>
+        <Image MinDPI="144">Res/Cut_S144.bmp</Image>
+        <Image MinDPI="192">Res/Cut_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdCopy" LabelTitle="Copy" TooltipTitle="Copy (Ctrl+C)" TooltipDescription="Copy the selection and put it on the Clipboard">
+      <Command.SmallImages>
+        <Image>Res/Copy_S096.bmp</Image>
+        <Image MinDPI="120">Res/Copy_S120.bmp</Image>
+        <Image MinDPI="144">Res/Copy_S144.bmp</Image>
+        <Image MinDPI="192">Res/Copy_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdGroupFont" LabelTitle="Font">
+      <Command.SmallImages>
+        <Image>Res/TextColor_S096.bmp</Image>
+        <Image MinDPI="120">Res/TextColor_S120.bmp</Image>
+        <Image MinDPI="144">Res/TextColor_S144.bmp</Image>
+        <Image MinDPI="192">Res/TextColor_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdFont" LabelTitle="Font"/>
+    <Command Name="CmdGroupParagraph" LabelTitle="Paragraph">
+      <Command.SmallImages>
+        <Image>Res/Paragraph_S096.bmp</Image>
+        <Image MinDPI="120">Res/Paragraph_S120.bmp</Image>
+        <Image MinDPI="144">Res/Paragraph_S144.bmp</Image>
+        <Image MinDPI="192">Res/Paragraph_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdOutdent" LabelTitle="Decrease indent" TooltipTitle="Decrease indent" TooltipDescription="Decrease the indent level of the paragraph.">
+      <Command.SmallImages>
+        <Image>Res/Outdent_S096.bmp</Image>
+        <Image MinDPI="120">Res/Outdent_S120.bmp</Image>
+        <Image MinDPI="144">Res/Outdent_S144.bmp</Image>
+        <Image MinDPI="192">Res/Outdent_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/Outdent_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdIndent" LabelTitle="Increase indent" TooltipTitle="Increase indent" TooltipDescription="Increase the indent level of the paragraph.">
+      <Command.SmallImages>
+        <Image>Res/Indent_S096.bmp</Image>
+        <Image MinDPI="120">Res/Indent_S120.bmp</Image>
+        <Image MinDPI="144">Res/Indent_S144.bmp</Image>
+        <Image MinDPI="192">Res/Indent_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/Indent_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdList" LabelTitle="List" TooltipTitle="Start a list" TooltipDescription="Click the arrow to choose different list styles.">
+      <Command.SmallImages>
+        <Image>Res/List_S096.bmp</Image>
+        <Image MinDPI="120">Res/List_S120.bmp</Image>
+        <Image MinDPI="144">Res/List_S144.bmp</Image>
+        <Image MinDPI="192">Res/List_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/List_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdLineSpacing" LabelTitle="Line spacing" TooltipTitle="Line spacing" TooltipDescription="Change the spacing between lines of text. Add or remove the space after paragraphs.">
+      <Command.SmallImages>
+        <Image>Res/LineSpacing_S096.bmp</Image>
+        <Image MinDPI="120">Res/LineSpacing_S120.bmp</Image>
+        <Image MinDPI="144">Res/LineSpacing_S144.bmp</Image>
+        <Image MinDPI="192">Res/LineSpacing_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/LineSpacing_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdLineSpacing10" LabelTitle="1.0"/>
+    <Command Name="CmdLineSpacing115" LabelTitle="1.15"/>
+    <Command Name="CmdLineSpacing15" LabelTitle="1.5"/>
+    <Command Name="CmdLineSpacing2" LabelTitle="2"/>
+    <Command Name="CmdLineSpacingAfter" LabelTitle="Add 10pt space after paragraphs"/>
+    <Command Name="CmdAlignLeft" LabelTitle="Align left" TooltipTitle="Align text left (Ctrl+L)" TooltipDescription="Align text to the left.">
+      <Command.SmallImages>
+        <Image>Res/AlignLeft_S096.bmp</Image>
+        <Image MinDPI="120">Res/AlignLeft_S120.bmp</Image>
+        <Image MinDPI="144">Res/AlignLeft_S144.bmp</Image>
+        <Image MinDPI="192">Res/AlignLeft_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/AlignLeft_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdAlignCenter" LabelTitle="Center" TooltipTitle="Center (Ctrl+E)" TooltipDescription="Center text.">
+      <Command.SmallImages>
+        <Image>Res/AlignCenter_S096.bmp</Image>
+        <Image MinDPI="120">Res/AlignCenter_S120.bmp</Image>
+        <Image MinDPI="144">Res/AlignCenter_S144.bmp</Image>
+        <Image MinDPI="192">Res/AlignCenter_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/AlignCenter_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdAlignRight" LabelTitle="Align right" TooltipTitle="Align text right (Ctrl+R)" TooltipDescription="Align text to the right.">
+      <Command.SmallImages>
+        <Image>Res/AlignRight_S096.bmp</Image>
+        <Image MinDPI="120">Res/AlignRight_S120.bmp</Image>
+        <Image MinDPI="144">Res/AlignRight_S144.bmp</Image>
+        <Image MinDPI="192">Res/AlignRight_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/AlignRight_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdAlignJustify" LabelTitle="Justify" TooltipTitle="Justify (Ctrl+J)" TooltipDescription="Align text to both left and right margins, adding extra space between words as necessary. This creates a clean look along the left and right side of the page.">
+      <Command.SmallImages>
+        <Image>Res/AlignJustify_S096.bmp</Image>
+        <Image MinDPI="120">Res/AlignJustify_S120.bmp</Image>
+        <Image MinDPI="144">Res/AlignJustify_S144.bmp</Image>
+        <Image MinDPI="192">Res/AlignJustify_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/AlignJustify_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdParagraph" LabelTitle="Paragraph" TooltipTitle="Paragraph" TooltipDescription="Show the Paragraph dialog box.">
+      <Command.SmallImages>
+        <Image>Res/Paragraph_S096.bmp</Image>
+        <Image MinDPI="120">Res/Paragraph_S120.bmp</Image>
+        <Image MinDPI="144">Res/Paragraph_S144.bmp</Image>
+        <Image MinDPI="192">Res/Paragraph_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdGroupInsert" LabelTitle="Insert">
+      <Command.SmallImages>
+        <Image>Res/Picture_S096.bmp</Image>
+        <Image MinDPI="120">Res/Picture_S120.bmp</Image>
+        <Image MinDPI="144">Res/Picture_S144.bmp</Image>
+        <Image MinDPI="192">Res/Picture_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdInsertPicture" LabelTitle="Picture" TooltipTitle="Insert picture" TooltipDescription="Insert a picture from a file.">
+      <Command.SmallImages>
+        <Image>Res/Picture_S096.bmp</Image>
+        <Image MinDPI="120">Res/Picture_S120.bmp</Image>
+        <Image MinDPI="144">Res/Picture_S144.bmp</Image>
+        <Image MinDPI="192">Res/Picture_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/Picture_L096.bmp</Image>
+        <Image MinDPI="120">Res/Picture_L120.bmp</Image>
+        <Image MinDPI="144">Res/Picture_L144.bmp</Image>
+        <Image MinDPI="192">Res/Picture_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdInsertPictureMore"/>
+    <Command Name="CmdChangePicture" LabelTitle="Change picture" TooltipTitle="Change picture" TooltipDescription="Change to a different picture, preserving the formatting and size of the current picture.">
+      <Command.SmallImages>
+        <Image>Res/PictureChange_S096.bmp</Image>
+        <Image MinDPI="120">Res/PictureChange_S120.bmp</Image>
+        <Image MinDPI="144">Res/PictureChange_S144.bmp</Image>
+        <Image MinDPI="192">Res/PictureChange_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdResizePicture" LabelTitle="Resize picture" TooltipTitle="Resize picture" TooltipDescription="Scale height and width of current picture with aspect ratio locked or independently.">
+      <Command.SmallImages>
+        <Image>Res/PictureResize_S096.bmp</Image>
+        <Image MinDPI="120">Res/PictureResize_S120.bmp</Image>
+        <Image MinDPI="144">Res/PictureResize_S144.bmp</Image>
+        <Image MinDPI="192">Res/PictureResize_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdPaintDrawing" LabelTitle="Paint drawing" TooltipTitle="Insert Paint drawing (Ctrl+D)" TooltipDescription="Insert draing created in Microsoft Paint.">
+      <Command.SmallImages>
+        <Image>Res/PaintDrawing_S096.bmp</Image>
+        <Image MinDPI="120">Res/PaintDrawing_S120.bmp</Image>
+        <Image MinDPI="144">Res/PaintDrawing_S144.bmp</Image>
+        <Image MinDPI="192">Res/PaintDrawing_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/PaintDrawing_L096.bmp</Image>
+        <Image MinDPI="120">Res/PaintDrawing_L120.bmp</Image>
+        <Image MinDPI="144">Res/PaintDrawing_L144.bmp</Image>
+        <Image MinDPI="192">Res/PaintDrawing_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdDateAndTime" LabelTitle="Date and time" TooltipTitle="Insert date and time" TooltipDescription="Click here for date and time format options">
+      <Command.SmallImages>
+        <Image>Res/DateAndTime_S096.bmp</Image>
+        <Image MinDPI="120">Res/DateAndTime_S120.bmp</Image>
+        <Image MinDPI="144">Res/DateAndTime_S144.bmp</Image>
+        <Image MinDPI="192">Res/DateAndTime_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/DateAndTime_L096.bmp</Image>
+        <Image MinDPI="120">Res/DateAndTime_L120.bmp</Image>
+        <Image MinDPI="144">Res/DateAndTime_L144.bmp</Image>
+        <Image MinDPI="192">Res/DateAndTime_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdInsertObject" LabelTitle="Insert object" TooltipTitle="Insert object" TooltipDescription="Show the Insert object dialog box.">
+      <Command.SmallImages>
+        <Image>Res/InsertObject_S096.bmp</Image>
+        <Image MinDPI="120">Res/InsertObject_S120.bmp</Image>
+        <Image MinDPI="144">Res/InsertObject_S144.bmp</Image>
+        <Image MinDPI="192">Res/InsertObject_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/InsertObject_L096.bmp</Image>
+        <Image MinDPI="120">Res/InsertObject_L120.bmp</Image>
+        <Image MinDPI="144">Res/InsertObject_L144.bmp</Image>
+        <Image MinDPI="192">Res/InsertObject_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdGroupEditing" LabelTitle="Editing">
+      <Command.SmallImages>
+        <Image>Res/Find_S096.bmp</Image>
+        <Image MinDPI="120">Res/Find_S120.bmp</Image>
+        <Image MinDPI="144">Res/Find_S144.bmp</Image>
+        <Image MinDPI="192">Res/Find_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdFind" LabelTitle="Find" TooltipTitle="Find (Ctrl+F)" TooltipDescription="Find text in the document.">
+      <Command.SmallImages>
+        <Image>Res/Find_S096.bmp</Image>
+        <Image MinDPI="120">Res/Find_S120.bmp</Image>
+        <Image MinDPI="144">Res/Find_S144.bmp</Image>
+        <Image MinDPI="192">Res/Find_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdReplace" LabelTitle="Replace" TooltipTitle="Replace (Ctrl+H)" TooltipDescription="Replace text in the document.">
+      <Command.SmallImages>
+        <Image>Res/Replace_S096.bmp</Image>
+        <Image MinDPI="120">Res/Replace_S120.bmp</Image>
+        <Image MinDPI="144">Res/Replace_S144.bmp</Image>
+        <Image MinDPI="192">Res/Replace_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/Replace_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdSelectAll" LabelTitle="Select all" TooltipDescription="Select all (Ctrl+H)">
+      <Command.SmallImages>
+        <Image>Res/SelectAll_S096.bmp</Image>
+        <Image MinDPI="120">Res/SelectAll_S120.bmp</Image>
+        <Image MinDPI="144">Res/SelectAll_S144.bmp</Image>
+        <Image MinDPI="192">Res/SelectAll_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdTabView" LabelTitle="View"/>
+    <Command Name="CmdGroupZoom" LabelTitle="Zoom">
+      <Command.SmallImages>
+        <Image>Res/Zoom_S096.bmp</Image>
+        <Image MinDPI="120">Res/Zoom_S120.bmp</Image>
+        <Image MinDPI="144">Res/Zoom_S144.bmp</Image>
+        <Image MinDPI="192">Res/Zoom_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdZoomIn" LabelTitle="Zoom in" TooltipTitle="Zoom in" TooltipDescription="Zoom in on the document.">
+      <Command.SmallImages>
+        <Image>Res/ZoomIn_S096.bmp</Image>
+        <Image MinDPI="120">Res/ZoomIn_S120.bmp</Image>
+        <Image MinDPI="144">Res/ZoomIn_S144.bmp</Image>
+        <Image MinDPI="192">Res/ZoomIn_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/ZoomIn_L096.bmp</Image>
+        <Image MinDPI="120">Res/ZoomIn_L120.bmp</Image>
+        <Image MinDPI="144">Res/ZoomIn_L144.bmp</Image>
+        <Image MinDPI="192">Res/ZoomIn_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdZoomOut" LabelTitle="Zoom out" TooltipTitle="Zoom out" TooltipDescription="Zoom out on the document.">
+      <Command.SmallImages>
+        <Image>Res/ZoomOut_S096.bmp</Image>
+        <Image MinDPI="120">Res/ZoomOut_S120.bmp</Image>
+        <Image MinDPI="144">Res/ZoomOut_S144.bmp</Image>
+        <Image MinDPI="192">Res/ZoomOut_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/ZoomOut_L096.bmp</Image>
+        <Image MinDPI="120">Res/ZoomOut_L120.bmp</Image>
+        <Image MinDPI="144">Res/ZoomOut_L144.bmp</Image>
+        <Image MinDPI="192">Res/ZoomOut_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdZoom100Percent" LabelTitle="100%" TooltipTitle="100%" TooltipDescription="Zoom the document to 100% of the normal size.">
+      <Command.SmallImages>
+        <Image>Res/Zoom100_S096.bmp</Image>
+        <Image MinDPI="120">Res/Zoom100_S120.bmp</Image>
+        <Image MinDPI="144">Res/Zoom100_S144.bmp</Image>
+        <Image MinDPI="192">Res/Zoom100_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/Zoom100_L096.bmp</Image>
+        <Image MinDPI="120">Res/Zoom100_L120.bmp</Image>
+        <Image MinDPI="144">Res/Zoom100_L144.bmp</Image>
+        <Image MinDPI="192">Res/Zoom100_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdGroupShowOrHide" LabelTitle="Show or hide"/>
+    <Command Name="CmdRuler" LabelTitle="Ruler" TooltipTitle="Ruler" TooltipDescription="Show or hide ruler. You can use ruler to measure and line up text and objects in the document."/>
+    <Command Name="CmdStatusBar" LabelTitle="Status bar" TooltipTitle="Status bar" TooltipDescription="Show or hide status bar at the bottom of the window."/>
+    <Command Name="CmdGroupSettings" LabelTitle="Settings"/>
+    <Command Name="CmdWordWrap" LabelTitle="Word wrap" TooltipTitle="Word wrap" TooltipDescription="Select word wrapping option to change how text appears on your screen. This does not affect how the document looks when you print it.">
+      <Command.SmallImages>
+        <Image>Res/WordWrap_S096.bmp</Image>
+        <Image MinDPI="120">Res/WordWrap_S120.bmp</Image>
+        <Image MinDPI="144">Res/WordWrap_S144.bmp</Image>
+        <Image MinDPI="192">Res/WordWrap_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdNoWrap" LabelTitle="No wrap" TooltipTitle="No wrap" TooltipDescription="No text wrapping."/>
+    <Command Name="CmdWrapToWindow" LabelTitle="Wrap to window" TooltipTitle="Wrap to window" TooltipDescription="Wrap text to window."/>
+    <Command Name="CmdWrapToRuler" LabelTitle="Wrap to ruler" TooltipTitle="Wrap to ruler" TooltipDescription="Wrap text to ruler."/>
+    <Command Name="CmdMeasurementUnits" LabelTitle="Measurement units" TooltipTitle="Measurement units" TooltipDescription="Select measurement units for ruler and page setup.">
+      <Command.SmallImages>
+        <Image>Res/MeasurementUnits_S096.bmp</Image>
+        <Image MinDPI="120">Res/MeasurementUnits_S120.bmp</Image>
+        <Image MinDPI="144">Res/MeasurementUnits_S144.bmp</Image>
+        <Image MinDPI="192">Res/MeasurementUnits_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdInches" LabelTitle="Inches"/>
+    <Command Name="CmdCentimeters" LabelTitle="Centimeters"/>
+    <Command Name="CmdPoints" LabelTitle="Points"/>
+    <Command Name="CmdPicas" LabelTitle="Picas"/>
+    <Command Name="CmdApplicationMenu"/>
+    <Command Name="CmdRecentItems" LabelTitle="Recent documents"/>
+    <Command Name="CmdNew" LabelTitle="&amp;New" TooltipTitle="New (Ctrl+N)" TooltipDescription="Create a new document.">
+      <Command.SmallImages>
+        <Image>Res/New_S096.bmp</Image>
+        <Image MinDPI="120">Res/New_S120.bmp</Image>
+        <Image MinDPI="144">Res/New_S144.bmp</Image>
+        <Image MinDPI="192">Res/New_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/New_L096.bmp</Image>
+        <Image MinDPI="120">Res/New_L120.bmp</Image>
+        <Image MinDPI="144">Res/New_L144.bmp</Image>
+        <Image MinDPI="192">Res/New_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdOpen" LabelTitle="&amp;Open" TooltipTitle="Open (Ctrl+O)" TooltipDescription="Open an existing document.">
+      <Command.SmallImages>
+        <Image>Res/Open_S096.bmp</Image>
+        <Image MinDPI="120">Res/Open_S120.bmp</Image>
+        <Image MinDPI="144">Res/Open_S144.bmp</Image>
+        <Image MinDPI="192">Res/Open_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/Open_L096.bmp</Image>
+        <Image MinDPI="120">Res/Open_L120.bmp</Image>
+        <Image MinDPI="144">Res/Open_L144.bmp</Image>
+        <Image MinDPI="192">Res/Open_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdSave" LabelTitle="&amp;Save" TooltipTitle="Save (Ctrl+S)" TooltipDescription="Save the active document.">
+      <Command.SmallImages>
+        <Image>Res/Save_S096.bmp</Image>
+        <Image MinDPI="120">Res/Save_S120.bmp</Image>
+        <Image MinDPI="144">Res/Save_S144.bmp</Image>
+        <Image MinDPI="192">Res/Save_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/Save_L096.bmp</Image>
+        <Image MinDPI="120">Res/Save_L120.bmp</Image>
+        <Image MinDPI="144">Res/Save_L144.bmp</Image>
+        <Image MinDPI="192">Res/Save_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdSaveAs" LabelTitle="Save &amp;as" TooltipDescription="Save the document with a new name or format.">
+      <Command.SmallImages>
+        <Image>Res/SaveAs_S096.bmp</Image>
+        <Image MinDPI="120">Res/SaveAs_S120.bmp</Image>
+        <Image MinDPI="144">Res/SaveAs_S144.bmp</Image>
+        <Image MinDPI="192">Res/SaveAs_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/SaveAs_L096.bmp</Image>
+        <Image MinDPI="120">Res/SaveAs_L120.bmp</Image>
+        <Image MinDPI="144">Res/SaveAs_L144.bmp</Image>
+        <Image MinDPI="192">Res/SaveAs_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdSaveAsMore"/>
+    <Command Name="CmdHeaderSave" LabelTitle="Save a copy of the document"/>
+    <Command Name="CmdRichTextDocument" LabelTitle="&amp;Rich Text document" LabelDescription="Save the document in the Rich Text format.">
+      <Command.SmallImages>
+        <Image>Res/RichText_S096.bmp</Image>
+        <Image MinDPI="120">Res/RichText_S120.bmp</Image>
+        <Image MinDPI="144">Res/RichText_S144.bmp</Image>
+        <Image MinDPI="192">Res/RichText_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/RichText_L096.bmp</Image>
+        <Image MinDPI="120">Res/RichText_L120.bmp</Image>
+        <Image MinDPI="144">Res/RichText_L144.bmp</Image>
+        <Image MinDPI="192">Res/RichText_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdOfficeOpenXMLDocument" LabelTitle="Office Open &amp;XML document" LabelDescription="Save the document in the Office Open XML format.">
+      <Command.SmallImages>
+        <Image>Res/OfficeXmlDocument_S096.bmp</Image>
+        <Image MinDPI="120">Res/OfficeXmlDocument_S120.bmp</Image>
+        <Image MinDPI="144">Res/OfficeXmlDocument_S144.bmp</Image>
+        <Image MinDPI="192">Res/OfficeXmlDocument_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/OfficeXmlDocument_L096.bmp</Image>
+        <Image MinDPI="120">Res/OfficeXmlDocument_L120.bmp</Image>
+        <Image MinDPI="144">Res/OfficeXmlDocument_L144.bmp</Image>
+        <Image MinDPI="192">Res/OfficeXmlDocument_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdOpenDocumentText" LabelTitle="Open&amp;Document text" LabelDescription="Save the document in the OpenDocument format.">
+      <Command.SmallImages>
+        <Image>Res/OpenDocumentText_S096.bmp</Image>
+        <Image MinDPI="120">Res/OpenDocumentText_S120.bmp</Image>
+        <Image MinDPI="144">Res/OpenDocumentText_S144.bmp</Image>
+        <Image MinDPI="192">Res/OpenDocumentText_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/OpenDocumentText_L096.bmp</Image>
+        <Image MinDPI="120">Res/OpenDocumentText_L120.bmp</Image>
+        <Image MinDPI="144">Res/OpenDocumentText_L144.bmp</Image>
+        <Image MinDPI="192">Res/OpenDocumentText_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdPlainTextDocument" LabelTitle="&amp;Plain text document" LabelDescription="Save the document as plain text without line breaks or formatting.">
+      <Command.SmallImages>
+        <Image>Res/PlainText_S096.bmp</Image>
+        <Image MinDPI="120">Res/PlainText_S120.bmp</Image>
+        <Image MinDPI="144">Res/PlainText_S144.bmp</Image>
+        <Image MinDPI="192">Res/PlainText_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/PlainText_L096.bmp</Image>
+        <Image MinDPI="120">Res/PlainText_L120.bmp</Image>
+        <Image MinDPI="144">Res/PlainText_L144.bmp</Image>
+        <Image MinDPI="192">Res/PlainText_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdOtherFormats" LabelTitle="&amp;Other formats" LabelDescription="Open the Save as dialog box to select from all possible file types.">
+      <Command.SmallImages>
+        <Image>Res/SaveAs_S096.bmp</Image>
+        <Image MinDPI="120">Res/SaveAs_S120.bmp</Image>
+        <Image MinDPI="144">Res/SaveAs_S144.bmp</Image>
+        <Image MinDPI="192">Res/SaveAs_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/SaveAs_L096.bmp</Image>
+        <Image MinDPI="120">Res/SaveAs_L120.bmp</Image>
+        <Image MinDPI="144">Res/SaveAs_L144.bmp</Image>
+        <Image MinDPI="192">Res/SaveAs_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdPrint" LabelTitle="&amp;Print" LabelDescription="Select printer, number of copies and other printing options before printing." TooltipTitle="Print (Ctrl+P)" TooltipDescription="Print the current document.">
+      <Command.SmallImages>
+        <Image>Res/Print_S096.bmp</Image>
+        <Image MinDPI="120">Res/Print_S120.bmp</Image>
+        <Image MinDPI="144">Res/Print_S144.bmp</Image>
+        <Image MinDPI="192">Res/Print_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/Print_L096.bmp</Image>
+        <Image MinDPI="120">Res/Print_L120.bmp</Image>
+        <Image MinDPI="144">Res/Print_L144.bmp</Image>
+        <Image MinDPI="192">Res/Print_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdPrintMore"/>
+    <Command Name="CmdHeaderPrint" LabelTitle="Preview and print the document"/>
+    <Command Name="CmdQuickPrint" LabelTitle="&amp;Quick print" LabelDescription="Send the document directly to the default printer without making changes.">
+      <Command.SmallImages>
+        <Image>Res/PrintQuick_S096.bmp</Image>
+        <Image MinDPI="120">Res/PrintQuick_S120.bmp</Image>
+        <Image MinDPI="144">Res/PrintQuick_S144.bmp</Image>
+        <Image MinDPI="192">Res/PrintQuick_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/PrintQuick_L096.bmp</Image>
+        <Image MinDPI="120">Res/PrintQuick_L120.bmp</Image>
+        <Image MinDPI="144">Res/PrintQuick_L144.bmp</Image>
+        <Image MinDPI="192">Res/PrintQuick_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdPrintPreview" LabelTitle="Print pre&amp;view" LabelDescription="Preview and make changes to pages before printing.">
+      <Command.SmallImages>
+        <Image>Res/PrintPreview_S096.bmp</Image>
+        <Image MinDPI="120">Res/PrintPreview_S120.bmp</Image>
+        <Image MinDPI="144">Res/PrintPreview_S144.bmp</Image>
+        <Image MinDPI="192">Res/PrintPreview_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/PrintPreview_L096.bmp</Image>
+        <Image MinDPI="120">Res/PrintPreview_L120.bmp</Image>
+        <Image MinDPI="144">Res/PrintPreview_L144.bmp</Image>
+        <Image MinDPI="192">Res/PrintPreview_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdPageSetup" LabelTitle="Pa&amp;ge setup" TooltipDescription="Change page layout settings.">
+      <Command.SmallImages>
+        <Image>Res/PageSetup_S096.bmp</Image>
+        <Image MinDPI="120">Res/PageSetup_S120.bmp</Image>
+        <Image MinDPI="144">Res/PageSetup_S144.bmp</Image>
+        <Image MinDPI="192">Res/PageSetup_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/PageSetup_L096.bmp</Image>
+        <Image MinDPI="120">Res/PageSetup_L120.bmp</Image>
+        <Image MinDPI="144">Res/PageSetup_L144.bmp</Image>
+        <Image MinDPI="192">Res/PageSetup_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdEmail" LabelTitle="Sen&amp;d in e-mail" TooltipDescription="Send a copy of the document in an e-mail message as an attachment.">
+      <Command.SmallImages>
+        <Image>Res/E-mail_S096.bmp</Image>
+        <Image MinDPI="120">Res/E-mail_S120.bmp</Image>
+        <Image MinDPI="144">Res/E-mail_S144.bmp</Image>
+        <Image MinDPI="192">Res/E-mail_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/E-mail_L096.bmp</Image>
+        <Image MinDPI="120">Res/E-mail_L120.bmp</Image>
+        <Image MinDPI="144">Res/E-mail_L144.bmp</Image>
+        <Image MinDPI="192">Res/E-mail_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdAbout" LabelTitle="Abou&amp;t WordPad">
+      <Command.SmallImages>
+        <Image>Res/About_S096.bmp</Image>
+        <Image MinDPI="120">Res/About_S120.bmp</Image>
+        <Image MinDPI="144">Res/About_S144.bmp</Image>
+        <Image MinDPI="192">Res/About_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/About_L096.bmp</Image>
+        <Image MinDPI="120">Res/About_L120.bmp</Image>
+        <Image MinDPI="144">Res/About_L144.bmp</Image>
+        <Image MinDPI="192">Res/About_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdExit" LabelTitle="E&amp;xit" TooltipDescription="Exit WordPad">
+      <Command.SmallImages>
+        <Image>Res/Exit_S096.bmp</Image>
+        <Image MinDPI="120">Res/Exit_S120.bmp</Image>
+        <Image MinDPI="144">Res/Exit_S144.bmp</Image>
+        <Image MinDPI="192">Res/Exit_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/Exit_L096.bmp</Image>
+        <Image MinDPI="120">Res/Exit_L120.bmp</Image>
+        <Image MinDPI="144">Res/Exit_L144.bmp</Image>
+        <Image MinDPI="192">Res/Exit_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdTabPrintPreview" LabelTitle="Print preview"/>
+    <Command Name="CmdGroupPrint" LabelTitle="Print">
+      <Command.SmallImages>
+        <Image>Res/Print_S096.bmp</Image>
+        <Image MinDPI="120">Res/Print_S120.bmp</Image>
+        <Image MinDPI="144">Res/Print_S144.bmp</Image>
+        <Image MinDPI="192">Res/Print_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdViewOnePage" LabelTitle="One page" TooltipTitle="One page" TooltipDescription="Zoom the document so that an entire page fits in the window.">
+      <Command.SmallImages>
+        <Image>Res/ViewOnePage_S096.bmp</Image>
+        <Image MinDPI="120">Res/ViewOnePage_S120.bmp</Image>
+        <Image MinDPI="144">Res/ViewOnePage_S144.bmp</Image>
+        <Image MinDPI="192">Res/ViewOnePage_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdViewTwoPages" LabelTitle="Two pages" TooltipTitle="Two pages" TooltipDescription="Zoom the document so that two pages fit in the window.">
+      <Command.SmallImages>
+        <Image>Res/ViewTwoPages_S096.bmp</Image>
+        <Image MinDPI="120">Res/ViewTwoPages_S120.bmp</Image>
+        <Image MinDPI="144">Res/ViewTwoPages_S144.bmp</Image>
+        <Image MinDPI="192">Res/ViewTwoPages_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdGroupPreview" LabelTitle="Preview">
+      <Command.SmallImages>
+        <Image>Res/Preview_S096.bmp</Image>
+        <Image MinDPI="120">Res/Preview_S120.bmp</Image>
+        <Image MinDPI="144">Res/Preview_S144.bmp</Image>
+        <Image MinDPI="192">Res/Preview_S192.bmp</Image>
+      </Command.SmallImages>
+    </Command>
+    <Command Name="CmdPreviousPage" LabelTitle="Previous page" TooltipTitle="Previous page" TooltipDescription="Navigate to the previous page of the document.">
+      <Command.SmallImages>
+        <Image>Res/PagePrevious_S096.bmp</Image>
+        <Image MinDPI="120">Res/PagePrevious_S120.bmp</Image>
+        <Image MinDPI="144">Res/PagePrevious_S144.bmp</Image>
+        <Image MinDPI="192">Res/PagePrevious_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/PagePrevious_L096.bmp</Image>
+        <Image MinDPI="120">Res/PagePrevious_L120.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdNextPage" LabelTitle="Next page" TooltipTitle="Next page" TooltipDescription="Navigate to the next page in the document.">
+      <Command.SmallImages>
+        <Image>Res/PageNext_S096.bmp</Image>
+        <Image MinDPI="120">Res/PageNext_S120.bmp</Image>
+        <Image MinDPI="144">Res/PageNext_S144.bmp</Image>
+        <Image MinDPI="192">Res/PageNext_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/PageNext_L096.bmp</Image>
+        <Image MinDPI="120">Res/PageNext_L120.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdGroupClose" LabelTitle="Close"/>
+    <Command Name="CmdClosePrintPreview" LabelTitle="Close print preview" TooltipTitle="Close print preview" TooltipDescription="Close print preview and return to editing the document.">
+      <Command.SmallImages>
+        <Image>Res/Close_S096.bmp</Image>
+        <Image MinDPI="120">Res/Close_S120.bmp</Image>
+        <Image MinDPI="144">Res/Close_S144.bmp</Image>
+        <Image MinDPI="192">Res/Close_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.LargeImages>
+        <Image>Res/Close_L096.bmp</Image>
+        <Image MinDPI="120">Res/Close_L120.bmp</Image>
+        <Image MinDPI="144">Res/Close_L144.bmp</Image>
+        <Image MinDPI="192">Res/Close_L192.bmp</Image>
+      </Command.LargeImages>
+    </Command>
+    <Command Name="CmdQuickAccessToolbar" LabelTitle="Quick Access Toolbar"/>
+    <Command Name="CmdUndo" LabelTitle="Undo" TooltipTitle="Undo (Ctrl+Z)" TooltipDescription="Reverses the last action.">
+      <Command.SmallImages>
+        <Image>Res/Undo_S096.bmp</Image>
+        <Image MinDPI="120">Res/Undo_S120.bmp</Image>
+        <Image MinDPI="144">Res/Undo_S144.bmp</Image>
+        <Image MinDPI="192">Res/Undo_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/Undo_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdRedo" LabelTitle="Redo" TooltipTitle="Redo (Ctrl+Y)" TooltipDescription="Repeats the last action.">
+      <Command.SmallImages>
+        <Image>Res/Redo_S096.bmp</Image>
+        <Image MinDPI="120">Res/Redo_S120.bmp</Image>
+        <Image MinDPI="144">Res/Redo_S144.bmp</Image>
+        <Image MinDPI="192">Res/Redo_S192.bmp</Image>
+      </Command.SmallImages>
+      <Command.SmallHighContrastImages>
+        <Image>Res/Redo_SHC.bmp</Image>
+      </Command.SmallHighContrastImages>
+    </Command>
+    <Command Name="CmdHelp" LabelTitle="Help" TooltipTitle="WordPad Help (F1)" TooltipDescription="Get help using WordPad."/>
+    <Command Name="CmdContextPopupEditText"/>
+    <Command Name="CmdContextPopupEditPicture"/>
+    <Command Name="CmdObjectProperties" LabelTitle="Object properties"/>
+    <Command Name="CmdOpenObject" LabelTitle="Open object"/>
+    <Command Name="CmdLinks" LabelTitle="Links"/>
+    <Command Name="CmdContextPopupObject"/>
+  </Application.Commands>
+  <Application.Views>
+    <Ribbon Name="Ribbon">
+      <Ribbon.SizeDefinitions>
+        <SizeDefinition Name="ParagraphLayout">
+          <ControlNameMap>
+            <ControlNameDefinition Name="ButtonOutdent"/>
+            <ControlNameDefinition Name="ButtonIndent"/>
+            <ControlNameDefinition Name="ButtonList"/>
+            <ControlNameDefinition Name="ButtonLineSpacing"/>
+            <ControlNameDefinition Name="ButtonAlignLeft"/>
+            <ControlNameDefinition Name="ButtonAlignCenter"/>
+            <ControlNameDefinition Name="ButtonAlignRight"/>
+            <ControlNameDefinition Name="ButtonAlignJustify"/>
+            <ControlNameDefinition Name="ButtonParagraph"/>
+          </ControlNameMap>
+          <GroupSizeDefinition Size="Large">
+            <Row>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonOutdent"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonIndent"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonList"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonLineSpacing"/>
+              </ControlGroup>
+            </Row>
+            <Row>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignLeft"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignCenter"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignRight"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignJustify"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonParagraph"/>
+              </ControlGroup>
+            </Row>
+          </GroupSizeDefinition>
+          <GroupSizeDefinition Size="Medium">
+            <Row>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonOutdent"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonIndent"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonList"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonLineSpacing"/>
+              </ControlGroup>
+            </Row>
+            <Row>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignLeft"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignCenter"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignRight"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignJustify"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonParagraph"/>
+              </ControlGroup>
+            </Row>
+          </GroupSizeDefinition>
+          <GroupSizeDefinition Size="Small">
+            <Row>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonOutdent"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonIndent"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonList"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonLineSpacing"/>
+              </ControlGroup>
+            </Row>
+            <Row>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignLeft"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignCenter"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignRight"/>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonAlignJustify"/>
+              </ControlGroup>
+              <ControlGroup>
+                <ControlSizeDefinition IsLabelVisible="false" ControlName="ButtonParagraph"/>
+              </ControlGroup>
+            </Row>
+          </GroupSizeDefinition>
+        </SizeDefinition>
+      </Ribbon.SizeDefinitions>
+      <Ribbon.ApplicationMenu>
+        <ApplicationMenu CommandName="CmdApplicationMenu">
+          <ApplicationMenu.RecentItems>
+            <RecentItems CommandName="CmdRecentItems" EnablePinning="false"/>
+          </ApplicationMenu.RecentItems>
+          <MenuGroup>
+            <Button CommandName="CmdNew" ApplicationModes="0,1"/>
+            <Button CommandName="CmdOpen" ApplicationModes="0,1"/>
+            <Button CommandName="CmdSave" ApplicationModes="0,1"/>
+            <SplitButton CommandName="CmdSaveAsMore" ApplicationModes="0,1">
+              <SplitButton.ButtonItem>
+                <Button CommandName="CmdSaveAs"/>
+              </SplitButton.ButtonItem>
+              <SplitButton.MenuGroups>
+                <MenuGroup CommandName="CmdHeaderSave" Class="MajorItems">
+                  <Button CommandName="CmdRichTextDocument"/>
+                  <Button CommandName="CmdOfficeOpenXMLDocument"/>
+                  <Button CommandName="CmdOpenDocumentText"/>
+                  <Button CommandName="CmdPlainTextDocument"/>
+                  <Button CommandName="CmdOtherFormats"/>
+                </MenuGroup>
+              </SplitButton.MenuGroups>
+            </SplitButton>
+          </MenuGroup>
+          <MenuGroup>
+            <SplitButton CommandName="CmdPrintMore" ApplicationModes="0,1">
+              <SplitButton.ButtonItem>
+                <Button CommandName="CmdPrint"/>
+              </SplitButton.ButtonItem>
+              <SplitButton.MenuGroups>
+                <MenuGroup CommandName="CmdHeaderPrint" Class="MajorItems">
+                  <Button CommandName="CmdPrint"/>
+                  <Button CommandName="CmdQuickPrint"/>
+                  <Button CommandName="CmdPrintPreview"/>
+                </MenuGroup>
+              </SplitButton.MenuGroups>
+            </SplitButton>
+            <Button CommandName="CmdPageSetup" ApplicationModes="0,1"/>
+            <Button CommandName="CmdEmail" ApplicationModes="0,1"/>
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="CmdAbout" ApplicationModes="0,1"/>
+            <Button CommandName="CmdExit" ApplicationModes="0,1"/>
+          </MenuGroup>
+        </ApplicationMenu>
+      </Ribbon.ApplicationMenu>
+      <Ribbon.HelpButton>
+        <HelpButton CommandName="CmdHelp"/>
+      </Ribbon.HelpButton>
+      <Ribbon.QuickAccessToolbar>
+        <QuickAccessToolbar CommandName="CmdQuickAccessToolbar">
+          <QuickAccessToolbar.ApplicationDefaults>
+            <Button CommandName="CmdNew" ApplicationDefaults.IsChecked="false"/>
+            <Button CommandName="CmdOpen" ApplicationDefaults.IsChecked="false"/>
+            <Button CommandName="CmdSave" ApplicationDefaults.IsChecked="true"/>
+            <Button CommandName="CmdEmail" ApplicationDefaults.IsChecked="false"/>
+            <Button CommandName="CmdQuickPrint" ApplicationDefaults.IsChecked="false"/>
+            <Button CommandName="CmdPrintPreview" ApplicationDefaults.IsChecked="false"/>
+            <Button CommandName="CmdUndo" ApplicationDefaults.IsChecked="true"/>
+            <Button CommandName="CmdRedo" ApplicationDefaults.IsChecked="true"/>
+          </QuickAccessToolbar.ApplicationDefaults>
+        </QuickAccessToolbar>
+      </Ribbon.QuickAccessToolbar>
+      <Ribbon.Tabs>
+        <Tab CommandName="CmdTabHome" ApplicationModes="0">
+          <Tab.ScalingPolicy>
+            <ScalingPolicy>
+              <ScalingPolicy.IdealSizes>
+                <Scale Group="CmdGroupClipboard" Size="Medium"/>
+                <Scale Group="CmdGroupFont" Size="Large"/>
+                <Scale Group="CmdGroupParagraph" Size="Large"/>
+                <Scale Group="CmdGroupInsert" Size="Large"/>
+                <Scale Group="CmdGroupEditing" Size="Medium"/>
+              </ScalingPolicy.IdealSizes>
+              <Scale Group="CmdGroupClipboard" Size="Small"/>
+              <Scale Group="CmdGroupInsert" Size="Popup"/>
+              <Scale Group="CmdGroupEditing" Size="Popup"/>
+              <Scale Group="CmdGroupParagraph" Size="Popup"/>
+              <Scale Group="CmdGroupClipboard" Size="Popup"/>
+              <Scale Group="CmdGroupFont" Size="Medium"/>
+              <Scale Group="CmdGroupFont" Size="Popup"/>
+            </ScalingPolicy>
+          </Tab.ScalingPolicy>
+          <Group CommandName="CmdGroupClipboard" SizeDefinition="ThreeButtons-OneBigAndTwoSmall">
+            <SplitButton CommandName="CmdPasteMore">
+              <SplitButton.ButtonItem>
+                <Button CommandName="CmdPaste"/>
+              </SplitButton.ButtonItem>
+              <Button CommandName="CmdPaste"/>
+              <Button CommandName="CmdPasteSpecial"/>
+            </SplitButton>
+            <Button CommandName="CmdCut"/>
+            <Button CommandName="CmdCopy"/>
+          </Group>
+          <Group CommandName="CmdGroupFont" SizeDefinition="OneFontControl">
+            <FontControl CommandName="CmdFont" FontType="RichFont"/>
+          </Group>
+          <Group CommandName="CmdGroupParagraph" SizeDefinition="ParagraphLayout">
+            <Button CommandName="CmdOutdent"/>
+            <Button CommandName="CmdIndent"/>
+            <SplitButtonGallery CommandName="CmdList" TextPosition="Hide">
+              <SplitButtonGallery.MenuLayout>
+                <FlowMenuLayout Gripper="None" Columns="3"/>
+              </SplitButtonGallery.MenuLayout>
+            </SplitButtonGallery>
+            <DropDownButton CommandName="CmdLineSpacing">
+              <MenuGroup>
+                <ToggleButton CommandName="CmdLineSpacing10"/>
+                <ToggleButton CommandName="CmdLineSpacing115"/>
+                <ToggleButton CommandName="CmdLineSpacing15"/>
+                <ToggleButton CommandName="CmdLineSpacing2"/>
+              </MenuGroup>
+              <MenuGroup>
+                <ToggleButton CommandName="CmdLineSpacingAfter"/>
+              </MenuGroup>
+            </DropDownButton>
+            <ToggleButton CommandName="CmdAlignLeft"/>
+            <ToggleButton CommandName="CmdAlignCenter"/>
+            <ToggleButton CommandName="CmdAlignRight"/>
+            <ToggleButton CommandName="CmdAlignJustify"/>
+            <Button CommandName="CmdParagraph"/>
+          </Group>
+          <Group CommandName="CmdGroupInsert" SizeDefinition="FourButtons">
+            <SplitButton CommandName="CmdInsertPictureMore">
+              <SplitButton.ButtonItem>
+                <Button CommandName="CmdInsertPicture"/>
+              </SplitButton.ButtonItem>
+              <Button CommandName="CmdInsertPicture"/>
+              <Button CommandName="CmdChangePicture"/>
+              <Button CommandName="CmdResizePicture"/>
+            </SplitButton>
+            <Button CommandName="CmdPaintDrawing"/>
+            <Button CommandName="CmdDateAndTime"/>
+            <Button CommandName="CmdInsertObject"/>
+          </Group>
+          <Group CommandName="CmdGroupEditing" SizeDefinition="ThreeButtons">
+            <Button CommandName="CmdFind"/>
+            <Button CommandName="CmdReplace"/>
+            <Button CommandName="CmdSelectAll"/>
+          </Group>
+        </Tab>
+        <Tab CommandName="CmdTabView" ApplicationModes="0">
+          <Tab.ScalingPolicy>
+            <ScalingPolicy>
+              <ScalingPolicy.IdealSizes>
+                <Scale Group="CmdGroupZoom" Size="Large"/>
+                <Scale Group="CmdGroupShowOrHide" Size="Large"/>
+                <Scale Group="CmdGroupSettings" Size="Large"/>
+              </ScalingPolicy.IdealSizes>
+              <Scale Group="CmdGroupZoom" Size="Medium"/>
+              <Scale Group="CmdGroupZoom" Size="Popup"/>
+            </ScalingPolicy>
+          </Tab.ScalingPolicy>
+          <Group CommandName="CmdGroupZoom" SizeDefinition="ThreeButtons">
+            <Button CommandName="CmdZoomIn"/>
+            <Button CommandName="CmdZoomOut"/>
+            <Button CommandName="CmdZoom100Percent"/>
+          </Group>
+          <Group CommandName="CmdGroupShowOrHide">
+            <SizeDefinition>
+              <ControlNameMap>
+                <ControlNameDefinition Name="Ruler"/>
+                <ControlNameDefinition Name="StatusBar"/>
+              </ControlNameMap>
+              <GroupSizeDefinition Size="Large">
+                <ControlSizeDefinition ControlName="Ruler"/>
+                <ControlSizeDefinition ControlName="StatusBar"/>
+              </GroupSizeDefinition>
+              <GroupSizeDefinition Size="Medium">
+                <ControlSizeDefinition ControlName="Ruler"/>
+                <ControlSizeDefinition ControlName="StatusBar"/>
+              </GroupSizeDefinition>
+              <GroupSizeDefinition Size="Small">
+                <ControlSizeDefinition ControlName="Ruler"/>
+                <ControlSizeDefinition ControlName="StatusBar"/>
+              </GroupSizeDefinition>
+            </SizeDefinition>
+            <CheckBox CommandName="CmdRuler"/>
+            <CheckBox CommandName="CmdStatusBar"/>
+          </Group>
+          <Group CommandName="CmdGroupSettings">
+            <SizeDefinition>
+              <ControlNameMap>
+                <ControlNameDefinition Name="Wrap"/>
+                <ControlNameDefinition Name="Units"/>
+              </ControlNameMap>
+              <GroupSizeDefinition Size="Large">
+                <ControlSizeDefinition ControlName="Wrap"/>
+                <ControlSizeDefinition ControlName="Units"/>
+              </GroupSizeDefinition>
+              <GroupSizeDefinition Size="Medium">
+                <ControlSizeDefinition ControlName="Wrap"/>
+                <ControlSizeDefinition ControlName="Units"/>
+              </GroupSizeDefinition>
+              <GroupSizeDefinition Size="Small">
+                <ControlSizeDefinition ControlName="Wrap"/>
+                <ControlSizeDefinition ControlName="Units"/>
+              </GroupSizeDefinition>
+            </SizeDefinition>
+            <DropDownButton CommandName="CmdWordWrap">
+              <Button CommandName="CmdNoWrap"/>
+              <Button CommandName="CmdWrapToWindow"/>
+              <Button CommandName="CmdWrapToRuler"/>
+            </DropDownButton>
+            <DropDownButton CommandName="CmdMeasurementUnits">
+              <Button CommandName="CmdInches"/>
+              <Button CommandName="CmdCentimeters"/>
+              <Button CommandName="CmdPoints"/>
+              <Button CommandName="CmdPicas"/>
+            </DropDownButton>
+          </Group>
+        </Tab>
+        <Tab CommandName="CmdTabPrintPreview" ApplicationModes="1">
+          <Tab.ScalingPolicy>
+            <ScalingPolicy>
+              <ScalingPolicy.IdealSizes>
+                <Scale Group="CmdGroupPrint" Size="Large"/>
+                <Scale Group="CmdGroupZoom" Size="Medium"/>
+                <Scale Group="CmdGroupPreview" Size="Large"/>
+                <Scale Group="CmdGroupClose" Size="Large"/>
+              </ScalingPolicy.IdealSizes>
+              <Scale Group="CmdGroupPrint" Size="Popup"/>
+              <Scale Group="CmdGroupZoom" Size="Small"/>
+              <Scale Group="CmdGroupPreview" Size="Popup"/>
+            </ScalingPolicy>
+          </Tab.ScalingPolicy>
+          <Group CommandName="CmdGroupPrint" ApplicationModes="0,1" SizeDefinition="TwoButtons">
+            <Button CommandName="CmdPrint"/>
+            <Button CommandName="CmdPageSetup"/>
+          </Group>
+          <Group CommandName="CmdGroupZoom" ApplicationModes="0,1" SizeDefinition="ThreeButtons-OneBigAndTwoSmall">
+            <Button CommandName="CmdZoom100Percent"/>
+            <ToggleButton CommandName="CmdViewOnePage"/>
+            <ToggleButton CommandName="CmdViewTwoPages"/>
+          </Group>
+          <Group CommandName="CmdGroupPreview" ApplicationModes="0,1" SizeDefinition="TwoButtons">
+            <Button CommandName="CmdPreviousPage"/>
+            <Button CommandName="CmdNextPage"/>
+          </Group>
+          <Group CommandName="CmdGroupClose" ApplicationModes="0,1" SizeDefinition="OneButton">
+            <Button CommandName="CmdClosePrintPreview"/>
+          </Group>
+        </Tab>
+      </Ribbon.Tabs>
+    </Ribbon>
+    <ContextPopup>
+      <ContextPopup.ContextMenus>
+        <ContextMenu Name="Edit Text">
+          <MenuGroup>
+            <Button CommandName="CmdCut"/>
+            <Button CommandName="CmdCopy"/>
+            <Button CommandName="CmdPaste"/>
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="CmdParagraph"/>
+            <DropDownGallery CommandName="CmdList" TextPosition="Hide">
+              <DropDownGallery.MenuLayout>
+                <FlowMenuLayout Gripper="None" Columns="3"/>
+              </DropDownGallery.MenuLayout>
+            </DropDownGallery>
+          </MenuGroup>
+        </ContextMenu>
+        <ContextMenu Name="Edit Text &amp; Picture">
+          <MenuGroup>
+            <Button CommandName="CmdCut"/>
+            <Button CommandName="CmdCopy"/>
+            <Button CommandName="CmdPaste"/>
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="CmdParagraph"/>
+            <DropDownGallery CommandName="CmdList" TextPosition="Hide">
+              <DropDownGallery.MenuLayout>
+                <FlowMenuLayout Gripper="None" Columns="3"/>
+              </DropDownGallery.MenuLayout>
+            </DropDownGallery>
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="CmdChangePicture"/>
+            <Button CommandName="CmdResizePicture"/>
+          </MenuGroup>
+        </ContextMenu>
+        <ContextMenu Name="Edit Text &amp; Object">
+          <MenuGroup>
+            <Button CommandName="CmdCut"/>
+            <Button CommandName="CmdCopy"/>
+            <Button CommandName="CmdPaste"/>
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="CmdParagraph"/>
+            <DropDownGallery CommandName="CmdList" HasLargeItems="false" TextPosition="Hide">
+              <DropDownGallery.MenuLayout>
+                <FlowMenuLayout Gripper="None" Columns="3"/>
+              </DropDownGallery.MenuLayout>
+            </DropDownGallery>
+          </MenuGroup>
+          <MenuGroup>
+            <Button CommandName="CmdObjectProperties"/>
+            <Button CommandName="CmdOpenObject"/>
+            <Button CommandName="CmdLinks"/>
+          </MenuGroup>
+        </ContextMenu>
+      </ContextPopup.ContextMenus>
+      <ContextPopup.ContextMaps>
+        <ContextMap CommandName="CmdContextPopupEditText" ContextMenu="Edit Text"/>
+        <ContextMap CommandName="CmdContextPopupEditPicture" ContextMenu="Edit Text &amp; Picture"/>
+        <ContextMap CommandName="CmdContextPopupObject" ContextMenu="Edit Text &amp; Object"/>
+      </ContextPopup.ContextMaps>
+    </ContextPopup>
+  </Application.Views>
+</Application>

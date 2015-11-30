@@ -1790,10 +1790,12 @@ begin
   Self.ActionLink.Action := pAction;
 
   // Caption of the Ribbon
-  Self.Caption := Trim(pAction.Caption.Replace('...', ''));// Remve trailing dots, they are uncommon in ribbon bars
-  // Tooltip Title (bold string above the actual Tooltip)
-  // Using the value of caption here because common Microsoft products do this as well.
-  Self.TooltipTitle := pAction.Caption;
+  if not pAction.Caption.IsEmpty then begin
+    Self.Caption := Trim(pAction.Caption.Replace('...', ''));// Remve trailing dots, they are uncommon in ribbon bars
+    // Tooltip Title (bold string above the actual Tooltip)
+    // Using the value of caption here because common Microsoft products do this as well.
+    Self.TooltipTitle := pAction.Caption;
+  end;
   // For some reasons, the Windows Ribbon Framework makes the ToolTipTitle
   // invisible, if it equals the Commands Caption property. To aovid this, we
   // assign an additional space to the end of the string here.
@@ -1803,7 +1805,7 @@ begin
   if pAction.ShortCut <> 0 then
   begin
     Self.ShortCut := pAction.ShortCut;
-    Self.TooltipTitle := Format('%s (%s)', [pAction.Caption, ShortCutToText(pAction.ShortCut)]);
+    Self.TooltipTitle := Format('%s (%s)', [Self.Caption, ShortCutToText(pAction.ShortCut)]);
   end;
   // If action caption contains an ampersand (&), use the char following that
   // ampersand as Keytip for the ribbon element so that ALT+Char can be used the
@@ -1814,9 +1816,10 @@ begin
   end;
   // Use the long hint of the action as TooltipDescription. If no separate
   // strings for Long and Short hint are provided, the regular string is used.
-  Self.TooltipDescription := GetLongHint(pAction.Hint);
+  if not pAction.Hint.IsEmpty then
+    Self.TooltipDescription := GetLongHint(pAction.Hint);
   // Some extra handling for the regular ribbon buttons (ctAction).
-  if Self.CommandType = TUICommandType.ctAction then
+  if (Self.CommandType = TUICommandType.ctAction) and not pAction.Hint.IsEmpty then
   begin
     // Regular ribbon buttons may also have a "Description" (this is not the
     // tooltip that any ribbon element has), which is displayed right beneath

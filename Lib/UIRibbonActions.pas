@@ -106,6 +106,28 @@ type
     property Selected: TUIRecentItem read fSelected write fSelected;
   end;
 
+  TRibbonAction<T:TUICommand> = class(TCustomAction)
+  private
+    fUICommand: T;
+  public
+    property UICommand: T read fUICommand write fUICommand;
+  published
+    property Caption;
+    property Enabled;
+    property HelpContext;
+    property HelpKeyword;
+    property HelpType;
+    property Hint;
+    property SecondaryShortCuts;
+    property ShortCut  default 0;
+    property OnExecute;
+    property OnHint;
+    property OnUpdate;
+  end;
+
+  TRibbonCollectionAction = class(TRibbonAction<TUICommandCollection>)
+  end;
+
 implementation
 
 uses
@@ -218,8 +240,7 @@ end;
 procedure TUICommandCollectionActionLink.SetAction(Value: TBasicAction);
 begin
   inherited;
-  if Assigned(Value) then
-    (Client as TUICommandCollection).OnSelect := CommandSelect;
+  (Client as TUICommandCollection).OnSelect := CommandSelect;
 end;
 
 { TUICommandDecimalActionLink }

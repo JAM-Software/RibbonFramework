@@ -2008,7 +2008,7 @@ begin
   if Succeeded(FFramework.GetUICommandProperty(FCommandId,  Key, Val)) then
     UIPropertyToUInt32(Key, Val, Cardinal(Value))
   else
-    Value := 0;
+    Value := -1;
 end;
 
 procedure TUICommand.GetPropertyValue(const Key: TUIPropertyKey;
@@ -2349,8 +2349,10 @@ begin
     Args.Command := Self;
     Args.Verb := Verb;
     Args.Properties := FProperties;
-    if (CurrentValue = nil) or Failed(UIPropertyToUInt32(UI_PKEY_SelectedItem, CurrentValue^, Cardinal(Args.ItemIndex))) then
+    if (CurrentValue = nil) or Failed(UIPropertyToUInt32(UI_PKEY_SelectedItem, CurrentValue^, Cardinal(Args.ItemIndex))) then begin
       Args.ItemIndex := -1;
+      Self.SelectedItem := Args.ItemIndex;
+    end;//if
     FOnSelect(Args);
   end;
 end;

@@ -655,6 +655,7 @@ begin
       TUICommandType.ctDecimal,
       TUICommandType.ctBoolean,
       TUICommandType.ctColorAnchor,
+      TUICommandType.ctCollection,
       TUICommandType.ctRecentItems:
       begin
         lAction := Self.GetActionForCommand(pCommand);
@@ -671,13 +672,13 @@ begin
           pCommand.Assign(lAction)
         else
           Self.LocalizeRibbonElement(pCommand, lMarkupItem);
-      end
+      end;// ctAnchor
     else
       // If none of the types above, at least try to localize that command by
       // extracting the corresponding resource strings from the resource file.
       Self.LocalizeRibbonElement(pCommand, lMarkupItem);
-    end;
-  end;//if RibbonMapper
+    end;// case/else
+  end;// if RibbonMapper
   if Assigned(FOnCommandCreate) then
     FOnCommandCreate(Self, pCommand);
 end;

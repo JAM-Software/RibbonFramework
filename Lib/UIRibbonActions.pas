@@ -241,6 +241,8 @@ procedure TUICommandCollectionActionLink.SetAction(Value: TBasicAction);
 begin
   inherited;
   (Client as TUICommandCollection).OnSelect := CommandSelect;
+  if (Action is TRibbonCollectionAction) then
+    TRibbonCollectionAction(Action).UICommand := (Client as TUICommandCollection);
 end;
 
 { TUICommandDecimalActionLink }

@@ -25,16 +25,16 @@ type
     ActionNotImplemented: TAction;
     CmdIndent: TAction;
     CmdOutdent: TAction;
-    ActionList: TAction;
+    CmdList: TRibbonCollectionAction;
     CmdLineSpacing10: TAction;
     CmdLineSpacing115: TAction;
     CmdLineSpacing15: TAction;
     CmdLineSpacing20: TAction;
     CmdLineSpacingAfter: TAction;
-    ActionAlignLeft: TAction;
-    ActionAlignCenter: TAction;
-    ActionAlignRight: TAction;
-    ActionAlignJustify: TAction;
+    CmdAlignLeft: TAction;
+    CmdAlignCenter: TAction;
+    CmdAlignRight: TAction;
+    CmdAlignJustify: TAction;
     ActionFind: TSearchFind;
     CmdSelectAll: TEditSelectAll;
     ActionUndo: TAction;
@@ -52,10 +52,10 @@ type
       var Handled: Boolean);
     procedure ActionNotImplementedExecute(Sender: TObject);
     procedure ActionIndentOutdentExecute(Sender: TObject);
-    procedure ActionListExecute(Sender: TObject);
+    procedure CmdListExecute(Sender: TObject);
     procedure ActionLineSpacingExecute(Sender: TObject);
     procedure CmdLineSpacingAfterExecute(Sender: TObject);
-    procedure ActionAlignExecute(Sender: TObject);
+    procedure CmdAlignExecute(Sender: TObject);
     procedure ActionFindAccept(Sender: TObject);
     procedure ActionUndoExecute(Sender: TObject);
     procedure ActionRedoExecute(Sender: TObject);
@@ -70,7 +70,6 @@ type
     FRichEditEx: TRichEditEx;
     FCmdPasteSpecial: TUICommandAction;
     FCmdFont: TUICommandFont;
-    FCmdList: TUICommandCollection;
     FCmdAlignLeft: TUICommandBoolean;
     FCmdAlignCenter: TUICommandBoolean;
     FCmdAlignRight: TUICommandBoolean;
@@ -107,18 +106,18 @@ uses
 
 { TFormMain }
 
-procedure TFormMain.ActionAlignExecute(Sender: TObject);
+procedure TFormMain.CmdAlignExecute(Sender: TObject);
 var
   ParaFormat: TParaFormat2;
 begin
   ParaFormat := FRichEditEx.ParaFormat;
-  if (Sender = ActionAlignLeft) then
+  if (Sender = CmdAlignLeft) then
     ParaFormat.wAlignment := PFA_LEFT
-  else if (Sender = ActionAlignCenter) then
+  else if (Sender = CmdAlignCenter) then
     ParaFormat.wAlignment := PFA_CENTER
-  else if (Sender = ActionAlignRight) then
+  else if (Sender = CmdAlignRight) then
     ParaFormat.wAlignment := PFA_RIGHT
-  else if (Sender = ActionAlignJustify) then
+  else if (Sender = CmdAlignJustify) then
     ParaFormat.wAlignment := PFA_JUSTIFY;
   ParaFormat.dwMask := PFM_ALIGNMENT;
   FRichEditEx.ParaFormat := ParaFormat;
@@ -185,16 +184,20 @@ begin
   UpdateRibbonControls; { Update the "checked" state of the Line Spacing buttons }
 end;
 
-procedure TFormMain.ActionListExecute(Sender: TObject);
+procedure TFormMain.CmdListExecute(Sender: TObject);
 var
   ParaFormat: TParaFormat2;
 begin
   ParaFormat := FRichEditEx.ParaFormat;
-  if (FCmdList.SelectedItem < 0) then
-    { "Button" part of split button has been clicked }
-    ParaFormat.wNumbering := PFN_BULLET
+   if (CmdList.UICommand.SelectedItem < 0) then begin // Has the "Button" part of split button been clicked?
+    // toggle
+    if ParaFormat.wNumbering > 0 then
+      ParaFormat.wNumbering := 0
+    else
+      ParaFormat.wNumbering := PFN_BULLET
+  end//if < 0
   else
-    ParaFormat.wNumbering := FCmdList.SelectedItem;
+    ParaFormat.wNumbering := CmdList.UICommand.SelectedItem;
   ParaFormat.dwMask := PFM_NUMBERING;
   FRichEditEx.ParaFormat := ParaFormat;
 end;
@@ -253,51 +256,14 @@ end;
 procedure TFormMain.CommandCreated(const Sender: TUIRibbon;
   const Command: TUICommand);
 begin
-  inherited;
+  if Command = CmdList.UICommand then
+    PopulateListGallery;
+
   case Command.CommandId of
     CmdFont:
       begin
         FCmdFont := Command as TUICommandFont;
         FCmdFont.OnChanged := FontChanged;
-      end;
-
-    CmdList:
-      begin
-        FCmdList := Command as TUICommandCollection;
-        PopulateListGallery;
-        FCmdList.ActionLink.Action := ActionList;
-      end;
-
-    CmdAlignLeft:
-      begin
-        FCmdAlignLeft := Command as TUICommandBoolean;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdAlignLeft.ActionLink.Action := ActionAlignLeft;
-      end;
-
-    CmdAlignCenter:
-      begin
-        FCmdAlignCenter := Command as TUICommandBoolean;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdAlignCenter.ActionLink.Action := ActionAlignCenter;
-      end;
-
-    CmdAlignRight:
-      begin
-        FCmdAlignRight := Command as TUICommandBoolean;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdAlignRight.ActionLink.Action := ActionAlignRight;
-      end;
-
-    CmdAlignJustify:
-      begin
-        FCmdAlignJustify := Command as TUICommandBoolean;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdAlignJustify.ActionLink.Action := ActionAlignJustify;
       end;
 
     CmdFind:
@@ -447,7 +413,7 @@ begin
     Item := TUIGalleryCollectionItem.Create;
     Item.LabelText := LABELS[I];
     Item.Image := TUIImage.Create(HInstance, ResourceName);
-    FCmdList.Items.Add(Item);
+    CmdList.UICommand.Items.Add(Item);
   end;
 end;
 
@@ -495,8 +461,8 @@ begin
   if Assigned(FCmdFont) then
     FCmdFont.Font.Assign(FRichEditEx.CharFormat);
 
-  if Assigned(FCmdList) then
-    FCmdList.SelectedItem := ParaFormat.wNumbering;
+  if Assigned(CmdList.UICommand) then
+    CmdList.UICommand.SelectedItem := ParaFormat.wNumbering;
 
   CmdLineSpacing10.Checked := (ParaFormat.bLineSpacingRule = 0);
   CmdLineSpacing15.Checked := (ParaFormat.bLineSpacingRule = 1);
@@ -506,10 +472,10 @@ begin
   { This is not accurate, but good enough for a demo }
   CmdLineSpacingAfter.Checked := (ParaFormat.dySpaceAfter > 0);
 
-  ActionAlignLeft.Checked := (ParaFormat.wAlignment = PFA_LEFT);
-  ActionAlignCenter.Checked := (ParaFormat.wAlignment = PFA_CENTER);
-  ActionAlignRight.Checked := (ParaFormat.wAlignment = PFA_RIGHT);
-  ActionAlignJustify.Checked := (ParaFormat.wAlignment = PFA_JUSTIFY);
+  CmdAlignLeft.Checked := (ParaFormat.wAlignment = PFA_LEFT);
+  CmdAlignCenter.Checked := (ParaFormat.wAlignment = PFA_CENTER);
+  CmdAlignRight.Checked := (ParaFormat.wAlignment = PFA_RIGHT);
+  CmdAlignJustify.Checked := (ParaFormat.wAlignment = PFA_JUSTIFY);
 
   ActionUndo.Enabled := FRichEditEx.CanUndo;
   ActionRedo.Enabled := FRichEditEx.CanRedo;

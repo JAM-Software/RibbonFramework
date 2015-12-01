@@ -88,8 +88,9 @@ object FormMain: TFormMain
     object CmdOutdent: TAction
       OnExecute = ActionIndentOutdentExecute
     end
-    object ActionList: TAction
-      OnExecute = ActionListExecute
+    object CmdList: TRibbonCollectionAction
+      Category = 'Ribbon Framework'
+      OnExecute = CmdListExecute
     end
     object CmdLineSpacing10: TAction
       Caption = '1.0'
@@ -110,18 +111,18 @@ object FormMain: TFormMain
     object CmdLineSpacingAfter: TAction
       OnExecute = CmdLineSpacingAfterExecute
     end
-    object ActionAlignLeft: TAction
-      OnExecute = ActionAlignExecute
+    object CmdAlignLeft: TAction
+      OnExecute = CmdAlignExecute
     end
-    object ActionAlignCenter: TAction
-      OnExecute = ActionAlignExecute
+    object CmdAlignCenter: TAction
+      OnExecute = CmdAlignExecute
     end
-    object ActionAlignRight: TAction
-      OnExecute = ActionAlignExecute
+    object CmdAlignRight: TAction
+      OnExecute = CmdAlignExecute
     end
-    object ActionAlignJustify: TAction
-      Caption = 'ActionAlignJustify'
-      OnExecute = ActionAlignExecute
+    object CmdAlignJustify: TAction
+      Caption = 'CmdAlignJustify'
+      OnExecute = CmdAlignExecute
     end
     object ActionFind: TSearchFind
       Category = 'Search'

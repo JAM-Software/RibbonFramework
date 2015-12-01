@@ -146,23 +146,26 @@ object FormMain: TFormMain
       Category = 'Edit'
       OnExecute = CmdRedoExecute
     end
-    object ActionPrint: TPrintDlg
-      Category = 'Dialog'
+    object CmdPrint: TPrintDlg
+      Category = 'Print'
       Caption = '&Print...'
       ImageIndex = 14
       ShortCut = 16464
-      OnAccept = ActionPrintAccept
+      OnAccept = CmdPrintAccept
     end
-    object ActionQuickPrint: TAction
-      OnExecute = ActionQuickPrintExecute
+    object CmdQuickPrint: TAction
+      Category = 'Print'
+      OnExecute = CmdQuickPrintExecute
     end
-    object ActionPrintPreview: TAction
-      OnExecute = ActionPrintPreviewExecute
+    object CmdPrintPreview: TAction
+      Category = 'Print'
+      OnExecute = CmdPrintPreviewExecute
     end
-    object ActionClosePrintPreview: TAction
-      OnExecute = ActionClosePrintPreviewExecute
+    object CmdClosePrintPreview: TAction
+      Category = 'Print'
+      OnExecute = CmdClosePrintPreviewExecute
     end
-    object ActionExit: TFileExit
+    object CmdExit: TFileExit
       Category = 'File'
       Caption = 'E&xit'
       Hint = 'Exit|Quits the application'

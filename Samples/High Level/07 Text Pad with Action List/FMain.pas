@@ -39,11 +39,11 @@ type
     CmdSelectAll: TEditSelectAll;
     CmdUndo: TAction;
     CmdRedo: TAction;
-    ActionPrint: TPrintDlg;
-    ActionQuickPrint: TAction;
-    ActionPrintPreview: TAction;
-    ActionClosePrintPreview: TAction;
-    ActionExit: TFileExit;
+    CmdPrint: TPrintDlg;
+    CmdQuickPrint: TAction;
+    CmdPrintPreview: TAction;
+    CmdClosePrintPreview: TAction;
+    CmdExit: TFileExit;
     Ribbon: TUIRibbon;
     CmdPasteSpecial: TAction;
     procedure RichEditSelectionChange(Sender: TObject);
@@ -59,21 +59,16 @@ type
     procedure CmdFindAccept(Sender: TObject);
     procedure CmdUndoExecute(Sender: TObject);
     procedure CmdRedoExecute(Sender: TObject);
-    procedure ActionPrintAccept(Sender: TObject);
-    procedure ActionQuickPrintExecute(Sender: TObject);
-    procedure ActionPrintPreviewExecute(Sender: TObject);
-    procedure ActionClosePrintPreviewExecute(Sender: TObject);
+    procedure CmdPrintAccept(Sender: TObject);
+    procedure CmdQuickPrintExecute(Sender: TObject);
+    procedure CmdPrintPreviewExecute(Sender: TObject);
+    procedure CmdClosePrintPreviewExecute(Sender: TObject);
     procedure RibbonLoaded(Sender: TObject);
     procedure CommandCreated(const Sender: TUIRibbon; const Command: TUICommand);
   private
     { Private declarations }
     FRichEditEx: TRichEditEx;
     FCmdFont: TUICommandFont;
-    FCmdPrint: TUICommandAction;
-    FCmdQuickPrint: TUICommandAction;
-    FCmdPrintPreview: TUICommandAction;
-    FCmdClosePrintPreview: TUICommandAction;
-    FCmdExit: TUICommandAction;
     FPrintPreviewMode: Boolean;
     procedure UpdateRibbonControls;
     procedure PopulateListGallery;
@@ -115,7 +110,7 @@ begin
   UpdateRibbonControls; { Update Checked state of alignment buttons }
 end;
 
-procedure TFormMain.ActionClosePrintPreviewExecute(Sender: TObject);
+procedure TFormMain.CmdClosePrintPreviewExecute(Sender: TObject);
 begin
   FPrintPreviewMode := False;
   Ribbon.SetApplicationModes([0]);
@@ -198,12 +193,12 @@ begin
   ShowMessage('Not implemented!');
 end;
 
-procedure TFormMain.ActionPrintAccept(Sender: TObject);
+procedure TFormMain.CmdPrintAccept(Sender: TObject);
 begin
   RichEdit.Print('TextPad');
 end;
 
-procedure TFormMain.ActionPrintPreviewExecute(Sender: TObject);
+procedure TFormMain.CmdPrintPreviewExecute(Sender: TObject);
 begin
   FPrintPreviewMode := not FPrintPreviewMode;
 
@@ -216,7 +211,7 @@ begin
   RichEdit.Enabled := (not FPrintPreviewMode);
 end;
 
-procedure TFormMain.ActionQuickPrintExecute(Sender: TObject);
+procedure TFormMain.CmdQuickPrintExecute(Sender: TObject);
 begin
   RichEdit.Print('TextPad');
 end;
@@ -256,35 +251,6 @@ begin
         FCmdFont.OnChanged := FontChanged;
       end;
 
-    CmdPrint:
-      begin
-        FCmdPrint := Command as TUICommandAction;
-        FCmdPrint.ActionLink.Action := ActionPrint;
-      end;
-
-    CmdQuickPrint:
-      begin
-        FCmdQuickPrint := Command as TUICommandAction;
-        FCmdQuickPrint.ActionLink.Action := ActionQuickPrint;
-      end;
-
-    CmdPrintPreview:
-      begin
-        FCmdPrintPreview := Command as TUICommandAction;
-        FCmdPrintPreview.ActionLink.Action := ActionPrintPreview;
-      end;
-
-    CmdClosePrintPreview:
-      begin
-        FCmdClosePrintPreview := Command as TUICommandAction;
-        FCmdClosePrintPreview.ActionLink.Action := ActionClosePrintPreview;
-      end;
-
-    CmdExit:
-      begin
-        FCmdExit := Command as TUICommandAction;
-        FCmdExit.ActionLink.Action := ActionExit;
-      end;
 
     { These commands are not implemented in this demo }
     CmdReplace,

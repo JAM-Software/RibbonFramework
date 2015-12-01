@@ -124,13 +124,13 @@ object FormMain: TFormMain
       Caption = 'CmdAlignJustify'
       OnExecute = CmdAlignExecute
     end
-    object ActionFind: TSearchFind
+    object CmdFind: TSearchFind
       Category = 'Search'
       Caption = '&Find...'
       Hint = 'Find|Finds the specified text'
       ImageIndex = 34
       ShortCut = 16454
-      OnAccept = ActionFindAccept
+      OnAccept = CmdFindAccept
     end
     object CmdSelectAll: TEditSelectAll
       Category = 'Edit'
@@ -138,11 +138,13 @@ object FormMain: TFormMain
       Hint = 'Select All|Selects the entire document'
       ShortCut = 16449
     end
-    object ActionUndo: TAction
-      OnExecute = ActionUndoExecute
+    object CmdUndo: TAction
+      Category = 'Edit'
+      OnExecute = CmdUndoExecute
     end
-    object ActionRedo: TAction
-      OnExecute = ActionRedoExecute
+    object CmdRedo: TAction
+      Category = 'Edit'
+      OnExecute = CmdRedoExecute
     end
     object ActionPrint: TPrintDlg
       Category = 'Dialog'

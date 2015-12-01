@@ -35,10 +35,10 @@ type
     CmdAlignCenter: TAction;
     CmdAlignRight: TAction;
     CmdAlignJustify: TAction;
-    ActionFind: TSearchFind;
+    CmdFind: TSearchFind;
     CmdSelectAll: TEditSelectAll;
-    ActionUndo: TAction;
-    ActionRedo: TAction;
+    CmdUndo: TAction;
+    CmdRedo: TAction;
     ActionPrint: TPrintDlg;
     ActionQuickPrint: TAction;
     ActionPrintPreview: TAction;
@@ -56,9 +56,9 @@ type
     procedure ActionLineSpacingExecute(Sender: TObject);
     procedure CmdLineSpacingAfterExecute(Sender: TObject);
     procedure CmdAlignExecute(Sender: TObject);
-    procedure ActionFindAccept(Sender: TObject);
-    procedure ActionUndoExecute(Sender: TObject);
-    procedure ActionRedoExecute(Sender: TObject);
+    procedure CmdFindAccept(Sender: TObject);
+    procedure CmdUndoExecute(Sender: TObject);
+    procedure CmdRedoExecute(Sender: TObject);
     procedure ActionPrintAccept(Sender: TObject);
     procedure ActionQuickPrintExecute(Sender: TObject);
     procedure ActionPrintPreviewExecute(Sender: TObject);
@@ -68,16 +68,7 @@ type
   private
     { Private declarations }
     FRichEditEx: TRichEditEx;
-    FCmdPasteSpecial: TUICommandAction;
     FCmdFont: TUICommandFont;
-    FCmdAlignLeft: TUICommandBoolean;
-    FCmdAlignCenter: TUICommandBoolean;
-    FCmdAlignRight: TUICommandBoolean;
-    FCmdAlignJustify: TUICommandBoolean;
-    FCmdFind: TUICommandAction;
-    FCmdReplace: TUICommandAction;
-    FCmdUndo: TUICommandAction;
-    FCmdRedo: TUICommandAction;
     FCmdPrint: TUICommandAction;
     FCmdQuickPrint: TUICommandAction;
     FCmdPrintPreview: TUICommandAction;
@@ -131,22 +122,22 @@ begin
   RichEdit.Enabled := True;
 end;
 
-procedure TFormMain.ActionFindAccept(Sender: TObject);
+procedure TFormMain.CmdFindAccept(Sender: TObject);
 var
   SearchTypes: TSearchTypes;
   Pos: Integer;
 begin
   SearchTypes := [];
-  if (frWholeWord in ActionFind.Dialog.Options) then
+  if (frWholeWord in CmdFind.Dialog.Options) then
     Include(SearchTypes, stWholeWord);
-  if (frMatchCase in ActionFind.Dialog.Options) then
+  if (frMatchCase in CmdFind.Dialog.Options) then
     Include(SearchTypes, stMatchCase);
-  Pos := RichEdit.FindText(ActionFind.Dialog.FindText, RichEdit.SelStart + 1,
+  Pos := RichEdit.FindText(CmdFind.Dialog.FindText, RichEdit.SelStart + 1,
     MaxInt - RichEdit.SelStart - 1, SearchTypes);
   if (Pos >= 0) then
   begin
     RichEdit.SelStart := Pos;
-    RichEdit.SelLength := Length(ActionFind.Dialog.FindText);
+    RichEdit.SelLength := Length(CmdFind.Dialog.FindText);
   end;
 end;
 
@@ -230,7 +221,7 @@ begin
   RichEdit.Print('TextPad');
 end;
 
-procedure TFormMain.ActionRedoExecute(Sender: TObject);
+procedure TFormMain.CmdRedoExecute(Sender: TObject);
 begin
   FRichEditEx.Redo;
 end;
@@ -248,13 +239,12 @@ begin
   FRichEditEx.ParaFormat := ParaFormat;
 end;
 
-procedure TFormMain.ActionUndoExecute(Sender: TObject);
+procedure TFormMain.CmdUndoExecute(Sender: TObject);
 begin
   FRichEditEx.Undo;
 end;
 
-procedure TFormMain.CommandCreated(const Sender: TUIRibbon;
-  const Command: TUICommand);
+procedure TFormMain.CommandCreated(const Sender: TUIRibbon; const Command: TUICommand);
 begin
   if Command = CmdList.UICommand then
     PopulateListGallery;
@@ -264,36 +254,6 @@ begin
       begin
         FCmdFont := Command as TUICommandFont;
         FCmdFont.OnChanged := FontChanged;
-      end;
-
-    CmdFind:
-      begin
-        FCmdFind := Command as TUICommandAction;
-        FCmdFind.SetShortCut([ssCtrl], 'F');
-        FCmdFind.ActionLink.Action := ActionFind;
-      end;
-
-    CmdReplace:
-      begin
-        FCmdReplace := Command as TUICommandAction;
-        FCmdReplace.SetShortCut([ssCtrl], 'H');
-        FCmdReplace.ActionLink.Action := ActionNotImplemented;
-      end;
-
-    CmdUndo:
-      begin
-        FCmdUndo := Command as TUICommandAction;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdUndo.ActionLink.Action := ActionUndo;
-      end;
-
-    CmdRedo:
-      begin
-        FCmdRedo := Command as TUICommandAction;
-        { No need to set keyboard shortcut.
-          TRichEdit handles this command natively. }
-        FCmdRedo.ActionLink.Action := ActionRedo;
       end;
 
     CmdPrint:
@@ -327,6 +287,7 @@ begin
       end;
 
     { These commands are not implemented in this demo }
+    CmdReplace,
     CmdParagraph,
     CmdInsertPicture,
     CmdChangePicture,
@@ -452,8 +413,7 @@ begin
 
   CmdPaste.Enabled := FRichEditEx.CanPaste;
 
-  if Assigned(FCmdPasteSpecial) then
-    FCmdPasteSpecial.Enabled := FRichEditEx.CanPaste;
+  CmdPasteSpecial.Enabled := FRichEditEx.CanPaste;
 
   CmdCopy.Enabled := (RichEdit.SelLength > 0);
   CmdCut.Enabled := (RichEdit.SelLength > 0);
@@ -477,8 +437,8 @@ begin
   CmdAlignRight.Checked := (ParaFormat.wAlignment = PFA_RIGHT);
   CmdAlignJustify.Checked := (ParaFormat.wAlignment = PFA_JUSTIFY);
 
-  ActionUndo.Enabled := FRichEditEx.CanUndo;
-  ActionRedo.Enabled := FRichEditEx.CanRedo;
+  CmdUndo.Enabled := FRichEditEx.CanUndo;
+  CmdRedo.Enabled := FRichEditEx.CanRedo;
 end;
 
 end.

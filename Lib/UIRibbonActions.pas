@@ -119,7 +119,7 @@ type
     property HelpType;
     property Hint;
     property SecondaryShortCuts;
-    property ShortCut  default 0;
+    property ShortCut default 0;
     property OnExecute;
     property OnHint;
     property OnUpdate;
@@ -127,6 +127,18 @@ type
 
   TRibbonCollectionAction = class(TRibbonAction<TUICommandCollection>)
   end;
+
+  TRibbonFontAction = class(TRibbonAction<TUICommandFont>)
+  strict private
+    fOnChanged: TUICommandFontChangedEvent;
+  published
+    { Fired when one or more of the font properties has changed.
+      When the Verb is cvExecute or cvPreview, then the Font parameter of the
+      event contains the new font settings. Otherwise, the Font parameter
+      contains the current font settings. }
+    property OnChanged: TUICommandFontChangedEvent read fOnChanged write fOnChanged;
+  end;
+
 
 implementation
 
@@ -294,7 +306,10 @@ end;
 procedure TUICommandFontActionLink.CommandChanged(
   const Args: TUICommandFontEventArgs);
 begin
-  if Assigned(Action) then
+  if not Assigned(Action) then exit;
+  if (Action is TRibbonFontAction) and Assigned(TRibbonFontAction(Action).OnChanged) then
+    TRibbonFontAction(Action).OnChanged(Args)
+  else
     Action.Execute;
 end;
 
@@ -303,6 +318,8 @@ begin
   inherited;
   if Assigned(Value) then
     (Client as TUICommandFont).OnChanged := CommandChanged;
+  if (Action is TRibbonFontAction) then
+    TRibbonFontAction(Action).UICommand := (Client as TUICommandFont);
 end;
 
 { TUICommandColorAnchorActionLink }

@@ -177,5 +177,10 @@ object FormMain: TFormMain
       ShortCut = 24662
       OnExecute = ActionNotImplementedExecute
     end
+    object CmdFont: TRibbonFontAction
+      Category = 'Ribbon Framework'
+      Caption = 'Font'
+      OnChanged = CmdFontChanged
+    end
   end
 end

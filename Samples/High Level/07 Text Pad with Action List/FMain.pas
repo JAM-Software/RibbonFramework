@@ -46,6 +46,7 @@ type
     CmdExit: TFileExit;
     Ribbon: TUIRibbon;
     CmdPasteSpecial: TAction;
+    CmdFont: TRibbonFontAction;
     procedure RichEditSelectionChange(Sender: TObject);
     procedure RichEditChange(Sender: TObject);
     procedure RichEditContextPopup(Sender: TObject; MousePos: TPoint;
@@ -63,16 +64,15 @@ type
     procedure CmdQuickPrintExecute(Sender: TObject);
     procedure CmdPrintPreviewExecute(Sender: TObject);
     procedure CmdClosePrintPreviewExecute(Sender: TObject);
+    procedure CmdFontChanged(const Args: TUICommandFontEventArgs);
     procedure RibbonLoaded(Sender: TObject);
     procedure CommandCreated(const Sender: TUIRibbon; const Command: TUICommand);
   private
     { Private declarations }
     FRichEditEx: TRichEditEx;
-    FCmdFont: TUICommandFont;
     FPrintPreviewMode: Boolean;
     procedure UpdateRibbonControls;
     procedure PopulateListGallery;
-    procedure FontChanged(const Args: TUICommandFontEventArgs);
   public
     { Public declarations }
     constructor Create(Owner: TComponent); override;
@@ -190,7 +190,7 @@ end;
 
 procedure TFormMain.ActionNotImplementedExecute(Sender: TObject);
 begin
-  ShowMessage('Not implemented!');
+   ShowMessage('Not implemented!');
 end;
 
 procedure TFormMain.CmdPrintAccept(Sender: TObject);
@@ -245,13 +245,6 @@ begin
     PopulateListGallery;
 
   case Command.CommandId of
-    CmdFont:
-      begin
-        FCmdFont := Command as TUICommandFont;
-        FCmdFont.OnChanged := FontChanged;
-      end;
-
-
     { These commands are not implemented in this demo }
     CmdReplace,
     CmdParagraph,
@@ -306,7 +299,7 @@ begin
   inherited;
 end;
 
-procedure TFormMain.FontChanged(const Args: TUICommandFontEventArgs);
+procedure TFormMain.CmdFontChanged(const Args: TUICommandFontEventArgs);
 var
   CharFormat: TCharFormat2;
 begin
@@ -384,8 +377,8 @@ begin
   CmdCopy.Enabled := (RichEdit.SelLength > 0);
   CmdCut.Enabled := (RichEdit.SelLength > 0);
 
-  if Assigned(FCmdFont) then
-    FCmdFont.Font.Assign(FRichEditEx.CharFormat);
+  if Assigned(CmdFont.UICommand) then
+    CmdFont.UICommand.Font.Assign(FRichEditEx.CharFormat);
 
   if Assigned(CmdList.UICommand) then
     CmdList.UICommand.SelectedItem := ParaFormat.wNumbering;

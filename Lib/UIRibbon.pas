@@ -656,6 +656,7 @@ begin
       TUICommandType.ctBoolean,
       TUICommandType.ctColorAnchor,
       TUICommandType.ctCollection,
+      TUICommandType.ctFont,
       TUICommandType.ctRecentItems:
       begin
         lAction := Self.GetActionForCommand(pCommand);
@@ -664,8 +665,8 @@ begin
         {$ifdef DEBUG}else
           OutputDebugString(PChar(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))){$endif};
       end;
-    // Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
-    // If not found, at least try to localize it.
+      // Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
+      // If not found, at least try to localize it.
       TUICommandType.ctAnchor: begin
         lAction := Self.GetActionForCommand(pCommand);
         if Assigned(lAction) then

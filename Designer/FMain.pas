@@ -144,7 +144,7 @@ resourcestring
   RS_CANNOT_LOAD_DLL = 'Unable to load Ribbon Resource DLL';
   RS_MODIFIED = 'Modified';
   RS_TOOLS_HEADER = 'Cannot find compilation tools';
-  RS_TOOLS_MESSAGE = 'One or more ribbon compilation tools (RC.exe, UICC.exe and/or DCC32.exe) could not be found.' + sLineBreak +
+  RS_TOOLS_MESSAGE = 'One or more ribbon compilation tools (UICC.exe and DCC32.exe) could not be found.' + sLineBreak +
     'You need these tools to compile and preview ribbons.' + sLineBreak +
     'Do you want to open the settings dialog box to specify the locations of these tools now?';
   RS_RIBBON_DESIGNER = 'Ribbon Designer';

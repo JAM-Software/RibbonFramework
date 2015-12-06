@@ -27,6 +27,8 @@ type
     constructor Create; overload;
     procedure Save;
 
+    /// Tries to find the used tool on the current system if their paths are empty
+    procedure DetectTools();
     function ToolsAvailable: Boolean;
 
     class property Instance: TSettings read FInstance;
@@ -69,12 +71,25 @@ end;
 
 constructor TSettings.Create(const Dummy: Integer);
 var
-  Reg: TRegistry;
-  SdkPath, BdsKey, BdsPath: String;
-  BdsVersion: Integer;
   Path: array [0..MAX_PATH] of Char;
 begin
   inherited Create;
+  if Succeeded(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, Path)) then
+  begin
+    FSettingsFilename := Path;
+    FSettingsFilename := TPath.Combine(FSettingsFilename, 'Ribbon Designer');
+    ForceDirectories(FSettingsFilename);
+    FSettingsFilename := TPath.Combine(FSettingsFilename, 'Settings.xml');
+    Load;
+  end;
+end;
+
+procedure TSettings.DetectTools();
+var
+  Reg: TRegistry;
+  SdkPath, BdsKey, BdsPath: String;
+  BdsVersion: Integer;
+begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_LOCAL_MACHINE;
@@ -123,15 +138,6 @@ begin
     end;
   finally
     Reg.Free;
-  end;
-
-  if Succeeded(SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, Path)) then
-  begin
-    FSettingsFilename := Path;
-    FSettingsFilename := TPath.Combine(FSettingsFilename, 'Ribbon Designer');
-    ForceDirectories(FSettingsFilename);
-    FSettingsFilename := TPath.Combine(FSettingsFilename, 'Settings.xml');
-    Load;
   end;
 end;
 
@@ -222,6 +228,7 @@ end;
 
 function TSettings.ToolsAvailable: Boolean;
 begin
+  DetectTools();
   Result := (FRibbonCompilerPath <> '') and (FDelphiCompilerPath <> '');
 end;
 

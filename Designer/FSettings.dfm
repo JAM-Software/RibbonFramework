@@ -87,6 +87,15 @@ object FormSettings: TFormSettings
     ModalResult = 2
     TabOrder = 2
   end
+  object DownloadButton: TButton
+    Left = 8
+    Top = 119
+    Width = 257
+    Height = 25
+    Caption = 'Download Windows SDK including Ribbon Compiler'
+    TabOrder = 3
+    OnClick = DownloadButtonClick
+  end
   object ImageList: TImageList
     Left = 120
     Top = 28
@@ -234,7 +243,7 @@ object FormSettings: TFormSettings
     DefaultExt = 'exe'
     Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
     Title = 'Select compiler'
-    Left = 28
-    Top = 92
+    Left = 492
+    Top = 44
   end
 end

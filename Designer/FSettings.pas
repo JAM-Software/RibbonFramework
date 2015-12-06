@@ -28,10 +28,12 @@ type
     ButtonCancel: TButton;
     OpenDialog: TOpenDialog;
     EditRibbonCompiler: TButtonedEdit;
+    DownloadButton: TButton;
     procedure EditPathChange(Sender: TObject);
     procedure EditRibbonCompilerRightButtonClick(Sender: TObject);
     procedure EditDelphiCompilerRightButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure DownloadButtonClick(Sender: TObject);
   private
     { Private declarations }
     FSettings: TSettings;
@@ -39,6 +41,7 @@ type
   public
     { Public declarations }
     constructor Create(const Settings: TSettings); reintroduce;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -46,17 +49,31 @@ implementation
 {$R *.dfm}
 
 uses
+  ShellApi,
   IOUtils;
 
+const
+ cUiccDownloadUrl = 'http://www.microsoft.com/en-us/download/confirmation.aspx?id=8279';
+
 { TFormSettings }
+
+procedure TFormSettings.DownloadButtonClick(Sender: TObject);
+begin
+  ShellExecute(0, nil, PChar(cUiccDownloadUrl), '', '', SW_SHOWNORMAL);
+end;
 
 constructor TFormSettings.Create(const Settings: TSettings);
 begin
   inherited Create(nil);
   FSettings := Settings;
-  EditRibbonCompiler.Text := FSettings.RibbonCompilerPath;
-  EditDelphiCompiler.Text := FSettings.DelphiCompilerPath;
+  Application.OnActivate := Self.EditPathChange; // Update controls when the form is activated
   UpdateControls;
+end;
+
+destructor TFormSettings.Destroy;
+begin
+  Application.OnActivate := nil;
+  inherited;
 end;
 
 procedure TFormSettings.EditDelphiCompilerRightButtonClick(Sender: TObject);
@@ -94,6 +111,11 @@ end;
 
 procedure TFormSettings.UpdateControls;
 begin
+  FSettings.DetectTools();
+  if EditRibbonCompiler.Text = '' then
+    EditRibbonCompiler.Text := FSettings.RibbonCompilerPath;
+  if EditDelphiCompiler.Text = '' then
+    EditDelphiCompiler.Text := FSettings.DelphiCompilerPath;
   ButtonOk.Enabled :=
     TFile.Exists(EditRibbonCompiler.Text) and
     TFile.Exists(EditDelphiCompiler.Text);

@@ -12,7 +12,7 @@ uses
 procedure Register;
 begin
   RegisterComponents('Windows Ribbon Framework for Delphi', [TUIRibbon]);
-  RegisterActions('Ribbon Framework', [TRibbonCollectionAction, TRibbonFontAction], nil);
+  RegisterActions('Ribbon Framework', [TRibbonCollectionAction, TRibbonFontAction, TRibbonColorAction], nil);
 end;
 
 end.

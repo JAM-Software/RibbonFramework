@@ -128,6 +128,9 @@ type
   TRibbonCollectionAction = class(TRibbonAction<TUICommandCollection>)
   end;
 
+  TRibbonColorAction = class(TRibbonAction<TUICommandColorAnchor>)
+  end;
+
   TRibbonFontAction = class(TRibbonAction<TUICommandFont>)
   strict private
     fOnChanged: TUICommandFontChangedEvent;
@@ -336,6 +339,8 @@ begin
   inherited;
   if Assigned(Value) then
     (Client as TUICommandColorAnchor).OnExecute := CommandExecute;
+  if (Action is TRibbonColorAction) then
+    TRibbonColorAction(Action).UICommand := (Client as TUICommandColorAnchor);
 end;
 
 { TUICommandRecentItemsActionLink }

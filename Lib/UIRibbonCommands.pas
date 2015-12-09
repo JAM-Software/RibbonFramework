@@ -214,9 +214,6 @@ type
     procedure Notify(const Flag: Integer); virtual;
 
     property Alive: Boolean read FAlive write SetAlive;
-  public
-    class constructor Create;
-    class destructor Destroy;
   {$ENDREGION 'Internal Declarations'}
   public
     constructor Create(const Ribbon: TObject{TUIRibbon}; const CommandId: Cardinal); reintroduce; virtual;
@@ -1195,9 +1192,6 @@ type
   private
     { IUIImage }
     function GetBitmap: HBITMAP; safecall;
-  public
-    class constructor Create;
-    class destructor Destroy;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates an image from a resource. This must be a regular BITMAP resource. }
@@ -1858,11 +1852,6 @@ begin
 //  FFramework.InvalidateUICommand(FCommandId, [UIInvalidationsProperty], @UI_PKEY_SmallImage);
 end;
 
-class constructor TUICommand.Create;
-begin
-  FProperties := TUICommandExecutionProperties.Create;
-end;
-
 destructor TUICommand.Destroy;
 begin
   Notifier.Remove(Self);
@@ -1943,11 +1932,6 @@ begin
     upSmallHighContrastImage:
       UpdateImage(FSmallHighContrastImage, UI_PKEY_SmallHighContrastImage);
   end;
-end;
-
-class destructor TUICommand.Destroy;
-begin
-  FProperties.Free;
 end;
 
 function TUICommand.Execute(CommandId: UInt32; Verb: _UIExecutionVerb;
@@ -4050,6 +4034,12 @@ end;
 constructor TUIImage.Create(const ResourceId: Integer);
 begin
   inherited Create;
+  if (FImageFactory = nil) then
+  begin
+    if not Succeeded(CoCreateInstance(CLSID_UIRibbonImageFromBitmapFactory, nil,
+      CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, FImageFactory)) then
+      FImageFactory := nil;
+  end;
   Load(ResourceId);
 end;
 
@@ -4154,24 +4144,6 @@ begin
     DeleteDC(DC);
     FreeMem(Data);
   end;
-end;
-
-class constructor TUIImage.Create;
-var
-  Intf: IInterface;
-begin
-  if (FImageFactory = nil) then
-  begin
-    if Succeeded(CoCreateInstance(CLSID_UIRibbonImageFromBitmapFactory, nil,
-      CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf))
-    then
-      FImageFactory := Intf as IUIImageFromBitmap;
-  end;
-end;
-
-class destructor TUIImage.Destroy;
-begin
-  FImageFactory := nil;
 end;
 
 procedure TUIImage.DoChanged;
@@ -4354,8 +4326,10 @@ initialization
   Initialize;
   {$ENDIF}
   Notifier := TNotifier.Create;
+  TUICommand.FProperties := TUICommandExecutionProperties.Create;
 
 finalization
+  TUICommand.FProperties.Free;
   Notifier.Free;
 
 end.

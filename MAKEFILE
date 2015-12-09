@@ -24,27 +24,27 @@ _XE5: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
 	SET BDS=$(STUDIO)\15.0
 	msbuild "Designer\RibbonDesigner.dproj"
 
-"Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\Medium Level\01 Simple Ribbon\*.dproj" "Samples\Medium Level\01 Simple Ribbon\*.pas" "Samples\Medium Level\01 Simple Ribbon\*.dpr"
-	msbuild "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.dproj"
+"Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\High Level\01 Simple Ribbon\*.dproj" "Samples\High Level\01 Simple Ribbon\*.pas" "Samples\High Level\01 Simple Ribbon\*.dpr"
+	msbuild "Samples\High Level\01 Simple Ribbon\SimpleRibbon.dproj"
 
-"Samples\Medium Level\02 Context Popup\ContextPopup.exe": "Samples\Medium Level\02 Context Popup\*.dproj" "Samples\Medium Level\02 Context Popup\*.pas" "Samples\Medium Level\02 Context Popup\*.dpr"
-	msbuild "Samples\Medium Level\02 Context Popup\ContextPopup.dproj"
+"Samples\High Level\02 Context Popup\ContextPopup.exe": "Samples\High Level\02 Context Popup\*.dproj" "Samples\High Level\02 Context Popup\*.pas" "Samples\High Level\02 Context Popup\*.dpr"
+	msbuild "Samples\High Level\02 Context Popup\ContextPopup.dproj"
 
-"Samples\Medium Level\03 DropDown Color Picker\DropDownColorPicker.exe": "Samples\Medium Level\03 DropDown Color Picker\*.dproj" "Samples\Medium Level\03 DropDown Color Picker\*.pas" "Samples\Medium Level\03 DropDown Color Picker\*.dpr"
-	msbuild "Samples\Medium Level\03 DropDown Color Picker\DropDownColorPicker.dproj"
+"Samples\High Level\03 DropDown Color Picker\DropDownColorPicker.exe": "Samples\High Level\03 DropDown Color Picker\*.dproj" "Samples\High Level\03 DropDown Color Picker\*.pas" "Samples\High Level\03 DropDown Color Picker\*.dpr"
+	msbuild "Samples\High Level\03 DropDown Color Picker\DropDownColorPicker.dproj"
 
-"Samples\Medium Level\04 Gallery\Gallery.exe": "Samples\Medium Level\04 Gallery\*.dproj" "Samples\Medium Level\04 Gallery\*.pas" "Samples\Medium Level\04 Gallery\*.dpr"
-	msbuild "Samples\Medium Level\04 Gallery\Gallery.dproj"
+"Samples\High Level\04 Gallery\Gallery.exe": "Samples\High Level\04 Gallery\*.dproj" "Samples\High Level\04 Gallery\*.pas" "Samples\High Level\04 Gallery\*.dpr"
+	msbuild "Samples\High Level\04 Gallery\Gallery.dproj"
 	
-"Samples\Medium Level\05 Font Control\Gallery.exe": "Samples\Medium Level\05 Font Control\*.dproj" "Samples\Medium Level\05 Font Control\*.pas" "Samples\Medium Level\05 Font Control\*.dpr"
-	msbuild "Samples\Medium Level\05 Font Control\FontControl.dproj"
+"Samples\High Level\05 Font Control\Gallery.exe": "Samples\High Level\05 Font Control\*.dproj" "Samples\High Level\05 Font Control\*.pas" "Samples\High Level\05 Font Control\*.dpr"
+	msbuild "Samples\High Level\05 Font Control\FontControl.dproj"
 	
-"Samples\Medium Level\06 Text Pad\Gallery.exe": "Samples\Medium Level\06 Text Pad\*.dproj" "Samples\Medium Level\06 Text Pad\*.pas" "Samples\Medium Level\06 Text Pad\*.dpr"
-	msbuild "Samples\Medium Level\06 Text Pad\TextPad.dproj"
+"Samples\High Level\06 Text Pad\Gallery.exe": "Samples\High Level\06 Text Pad\*.dproj" "Samples\High Level\06 Text Pad\*.pas" "Samples\High Level\06 Text Pad\*.dpr"
+	msbuild "Samples\High Level\06 Text Pad\TextPad.dproj"
 	
-"Samples\Medium Level\07 Text Pad with Action List\Gallery.exe": "Samples\Medium Level\07 Text Pad with Action List\*.dproj" "Samples\Medium Level\07 Text Pad with Action List\*.pas" "Samples\Medium Level\07 Text Pad with Action List\*.dpr"
-	msbuild "Samples\Medium Level\07 Text Pad with Action List\TextPad.dproj"
+"Samples\High Level\07 Text Pad with Action List\Gallery.exe": "Samples\High Level\07 Text Pad with Action List\*.dproj" "Samples\High Level\07 Text Pad with Action List\*.pas" "Samples\High Level\07 Text Pad with Action List\*.dpr"
+	msbuild "Samples\High Level\07 Text Pad with Action List\TextPad.dproj"
 	
-_samples: "Samples\Medium Level\01 Simple Ribbon\SimpleRibbon.exe" "Samples\Medium Level\02 Context Popup\ContextPopup.exe" "Samples\Medium Level\03 DropDown Color Picker\DropDownColorPicker.exe" "Samples\Medium Level\04 Gallery\Gallery.exe" "Samples\Medium Level\05 Font Control\Gallery.exe" "Samples\Medium Level\06 Text Pad\Gallery.exe" "Samples\Medium Level\07 Text Pad with Action List\Gallery.exe"
+_samples: "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe" "Samples\High Level\02 Context Popup\ContextPopup.exe" "Samples\High Level\03 DropDown Color Picker\DropDownColorPicker.exe" "Samples\High Level\04 Gallery\Gallery.exe" "Samples\High Level\05 Font Control\Gallery.exe" "Samples\High Level\06 Text Pad\Gallery.exe" "Samples\High Level\07 Text Pad with Action List\Gallery.exe"
 	
 _continuousbuilds: clean _XE5 _XE7 "Designer\Bin\RibbonDesigner.exe"

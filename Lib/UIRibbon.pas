@@ -49,9 +49,8 @@ type
   TRibbonMarkupElementList = class(TList<TRibbonMarkupElement>)
   strict private
     fResourceName: string;
+  private
     class var fContainer: TObjectList<TRibbonMarkupElementList>;
-    class constructor Create;
-    class destructor Destroy;
   public
     class function LookupListByResourceName(const pResourceName: string): TRibbonMarkupElementList;
     function TryGetItem(pID: integer; out pItem: TRibbonMarkupElement): boolean;
@@ -513,16 +512,6 @@ begin
   if not Assigned(fContainer) then
     fContainer := TObjectList<TRibbonMarkupElementList>.Create(True);
   fContainer.Add(Self);
-end;
-
-class constructor TRibbonMarkupElementList.Create;
-begin
-  fContainer := nil;
-end;
-
-class destructor TRibbonMarkupElementList.Destroy;
-begin
-  FreeAndNil(fContainer);
 end;
 
 class function TRibbonMarkupElementList.LookupListByResourceName(const pResourceName: string): TRibbonMarkupElementList;
@@ -1385,5 +1374,12 @@ function TUIRibbon._Release: Integer;
 begin
   Result := -1;
 end;
+
+
+initialization
+  TRibbonMarkupElementList.fContainer := nil;
+
+finalization
+  FreeAndNil(TRibbonMarkupElementList.fContainer);
 
 end.

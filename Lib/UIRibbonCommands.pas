@@ -1170,7 +1170,7 @@ type
 {$REGION 'Images'}
   TUIImage = class(TInterfacedObject, IUIImage)
   {$REGION 'Internal Declarations'}
-  strict private
+  private
     class var FImageFactory: IUIImageFromBitmap;
   private
     FHandle: IUIImage;
@@ -4034,12 +4034,6 @@ end;
 constructor TUIImage.Create(const ResourceId: Integer);
 begin
   inherited Create;
-  if (FImageFactory = nil) then
-  begin
-    if not Succeeded(CoCreateInstance(CLSID_UIRibbonImageFromBitmapFactory, nil,
-      CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, FImageFactory)) then
-      FImageFactory := nil;
-  end;
   Load(ResourceId);
 end;
 
@@ -4327,6 +4321,9 @@ initialization
   {$ENDIF}
   Notifier := TNotifier.Create;
   TUICommand.FProperties := TUICommandExecutionProperties.Create;
+  if not Succeeded(CoCreateInstance(CLSID_UIRibbonImageFromBitmapFactory, nil,
+    CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, TUIImage.FImageFactory)) then
+    TUIImage.FImageFactory := nil;
 
 finalization
   TUICommand.FProperties.Free;

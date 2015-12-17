@@ -57,9 +57,9 @@ class PASCALIMPLEMENTATION TRibbonMarkupElementList : public System::Generics::C
 	
 private:
 	System::UnicodeString fResourceName;
+	
+private:
 	static System::Generics::Collections::TObjectList__1<TRibbonMarkupElementList*>* fContainer;
-	// __classmethod void __fastcall Create@();
-	// __classmethod void __fastcall Destroy@();
 	
 public:
 	__classmethod TRibbonMarkupElementList* __fastcall LookupListByResourceName(const System::UnicodeString pResourceName);
@@ -147,6 +147,7 @@ private:
 	void __fastcall SetTextColor(const System::Uitypes::TColor Value);
 	
 protected:
+	virtual void __fastcall CreateWnd(void);
 	void __fastcall AddCommand(Uiribboncommands::TUICommand* const Command);
 	unsigned __fastcall GetColor(const Uiribbonapi::TUIPropertyKey &PropKey);
 	HIDESBASE void __fastcall SetColor(const Uiribbonapi::TUIPropertyKey &PropKey, const unsigned Value);

@@ -176,10 +176,6 @@ protected:
 	virtual void __fastcall Notify(const int Flag);
 	__property bool Alive = {read=FAlive, write=SetAlive, nodefault};
 	
-private:
-	// __classmethod void __fastcall Create@();
-	// __classmethod void __fastcall Destroy@();
-	
 public:
 	__fastcall virtual TUICommand(System::TObject* const Ribbon, const unsigned CommandId);
 	__fastcall virtual ~TUICommand(void);
@@ -905,8 +901,6 @@ class PASCALIMPLEMENTATION TUIImage : public System::TInterfacedObject
 	
 private:
 	static Uiribbonapi::_di_IUIImageFromBitmap FImageFactory;
-	
-private:
 	Uiribbonapi::_di_IUIImage FHandle;
 	HBITMAP FBitmap;
 	int FWidth;
@@ -922,10 +916,6 @@ private:
 	HBITMAP __fastcall CreatePreMultipliedBitmap(const HBITMAP Bitmap);
 	__property System::Classes::TNotifyEvent OnChanged = {read=FOnChanged, write=FOnChanged};
 	HRESULT __safecall GetBitmap(HBITMAP &__GetBitmap_result);
-	
-private:
-	// __classmethod void __fastcall Create@();
-	// __classmethod void __fastcall Destroy@();
 	
 public:
 	__fastcall TUIImage(const int ResourceId)/* overload */;
@@ -947,6 +937,10 @@ public:
 	/* safecall wrapper */ inline HBITMAP _scw_GetBitmap() { HBITMAP __r; HRESULT __hr = GetBitmap(__r); System::CheckSafecallResult(__hr); return __r; }
 	#pragma option pop
 	__property HBITMAP Bitmap = {read=_scw_GetBitmap, nodefault};
+	
+private:
+	// __classmethod void __fastcall Create@();
+	// __classmethod void __fastcall Destroy@();
 public:
 	/* TObject.Destroy */ inline __fastcall virtual ~TUIImage(void) { }
 	

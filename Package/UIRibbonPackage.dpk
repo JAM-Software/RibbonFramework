@@ -28,7 +28,7 @@ package UIRibbonPackage;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
+  DesignIDE,
   vcl,
   vclimg;
 

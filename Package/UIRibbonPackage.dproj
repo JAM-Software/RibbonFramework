@@ -79,7 +79,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="DesignIDE.dcp"/>
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
         <DCCReference Include="..\Lib\UIRibbon.pas"/>

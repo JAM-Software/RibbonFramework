@@ -15,6 +15,14 @@ function ColorToHsb(const Color: TColor): TUIHsbColor;
 
 function CreateStringFromResource(const ResourceId: Integer): String;
 
+
+const
+  cPackageTitle = 'Ribbon Framework';
+  cRegistryPath = 'Software\Embarcadero\' + cPackageTitle;
+  cRegistryKeyDesigner = 'RibbonDesigner';
+
+
+
 implementation
 
 uses

@@ -160,7 +160,7 @@ resourcestring
 implementation
 
 uses
-  UITypes;
+  UITypes, System.Win.Registry, UIRibbonUtils;
 
 {$R *.dfm}
 
@@ -367,6 +367,15 @@ end;
 constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
+  // Write the path to the Ribbon Designer to the registry, so that the designtime package knows where to find it. Issue #22
+  With TRegistry.Create do
+    try
+      OpenKey(cRegistryPath, True);
+      WriteString(cRegistryKeyDesigner, ParamStr(0));
+    finally
+      Free;
+    end;
+
   FDocument := TRibbonDocument.Create;
   FCompiler := TRibbonCompiler.Create;
   FCompiler.OnMessage := RibbonCompilerMessage;

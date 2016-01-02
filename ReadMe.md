@@ -38,8 +38,8 @@ Installing the Windows Ribbon Framework for Delphi:
      Browse to the "Lib" folder of this framework, press "OK", "Add", "OK", "OK"
 
 Creating and adding a ribbon for your existing form:
-  1. Run "Designer\Bin\RibbonDesigner.exe" and create your ribbon
-     Name of the ribbon commands equal to the VCL actions they should trigger.
+  1. Run "Designer\Bin\RibbonDesigner.exe" and create your ribbon.
+     Name of the ribbon commands equally to the VCL actions they should trigger.
   2. Save the ribbon XML file to your project's folder and hit the "Build" button
   3. Add the resulting .PAS file to the uses of your form
   4. Drag the TUIRibbon control from RAD Studios's tool palette on your form

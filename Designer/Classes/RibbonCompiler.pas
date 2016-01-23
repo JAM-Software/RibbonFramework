@@ -220,13 +220,11 @@ begin
 
     try
       repeat
+        BytesRead := 0;
         AppRunning := WaitForSingleObject(ProcessInfo.hProcess, 10);
-        if (AppRunning <> WAIT_TIMEOUT) then
-        begin
-          PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) div 10, @BytesRead, @BytesAvail, @BytesLeft); // Read smaller chunks for continuous output
+        if PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) div 10, @BytesRead, @BytesAvail, @BytesLeft) then // Read smaller chunks for continuous output
           LogBuffer;
-        end;
-      until AppRunning = WAIT_OBJECT_0;
+      until AppRunning <> WAIT_TIMEOUT;
       Result := GetExitCodeProcess(ProcessInfo.hProcess, ExitCode);
       Result := Result and (ExitCode = 0);
     finally

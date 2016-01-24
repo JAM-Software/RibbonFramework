@@ -220,11 +220,19 @@ begin
 
     try
       repeat
-        BytesRead := 0;
         AppRunning := WaitForSingleObject(ProcessInfo.hProcess, 10);
-        if PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) div 10, @BytesRead, @BytesAvail, @BytesLeft) then // Read smaller chunks for continuous output
+        if (AppRunning <> WAIT_TIMEOUT) then
+        begin
+          PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) div 10, @BytesRead, @BytesAvail, @BytesLeft); // Read smaller chunks for continuous output
           LogBuffer;
-      until AppRunning <> WAIT_TIMEOUT;
+          Break;
+        end;
+
+        BytesRead := 0;
+        if (not ReadFile(ReadPipe, Buffer[0], SizeOf(Buffer) - 1, BytesRead, nil)) then
+          Break;
+        LogBuffer;
+      until (BytesRead = 0);
       Result := GetExitCodeProcess(ProcessInfo.hProcess, ExitCode);
       Result := Result and (ExitCode = 0);
     finally

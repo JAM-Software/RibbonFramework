@@ -31,6 +31,8 @@ This Delphi library is much more than a simple header translation. It has the fo
 
 ## Getting Started ##
 
+Supported platforms: RAD Studio / Delphi XE3 and higher.
+
 Installing the Windows Ribbon Framework for Delphi:
   1. Open the project "Package\UIRibbonPackage.dproj"
   2. Right click on "UIRibbonPackage.bpl" and click "Install"

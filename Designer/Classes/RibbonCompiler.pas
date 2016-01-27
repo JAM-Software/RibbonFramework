@@ -179,7 +179,7 @@ var
       S := GetString(Buffer);
       Free;
     end;
-    DoMessage(mkPipe, S);
+    DoMessage(mkPipe, Trim(S) + sLineBreak);
   end;
 
 begin
@@ -199,7 +199,7 @@ begin
     FillChar(StartupInfo, SizeOf(StartupInfo), 0);
     StartupInfo.cb := SizeOf(StartupInfo);
     StartupInfo.hStdOutput := WritePipe;
-    StartupInfo.hStdInput := ReadPipe;
+    StartupInfo.hStdInput := 0;
     StartupInfo.hStdError := WritePipe;
     if (ReadPipe = 0) or (WritePipe = 0) then
       StartupInfo.dwFlags := 0
@@ -224,17 +224,12 @@ begin
       repeat
         BytesRead := 0;
         AppRunning := WaitForSingleObject(ProcessInfo.hProcess, 10);
-        if (AppRunning <> WAIT_TIMEOUT) then
+        if PeekNamedPipe(ReadPipe, @Buffer[0], Length(Buffer) -1, @BytesRead, @BytesAvail, @BytesLeft) and (BytesAvail >0) then
         begin
-          PeekNamedPipe(ReadPipe, @Buffer[0], Length(Buffer) -1, @BytesRead, @BytesAvail, @BytesLeft);
-          LogBuffer;
-          Break;
-        end;
-
-        if (not ReadFile(ReadPipe, Buffer[0], Length(Buffer) div 20, BytesRead, nil)) then // Read smaller chunks for continuous output
-          Break;
-        LogBuffer;
-      until (BytesRead = 0);
+          if ReadFile(ReadPipe, Buffer[0], Length(Buffer), BytesRead, nil) then
+            LogBuffer();
+        end;//if
+      until (AppRunning <> WAIT_TIMEOUT);
       Result := GetExitCodeProcess(ProcessInfo.hProcess, ExitCode);
       Result := Result and (ExitCode = 0);
     finally

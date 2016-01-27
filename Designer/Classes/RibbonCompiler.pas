@@ -226,7 +226,7 @@ begin
         AppRunning := WaitForSingleObject(ProcessInfo.hProcess, 10);
         if PeekNamedPipe(ReadPipe, @Buffer[0], Length(Buffer) -1, @BytesRead, @BytesAvail, @BytesLeft) and (BytesAvail >0) then
         begin
-          if ReadFile(ReadPipe, Buffer[0], Length(Buffer), BytesRead, nil) then
+          if (BytesAvail > 0) and ReadFile(ReadPipe, Buffer[0], BytesAvail, BytesRead, nil) then
             LogBuffer();
         end;//if
       until (AppRunning <> WAIT_TIMEOUT);

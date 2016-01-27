@@ -165,7 +165,7 @@ var
   ReadPipe, WritePipe: THandle;
   CmdLine, Param: String;
   AppRunning, BytesRead, BytesAvail, BytesLeft: Cardinal;
-  Buffer: array [0..1023] of AnsiChar;
+  Buffer: TBytes;
   ExitCode: Cardinal;
 
   procedure LogBuffer;
@@ -174,10 +174,11 @@ var
   begin
     if BytesRead = 0 then
       exit;
-    Buffer[BytesRead] := #0;
-    {$WARNINGS OFF}
-    S := String(Buffer);
-    {$WARNINGS ON}
+    Buffer[BytesRead] := 0;
+    With TEncoding.GetEncoding(CP_OEMCP) do begin
+      S := GetString(Buffer);
+      Free;
+    end;
     DoMessage(mkPipe, S);
   end;
 
@@ -219,17 +220,18 @@ begin
     end;
 
     try
+      SetLength(Buffer, 1024);
       repeat
         BytesRead := 0;
         AppRunning := WaitForSingleObject(ProcessInfo.hProcess, 10);
         if (AppRunning <> WAIT_TIMEOUT) then
         begin
-          PeekNamedPipe(ReadPipe, @Buffer[0], SizeOf(Buffer) -1, @BytesRead, @BytesAvail, @BytesLeft);
+          PeekNamedPipe(ReadPipe, @Buffer[0], Length(Buffer) -1, @BytesRead, @BytesAvail, @BytesLeft);
           LogBuffer;
           Break;
         end;
 
-        if (not ReadFile(ReadPipe, Buffer[0], SizeOf(Buffer) div 20, BytesRead, nil)) then // Read smaller chunks for continuous output
+        if (not ReadFile(ReadPipe, Buffer[0], Length(Buffer) div 20, BytesRead, nil)) then // Read smaller chunks for continuous output
           Break;
         LogBuffer;
       until (BytesRead = 0);

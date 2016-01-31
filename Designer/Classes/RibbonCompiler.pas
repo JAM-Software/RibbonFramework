@@ -87,7 +87,7 @@ begin
     then
       Exit(crRibbonCompilerError);
 
-    DoMessage(mkInfo, RS_STARTING_DELPHI_COMPILER);
+    DoMessage(mkInfo, sLineBreak + RS_STARTING_DELPHI_COMPILER);
     DprFilename := ChangeFileExt(Document.Filename, '.dpr');
     CreateDelphiProject(DprFilename);
     if (not Execute(TSettings.Instance.DelphiCompilerPath, DocDir,
@@ -226,7 +226,7 @@ begin
         AppRunning := WaitForSingleObject(ProcessInfo.hProcess, 10);
         if PeekNamedPipe(ReadPipe, @Buffer[0], Length(Buffer) -1, @BytesRead, @BytesAvail, @BytesLeft) and (BytesAvail >0) then
         begin
-          if (BytesAvail > 0) and ReadFile(ReadPipe, Buffer[0], BytesAvail, BytesRead, nil) then
+          if ReadFile(ReadPipe, Buffer[0], BytesAvail, BytesRead, nil) then
             LogBuffer();
         end;//if
       until (AppRunning <> WAIT_TIMEOUT);

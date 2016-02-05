@@ -9,6 +9,11 @@
 $ErrorActionPreference = "Stop"
 
 $xmlFilePath = $args[0]
+if ([string]::IsNullOrEmpty($xmlFilePath))
+{
+    write "Please specify a ribbon XML file as first paramter. Aborting execution."
+    exit
+}
 
 # Determine the current working directory from the given xml file path
 $workingDir = ([System.IO.Path]::GetDirectoryName($xmlFilePath))
@@ -52,6 +57,10 @@ function FindFileInLocation($pLocation, $pFileName)
     elseif (Test-Path "${env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Bin\$pFileName")
     {
         return "${env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Bin\$pFileName"
+    }
+    elseif (Test-Path "${env:ProgramFiles}\Microsoft SDKs\Windows\v7.1\Bin\$pFileName")
+    {
+        return "${env:ProgramFiles}\Microsoft SDKs\Windows\v7.1\Bin\$pFileName"
     }
     elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\8.0\bin\x86\$pFileName")
     {

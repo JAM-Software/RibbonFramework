@@ -19,6 +19,7 @@ type
   private
     constructor Create(const Dummy: Integer); overload;
     procedure Load;
+    function GetRibbonCompilerPath: String;
   public
     class constructor Create;
     class destructor Destroy;
@@ -34,6 +35,8 @@ type
     class property Instance: TSettings read FInstance;
 
     property RibbonCompilerPath: String read FRibbonCompilerPath write FRibbonCompilerPath;
+    /// The path of the directory in which the ribbon compiler UICC.exe can be found
+    property RibbonCompilerDir: String read GetRibbonCompilerPath;
     property DelphiCompilerPath: String read FDelphiCompilerPath write FDelphiCompilerPath;
   end;
 
@@ -106,6 +109,13 @@ begin
 
     if (FRibbonCompilerPath = '') then
     begin
+      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Microsoft SDKs\Windows\v7.1\Bin\UICC.exe';
+      if (not TFile.Exists(FRibbonCompilerPath)) then
+        FRibbonCompilerPath := '';
+    end;
+
+    if (FRibbonCompilerPath = '') then
+    begin
       FRibbonCompilerPath := ExtractFilePath(ParamStr(0)) + 'UICC.exe';
       if (not TFile.Exists(FRibbonCompilerPath)) then
         FRibbonCompilerPath := '';
@@ -139,6 +149,11 @@ begin
   finally
     Reg.Free;
   end;
+end;
+
+function TSettings.GetRibbonCompilerPath: String;
+begin
+  Exit(ExtractFilePath(FRibbonCompilerPath))
 end;
 
 class constructor TSettings.Create;

@@ -1,7 +1,16 @@
 Please see https://github.com/TurboPack/RibbonFramework/ for detailed information 
 about this library.
 
-Version history:
+Version history
+~~~~~~~~~~~~~~~
+
+28 Jan 2016: Version 2.1.2: 
+* Fixed issue #24: Ribbon Designer freezes during build
+
+24 Jan 2016: Version 2.1.1: 
+* In the RAD Studio designer the Ribbon Desginer can now be started using the
+  right click menu of the TUIRibbon control
+
 09 Dec 2015: Version 2.1: 
 * All sample projects are now adapted for V2 and use the TUIRibbon designtime component
 * Improved performance of PowerShell script that compiles the ribbon XML files. 
@@ -24,6 +33,7 @@ Version history:
 * Automatic mapping between VCL actions done if a TActionManager is 
   assigned to the TUIRibbon control and the name of the ribbon command 
   matches the name of the VCL action.
+  
   
 01/14/2015: The project was adopted by JAM Software which continues maintaining
             this project. A V2.0 is expected in summer 2015.            

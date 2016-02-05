@@ -12,7 +12,7 @@ $xmlFilePath = $args[0]
 if ([string]::IsNullOrEmpty($xmlFilePath))
 {
     write "Please specify a ribbon XML file as first paramter. Aborting execution."
-    exit
+    exit 1
 }
 
 # Determine the current working directory from the given xml file path
@@ -78,7 +78,7 @@ function FindFileInLocation($pLocation, $pFileName)
     {
         # Nothing found -> exit
         write "Cannot find $pFileName. Aborting execution."
-        exit
+        exit 1
     }
 }
 

@@ -83,7 +83,7 @@ begin
 
     DocDir := ExtractFilePath(Document.Filename);
 
-    if (not Execute('powershell -NoProfile -ExecutionPolicy Bypass -f "' + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'Generate.Ribbon.Markup.pas.ps1"', DocDir, [Document.Filename.QuotedString('"'), 'APPLICATION', TSettings.Instance.RibbonCompilerPath.QuotedString('"')]))
+    if (not Execute('powershell -NoProfile -ExecutionPolicy Bypass -f "' + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'Generate.Ribbon.Markup.pas.ps1"', DocDir, [Document.Filename.QuotedString('"'), 'APPLICATION', TSettings.Instance.RibbonCompilerDir.QuotedString('"')]))
     then
       Exit(crRibbonCompilerError);
 
@@ -211,6 +211,9 @@ begin
     CmdLine := Application;
     for Param in Parameters do
       CmdLine := CmdLine + ' ' + Param;
+    {$ifdef DEBUG}
+    DoMessage(TMessageKind.mkInfo, 'Executing: ' +  CmdLine);
+    {$endif}
     if (not CreateProcess(nil, PChar(CmdLine), @SecurityAttrs, @SecurityAttrs,
       True, NORMAL_PRIORITY_CLASS, nil, PChar(CurrentDir), StartupInfo, ProcessInfo))
     then

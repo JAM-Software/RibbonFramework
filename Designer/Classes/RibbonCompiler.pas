@@ -149,6 +149,9 @@ begin
   end;
 end;
 
+function AttachConsole(dwProcessID: Integer): Boolean; stdcall; external 'kernel32.dll';
+
+
 procedure TRibbonCompiler.DoMessage(const MsgType: TMessageKind;
   const Msg: String; const Args: array of const);
 begin
@@ -188,11 +191,13 @@ begin
   SecurityAttrs.lpSecurityDescriptor := nil;
   SecurityAttrs.bInheritHandle := True;
 
-  if (not CreatePipe(ReadPipe, WritePipe, @SecurityAttrs, 0)) then
+  if not Assigned(FOnMessage) or (not CreatePipe(ReadPipe, WritePipe, @SecurityAttrs, 0)) then
   begin
+    DoMessage(mkWarning, RS_PIPE_ERROR, [ExtractFilename(Application)]);
     ReadPipe := 0;
     WritePipe := 0;
-    DoMessage(mkWarning, RS_PIPE_ERROR, [ExtractFilename(Application)]);
+    // Use parent console if available
+    AttachConsole(-1);
   end;
 
   try

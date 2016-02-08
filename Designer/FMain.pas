@@ -378,7 +378,6 @@ begin
 
   FDocument := TRibbonDocument.Create;
   FCompiler := TRibbonCompiler.Create;
-  FCompiler.OnMessage := RibbonCompilerMessage;
 
   FFrameCommands := TFrameCommands.Create(Self);
   FFrameCommands.Parent := TabSheetCommands;
@@ -389,10 +388,19 @@ begin
   FFrameXmlSource := TFrameXmlSource.Create(Self);
   FFrameXmlSource.Parent := TabSheetXmlSource;
 
-  if (ParamCount > 0) and FileExists(ParamStr(1)) then
-    OpenFile(ParamStr(1))
-  else
-    NewFile(True);
+  // Handle command line options
+  if (ParamCount > 0) and FileExists(ParamStr(1)) then begin // File passed at the command line?
+    OpenFile(ParamStr(1));
+    if FindCmdLineSwitch('BUILD') then begin
+      ActionBuild.Execute();
+      Application.ShowMainForm := False;
+      Application.Terminate();
+    end// if /BUILD
+    else begin
+      NewFile(True);
+      FCompiler.OnMessage := RibbonCompilerMessage;
+    end;//else
+  end // if file passed
 end;
 
 destructor TFormMain.Destroy;

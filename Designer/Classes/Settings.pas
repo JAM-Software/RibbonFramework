@@ -153,7 +153,7 @@ end;
 
 function TSettings.GetRibbonCompilerPath: String;
 begin
-  Exit(ExtractFilePath(FRibbonCompilerPath))
+  Exit(ExcludeTrailingPathDelimiter(ExtractFilePath(FRibbonCompilerPath)))
 end;
 
 class constructor TSettings.Create;

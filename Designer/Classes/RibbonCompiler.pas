@@ -79,7 +79,6 @@ begin
 
     DoMessage(mkInfo, RS_STARTING_RIBBON_COMPILER);
     DoMessage(mkInfo, '');
-    DoMessage(mkInfo, RS_STARTING_RESOURCE_COMPILER);
 
     DocDir := ExtractFilePath(Document.Filename);
 

@@ -4,6 +4,10 @@ about this library.
 Version history
 ~~~~~~~~~~~~~~~
 
+08 Feb 2016: Version 2.1.3: 
+* Issue #26: Imporved detection of UICC.EXE
+* Issue #27: Ribbon designer now supports building using command line option /BUILD
+
 28 Jan 2016: Version 2.1.2: 
 * Fixed issue #24: Ribbon Designer freezes during build
 

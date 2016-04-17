@@ -195,6 +195,7 @@ type
     procedure SetTextColor(const Value: TColor);
   protected
     procedure CreateWnd(); override;
+    procedure DestroyWnd(); override;
     procedure AddCommand(const Command: TUICommand);
     function GetColor(const PropKey: TUIPropertyKey): TUIHsbColor;
     procedure SetColor(const PropKey: TUIPropertyKey; const Value: TUIHsbColor);
@@ -996,7 +997,16 @@ end;
 procedure TUIRibbon.CreateWnd;
 begin
   inherited;
+  if csRecreating in ControlState then
+    FFramework.Initialize(Parent.Handle, Self);
   Load();
+end;
+
+procedure TUIRibbon.DestroyWnd;
+begin
+  inherited;
+  FFramework.Destroy();
+  fLoaded := False;
 end;
 
 function TUIRibbon.LoadRibbonSettings(): boolean;

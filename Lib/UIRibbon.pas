@@ -366,8 +366,12 @@ type
     ///  Sets the "Recent items" list in the application menu.
     /// </summary>
     /// <param name="pAction">The related action for the recent items.</param>
-    /// <param name="pPaths">The list of paths that shall be added to the list.</param>
+    /// <param name="pPaths">The list of paths that shall be added to the recent list.</param>
     procedure SetRecentItems(pAction: TAction; pPaths: TStrings); overload;
+
+    /// Adds an item to the list of recent path.
+    /// <param name="pPath">The path that shall be added to the recent list.</param>
+    procedure AddToRecentItems(const pPath: string);
 
     /// <summary>
     ///  Get the currently selected "recent item".
@@ -653,6 +657,8 @@ begin
           pCommand.Assign(lAction)
         {$ifdef DEBUG}else
           OutputDebugString(PChar(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))){$endif};
+        if pCommand.CommandType = TUICommandType.ctRecentItems then
+          fRecentItems := (pCommand as TUICommandRecentItems);
       end;
       // Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
       // If not found, at least try to localize it.
@@ -1299,25 +1305,29 @@ begin
   end;
 end;
 
-procedure TUIRibbon.SetRecentItems(pAction: TAction; pPaths: TStrings);
+procedure TUIRibbon.AddToRecentItems(const pPath: string);
 var
   lItem: TUIRecentItem;
+begin
+  lItem := TUIRecentItem.Create;
+  lItem.LabelText := pPath;
+  fRecentItems.Items.Add(lItem);
+end;
+
+procedure TUIRibbon.SetRecentItems(pAction: TAction; pPaths: TStrings);
+var
   lPath: string;
 begin
-  if (not Self.Visible) then
-    exit;
-
   if not Assigned(fRecentItems) then begin
     fRecentItems := Self.GetCommand(pAction) as TUICommandRecentItems;
   end;
+  if not Assigned(fRecentItems) then
+    exit;// Happens if this method is called too early, before the ribbon and its commands have been created
 
   fRecentItems.Items.Clear();
 
-  for lPath in pPaths do begin
-    lItem := TUIRecentItem.Create;
-    lItem.LabelText := lPath;
-    fRecentItems.Items.Add(lItem);
-  end;
+  for lPath in pPaths do
+    AddToRecentItems(lPath);
 end;
 
 procedure TUIRibbon.SetTextColor(const Value: TColor);

@@ -1005,7 +1005,8 @@ end;
 procedure TUIRibbon.DestroyWnd;
 begin
   inherited;
-  FFramework.Destroy();
+  if Assigned(FFramework) then
+    FFramework.Destroy();
   fLoaded := False;
 end;
 

@@ -182,5 +182,37 @@ object FormMain: TFormMain
       Caption = 'Font'
       OnChanged = CmdFontChanged
     end
+    object CmdOpen: TFileOpen
+      Category = 'File'
+      Caption = '&Open...'
+      Dialog.DefaultExt = 'RTF'
+      Dialog.Filter = 'All Files (*.*)|*.*'
+      Hint = 'Open|Opens an existing file'
+      ImageIndex = 7
+      ShortCut = 16463
+      OnAccept = CmdOpenAccept
+    end
+    object CmdRecentItems: TAction
+      Category = 'File'
+      Caption = 'Open Recent File'
+      OnExecute = CmdRecentItemsExecute
+    end
+    object CmdSave: TAction
+      Category = 'File'
+      Caption = '&Save'
+      OnExecute = CmdSaveExecute
+    end
+    object CmdSaveAs: TFileSaveAs
+      Category = 'File'
+      Caption = 'Save &As...'
+      Hint = 'Save As|Saves the active file with a new name'
+      ImageIndex = 30
+      OnAccept = CmdSaveAsAccept
+    end
+    object CmdNew: TAction
+      Category = 'File'
+      Caption = '&New'
+      OnExecute = CmdNewExecute
+    end
   end
 end

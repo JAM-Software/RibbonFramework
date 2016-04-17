@@ -1,4 +1,4 @@
-unit ribbonmarkup;
+unit RibbonMarkup;
 
 // *****************************************************************************
 // * This is an automatically generated source file for UI Element definition  *
@@ -7,7 +7,7 @@ unit ribbonmarkup;
 
 interface
 
-{$R 'ribbonmarkup.res'}
+{$R 'RibbonMarkup.res'}
 
 uses
 	Generics.Collections, SysUtils, UIRibbon;

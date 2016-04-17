@@ -47,6 +47,11 @@ type
     Ribbon: TUIRibbon;
     CmdPasteSpecial: TAction;
     CmdFont: TRibbonFontAction;
+    CmdOpen: TFileOpen;
+    CmdRecentItems: TAction;
+    CmdSave: TAction;
+    CmdSaveAs: TFileSaveAs;
+    CmdNew: TAction;
     procedure RichEditSelectionChange(Sender: TObject);
     procedure RichEditChange(Sender: TObject);
     procedure RichEditContextPopup(Sender: TObject; MousePos: TPoint;
@@ -67,12 +72,25 @@ type
     procedure CmdFontChanged(const Args: TUICommandFontEventArgs);
     procedure RibbonLoaded(Sender: TObject);
     procedure CommandCreated(const Sender: TUIRibbon; const Command: TUICommand);
+    procedure CmdOpenAccept(Sender: TObject);
+    procedure CmdRecentItemsExecute(Sender: TObject);
+    procedure CmdSaveAsAccept(Sender: TObject);
+    procedure CmdNewExecute(Sender: TObject);
+    procedure CmdSaveExecute(Sender: TObject);
   private
     { Private declarations }
     FRichEditEx: TRichEditEx;
     FPrintPreviewMode: Boolean;
+    /// The path of the currently opened file
+    FCurrentfilePath: String;
     procedure UpdateRibbonControls;
     procedure PopulateListGallery;
+    /// Loads a file into the editor and adds the file path to the recent items.
+    /// <param name="pFilePath">The path of the file that should be loaded.</param>
+    procedure Load(const pFilePath: string);
+    /// Loads the editor contents to a file.
+    /// <param name="pFilePath">The path of the file to that the editor content should be saved.</param>
+    procedure Save(const pFilePath: string);
   public
     { Public declarations }
     constructor Create(Owner: TComponent); override;
@@ -265,10 +283,6 @@ begin
     CmdPicas,
     CmdPoints,
     CmdHelp,
-    CmdNew,
-    CmdOpen,
-    CmdSave,
-    CmdSaveAs,
     CmdRichTextDocument,
     CmdOfficeOpenXMLDocument,
     CmdOpenDocumentText,
@@ -297,6 +311,11 @@ destructor TFormMain.Destroy;
 begin
   FRichEditEx.Free;
   inherited;
+end;
+
+procedure TFormMain.CmdRecentItemsExecute(Sender: TObject);
+begin
+  Load(Ribbon.GetSelectedRecentItem.LabelText);
 end;
 
 procedure TFormMain.CmdFontChanged(const Args: TUICommandFontEventArgs);
@@ -399,5 +418,45 @@ begin
   CmdUndo.Enabled := FRichEditEx.CanUndo;
   CmdRedo.Enabled := FRichEditEx.CanRedo;
 end;
+
+procedure TFormMain.CmdNewExecute(Sender: TObject);
+begin
+  RichEdit.Clear();
+  fCurrentFilePath := '';
+end;
+
+procedure TFormMain.CmdOpenAccept(Sender: TObject);
+begin
+  Load(CmdOpen.Dialog.FileName);
+end;
+
+procedure TFormMain.CmdSaveAsAccept(Sender: TObject);
+begin
+  Save(CmdSaveAs.Dialog.FileName);
+end;
+
+procedure TFormMain.CmdSaveExecute(Sender: TObject);
+begin
+  if FCurrentfilePath.IsEmpty then
+    CmdSaveAs.Execute()
+  else
+    Save(FCurrentfilePath);
+end;
+
+procedure TFormMain.Load(const pFilePath: string);
+begin
+  RichEdit.Lines.LoadFromFile(pFilePath);
+  Ribbon.AddToRecentItems(pFilePath);
+  FCurrentfilePath := pFilePath;
+end;
+
+procedure TFormMain.Save(const pFilePath: string);
+begin
+  RichEdit.Lines.SaveToFile(pFilePath);
+  FCurrentfilePath := pFilePath;
+end;
+
+
+
 
 end.

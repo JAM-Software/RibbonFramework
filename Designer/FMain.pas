@@ -378,6 +378,7 @@ begin
 
   FDocument := TRibbonDocument.Create;
   FCompiler := TRibbonCompiler.Create;
+  FCompiler.OnMessage := RibbonCompilerMessage;
 
   FFrameCommands := TFrameCommands.Create(Self);
   FFrameCommands.Parent := TabSheetCommands;
@@ -398,7 +399,6 @@ begin
     end// if /BUILD
     else begin
       NewFile(True);
-      FCompiler.OnMessage := RibbonCompilerMessage;
     end;//else
   end // if file passed
 end;

@@ -1067,6 +1067,7 @@ type
   public
     { Creates a new empty collection }
     constructor Create; overload;
+    destructor Destroy; override;
 
     { Creates a collection based on an exiting IUICollection object }
     constructor Create(const Handle: IUICollection); overload;
@@ -1123,7 +1124,7 @@ type
     function GetPropertyValue(const Prop: TUIProperty): TValue; override;
   {$ENDREGION 'Internal Declarations'}
   public
-    constructor Create;
+    constructor Create(const pLabel: String = ''; const pImage: IUIImage = nil);
 
     { The label text for the item. Used for Items and Categories. }
     property LabelText: String read FLabel write FLabel;
@@ -2407,9 +2408,6 @@ begin
       begin
         UIInitPropertyFromInterface(UI_PKEY_ItemsSource, FItems.Handle, Val);
         FFramework.SetUICommandProperty(FCommandId, UI_PKEY_ItemsSource, Val);
-        { The ribbon takes additional ownership of the collection, so we must
-          release it to avoid a memory leak. }
-        FItems.Handle._Release;
       end;
 
     NOTIFY_CATEGORIES:
@@ -3789,6 +3787,15 @@ begin
   Changed;
 end;
 
+destructor TUICollection.Destroy;
+begin
+  { The ribbon takes additional ownership of the collection, so we must
+    release it to avoid a memory leak. See issue #34 }
+  while FHandle._Release() > 1 do;
+  FHandle := nil;
+  Inherited;
+end;
+
 procedure TUICollection.EndUpdate;
 begin
   Dec(FUpdateCount);
@@ -3975,9 +3982,11 @@ end;
 
 { TUIGalleryCollectionItem }
 
-constructor TUIGalleryCollectionItem.Create;
+constructor TUIGalleryCollectionItem.Create(const pLabel: String = ''; const pImage: IUIImage = nil);
 begin
   inherited Create;
+  FLabel := pLabel;
+  FImage := pImage;
   FCategoryId := UICollectionInvalidIndex;
 end;
 

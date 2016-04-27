@@ -3,11 +3,6 @@ program TextPad;
 {$R 'Galleries.res' 'Galleries.rc'}
 
 uses
-   madExcept,
-  madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
  Forms,
   FMain in 'FMain.pas' {FormMain},
   RibbonMarkup in 'Ribbon\RibbonMarkup.pas';

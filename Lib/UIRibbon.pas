@@ -380,6 +380,9 @@ type
     /// <returns>TUIRecentItem</returns>
     function GetSelectedRecentItem(): TUIRecentItem;
 
+    /// True if the ribbon has been loaded from then resource and has been initialized; False otherwise.
+    property IsLoaded: Boolean read fLoaded;
+
     { Whether the UI Ribbon Framework is available on the system.
       Returns False when the application is not running on Windows 7 or
       Windows Vista with the Platform update. In that case, all ribbon

@@ -12,7 +12,7 @@ uses
   UIRibbonCommands in '..\..\..\Lib\UIRibbonCommands.pas',
   UIRibbonForm in '..\..\..\Lib\UIRibbonForm.pas',
   UIRibbonUtils in '..\..\..\Lib\UIRibbonUtils.pas',
-  WinApiEx in '..\..\..\Lib\WinApiEx.pas';
+  ribbonmarkup in 'Ribbon\ribbonmarkup.pas';
 
 {$R *.res}
 

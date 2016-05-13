@@ -31,7 +31,7 @@ begin
   RegisterActions(cPackageTitle, [TRibbonCollectionAction, TRibbonFontAction, TRibbonColorAction], nil);
 
   lDesignerPath := TMyRibbonFrameworkEditor.GetDesignerPath();
-  if lDesignerPath.IsEmpty then begin
+  if lDesignerPath.IsEmpty and (getActiveProject <> nil) then begin
     // Search designer based on project path
     lDesignerPath := ExtractFilePath(ExcludeTrailingPathDelimiter(ExtractFilePath(getActiveProject.fileName)));
     lDesignerPath := IncludeTrailingPathDelimiter(lDesignerPath) + 'Designer\Bin\RibbonDesigner.exe';

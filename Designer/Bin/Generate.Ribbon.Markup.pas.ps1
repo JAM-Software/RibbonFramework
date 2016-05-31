@@ -43,11 +43,14 @@ $UICCDir = $args[2]
 function FindFileInLocation($pLocation, $pFileName)
 {   
     # First check if a valid path was passed via the command line
-    $lPath = Join-Path $pLocation $pFileName
-    if (Test-Path $lPath)
-    {
-        return $lPath
-    }
+	if ($pLocation)
+	{
+        $lPath = Join-Path $pLocation $pFileName
+        if (Test-Path $lPath)
+        {
+            return $lPath
+        }
+	}
     # Check if the file exists under %PATH%
     if (Get-Command $pFileName -ErrorAction SilentlyContinue)
     {

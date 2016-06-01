@@ -47,7 +47,7 @@ resourcestring
   RS_STARTING_RESOURCE_COMPILER = 'STARTING THE RESOURCE COMPILER...';
   RS_STARTING_DELPHI_COMPILER = 'STARTING DELPHI COMPILER...';
   RS_PIPE_ERROR = 'Application output of "%s" not available';
-  RS_ERROR_EXECUTING = 'Error executing "%s"';
+  RS_ERROR_EXECUTING = 'Error executing "%s": %s';
   RS_COMPILE_SUCCESS = 'RIBBON COMPILED SUCCESSFULLY!';
   RS_NO_DLL = 'Delphi compiler did not output a resource DLL';
 
@@ -82,7 +82,8 @@ begin
 
     DocDir := ExtractFilePath(Document.Filename);
 
-    if (not Execute('powershell -NoProfile -ExecutionPolicy Bypass -f "' + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'Generate.Ribbon.Markup.pas.ps1"', DocDir, [Document.Filename.QuotedString('"'), 'APPLICATION', TSettings.Instance.RibbonCompilerDir.QuotedString('"')]))
+    if (not Execute('powershell', DocDir,
+      ['-NoProfile', '-ExecutionPolicy Bypass', '-f "' + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'Generate.Ribbon.Markup.pas.ps1"', Document.Filename.QuotedString('"'), 'APPLICATION', TSettings.Instance.RibbonCompilerDir.QuotedString('"')]))
     then
       Exit(crRibbonCompilerError);
 
@@ -222,7 +223,7 @@ begin
       True, NORMAL_PRIORITY_CLASS, nil, PChar(CurrentDir), StartupInfo, ProcessInfo))
     then
     begin
-      DoMessage(mkError, RS_ERROR_EXECUTING, [ExtractFilename(Application)]);
+      DoMessage(mkError, RS_ERROR_EXECUTING, [Application, SysErrorMessage(GetLastError)]);
       Exit;
     end;
 

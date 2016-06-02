@@ -3,7 +3,7 @@ unit UIRibbonActions;
 interface
 
 uses
-  Classes,
+  System.Classes,
   ActnList,
   UIRibbonCommands;
 
@@ -14,6 +14,7 @@ type
     FClient: TUICommand;
   {$ENDREGION 'Internal Declarations'}
   protected
+    procedure SetAction(Value: TBasicAction); override;
     procedure AssignClient(AClient: TObject); override;
     function IsEnabledLinked: Boolean; override;
     function IsOnExecuteLinked: Boolean; override;
@@ -21,6 +22,7 @@ type
     procedure SetEnabled(Value: Boolean); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetHint(const Value: String); override;
+    procedure SetShortCut(Value: System.Classes.TShortCut); virtual;
     procedure SetOnExecute(Value: TNotifyEvent); override;
 
     property Client: TUICommand read FClient;
@@ -147,6 +149,7 @@ implementation
 
 uses
   Menus,
+  Controls,
   {$if CompilerVersion >= 24}
   System.Actions,
   {$endif}
@@ -175,10 +178,46 @@ begin
   Result := False;
 end;
 
-procedure TUICommandActionLink.SetCaption(const Value: String);
+procedure TUICommandActionLink.SetAction(Value: TBasicAction);
 begin
-  if IsCaptionLinked and (Value <> '') then
-    FClient.Caption := Value;
+  inherited;
+  if Value is TCustomAction then with TCustomAction(Value) do
+  begin
+    // Trigger assigned OnUpdate method to determine whether the Ribbon command
+    // shall be enabled or disabled (greyed out).
+    Value.Update();
+    Self.SetEnabled(Enabled and Visible);
+    // Caption of the Ribbon Command
+    Self.SetCaption(Caption);
+    Self.SetHint(Hint);
+    Self.SetChecked(Checked);
+    Self.SetGroupIndex(GroupIndex);
+    Self.SetShortCut(ShortCut);
+    Self.SetImageIndex(ImageIndex);
+  end;// if/with
+end;
+
+procedure TUICommandActionLink.SetCaption(const Value: String);
+const
+  cAmpersand = '&';
+begin
+  if IsCaptionLinked and (Value <> '') then begin
+    FClient.Caption := Trim(Value.Replace('...', ''));// Remove trailing dots, they are uncommon in ribbon bars
+    // Tooltip Title (bold string above the actual Tooltip)
+    // Using the value of caption here because common Microsoft products do this as well.
+    FClient.TooltipTitle := Value;
+    // If action caption contains an ampersand (&), use the char following that
+    // ampersand as Keytip for the ribbon element so that ALT+Char can be used the
+    // same way as on regular VCL controls.
+    if Value.Contains(cAmpersand) then
+    begin
+      FClient.Keytip := UpperCase(Value[Value.IndexOf(cAmpersand) + 2]);
+    end;
+  end;
+  // For some reasons, the Windows Ribbon Framework makes the ToolTipTitle
+  // invisible, if it equals the Commands Caption property. To aovid this, we
+  // assign an additional space to the end of the string here.
+  FClient.TooltipTitle := FClient.TooltipTitle + ' ';
 end;
 
 procedure TUICommandActionLink.SetEnabled(Value: Boolean);
@@ -195,6 +234,16 @@ begin
     FClient.Enabled := False;
 end;
 
+procedure TUICommandActionLink.SetShortCut(Value: System.Classes.TShortCut);
+begin
+  // If corresponding Action has a shortcut, we append it in text form to the TooltipTitle.
+  if Value <> 0 then
+  begin
+    FClient.ShortCut := Value;
+    FClient.TooltipTitle := Format('%s (%s)', [FClient.Caption, ShortCutToText(Value)]);
+  end;
+end;
+
 function TUICommandActionLink.Update: Boolean;
 begin
   if Assigned(Self.Action) then
@@ -204,21 +253,35 @@ begin
 end;
 
 procedure TUICommandActionLink.SetHint(const Value: String);
-var
-  I: Integer;
 begin
-  if IsHintLinked then
+  if IsHintLinked and not Value.IsEmpty then
   begin
-    I := Pos('|', Value);
-    if (I = 0) then
-      FClient.TooltipTitle := Value
-    else
+    // Use the long hint of the action as TooltipDescription. If no separate
+    // strings for Long and Short hint are provided, the regular string is used.
+    FClient.TooltipDescription := GetLongHint(Value);
+
+    //    I := Pos('|', Value);
+//    if (I = 0) then
+//      FClient.TooltipTitle := Value
+//    else
+//    begin
+//      FClient.TooltipTitle := Copy(Value, 1, I - 1);
+//      FClient.TooltipDescription := Copy(Value, I + 1, MaxInt);
+//    end;
+
+    // Some extra handling for the regular ribbon buttons (ctAction).
+    if (FClient.CommandType = TUICommandType.ctAction) then
     begin
-      FClient.TooltipTitle := Copy(Value, 1, I - 1);
-      FClient.TooltipDescription := Copy(Value, I + 1, MaxInt);
+      // Regular ribbon buttons may also have a "Description" (this is not the
+      // tooltip that any ribbon element has), which is displayed right beneath
+      // the caption of large buttons in sub menus such as the application menu.
+      // Use the short hint of the action as TooltipDescription. If no separate
+      // strings for Long and Short hint are provided, the regular string is used.
+      (FClient as TUICommandAction).LabelDescription := GetShortHint(Value);
     end;
+
     if assigned(FClient.OnUpdateHint) then
-      FClient.OnUpdateHint(FClient, Value)
+      FClient.OnUpdateHint(FClient, Value);
   end;
 end;
 
@@ -301,6 +364,8 @@ end;
 procedure TUICommandBooleanActionLink.SetChecked(Value: Boolean);
 begin
   inherited;
+  // Toggle buttons have a "Checked" property, set it to the same state as
+  // its corresponding TAction element has.
   (Client as TUICommandBoolean).Checked := Value;
 end;
 

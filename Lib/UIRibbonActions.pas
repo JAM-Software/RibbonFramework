@@ -22,7 +22,7 @@ type
     procedure SetEnabled(Value: Boolean); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetHint(const Value: String); override;
-    procedure SetShortCut(Value: System.Classes.TShortCut); virtual;
+    procedure SetShortCut(Value: System.Classes.TShortCut); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
 
     property Client: TUICommand read FClient;

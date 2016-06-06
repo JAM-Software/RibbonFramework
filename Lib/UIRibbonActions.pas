@@ -5,6 +5,7 @@ interface
 uses
   System.Classes,
   ActnList,
+  ActnMan,
   UIRibbonCommands;
 
 type
@@ -23,6 +24,7 @@ type
     procedure SetVisible(Value: Boolean); override;
     procedure SetHint(const Value: String); override;
     procedure SetShortCut(Value: System.Classes.TShortCut); override;
+    procedure SetImageIndex(Value: Integer); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
 
     property Client: TUICommand read FClient;
@@ -282,6 +284,20 @@ begin
 
     if assigned(FClient.OnUpdateHint) then
       FClient.OnUpdateHint(FClient, Value);
+  end;
+end;
+
+procedure TUICommandActionLink.SetImageIndex(Value: Integer);
+var
+  lActionManager: TActionManager;
+begin
+  inherited;
+  if (Value >= 0) and (Self.Action is TContainedAction) and (TContainedAction(Self.Action).ActionList is TActionManager) then begin
+    lActionManager := TActionManager(TContainedAction(Self.Action).ActionList);
+    if Assigned(lActionManager.Images) then
+      FClient.SmallImage := TUIImage.Create(lActionManager.Images, Value);
+    if Assigned(lActionManager.LargeImages) then
+      FClient.LargeImage := TUIImage.Create(lActionManager.LargeImages, Value);
   end;
 end;
 

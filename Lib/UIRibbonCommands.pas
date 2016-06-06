@@ -15,7 +15,9 @@ uses
   PropSys,
   ActnList,
   UIRibbonApi,
-  PNGImage;
+  PNGImage,
+  Vcl.ImgList,
+  System.UITypes;
 
 const
   WM_RIBBONCMD_NOTIFY = WM_USER + 241;
@@ -177,6 +179,7 @@ type
     procedure SetKeytip(const Value: String);
     procedure SetTooltipTitle(const Value: String);
     procedure SetTooltipDescription(const Value: String);
+    procedure SetSmallImage(const Value: TUIImage);
     function GetActionLink: TActionLink;
   private
     { IInterface }
@@ -190,6 +193,7 @@ type
 
     function UpdateProperty(CommandId: UInt32; const Key: TUIPropertyKey;
       CurrentValue: PPropVariant; out NewValue: TPropVariant): HRESULT; stdcall;
+    procedure SetLargeImage(const Value: TUIImage);
   strict private
     procedure ImageChanged(Sender: TObject);
   strict protected
@@ -282,10 +286,10 @@ type
     property TooltipDescription: String read FTooltipDescription write SetTooltipDescription;
 
     { The large image to display when the button/control is in large mode. }
-    property LargeImage: TUIImage read FLargeImage;
+    property LargeImage: TUIImage read FLargeImage write SetLargeImage;
 
     { The small image to display when the button/control is in small mode. }
-    property SmallImage: TUIImage read FSmallImage;
+    property SmallImage: TUIImage read FSmallImage write SetSmallImage;
 
     { The large image to display when the button/control is in large mode and
       the system is in High Contast Mode (Alt+Left Shift+PrtScn).
@@ -1207,6 +1211,8 @@ type
     constructor Create(const Filename: String;
       const HighContrast: Boolean = False); overload;
 
+    constructor Create(pImageList: TCustomImageList; pImageIndex: TImageIndex); overload;
+
     { Loads the image from a resource (replaces the current image),
       This must be a regular BITMAP resource. }
     procedure Load(const ResourceId: Integer); overload;
@@ -1269,9 +1275,9 @@ implementation
 uses
   Menus,
   SysUtils,
+  CommCtrl,
   WinApiEx,
   Controls,
-  UITypes,
   UIRibbon,
   UIRibbonActions;
 
@@ -2130,6 +2136,24 @@ end;
 procedure TUICommand.SetShortCut(const Shift: TShiftState; const Key: Char);
 begin
   FShortCut := Menus.ShortCut(Ord(Key), Shift);
+end;
+
+procedure TUICommand.SetSmallImage(const Value: TUIImage);
+begin
+  if (FSmallImage <> Value) then begin
+    FSmallImage.Free;
+    FSmallImage := Value;
+    FFramework.InvalidateUICommand(FCommandId, [UIInvalidationsProperty], @UI_PKEY_SmallImage);
+  end;
+end;
+
+procedure TUICommand.SetLargeImage(const Value: TUIImage);
+begin
+  if (FLargeImage <> Value) then begin
+    FLargeImage.Free;
+    FLargeImage := Value;
+    FFramework.InvalidateUICommand(FCommandId, [UIInvalidationsProperty], @UI_PKEY_LargeImage);
+  end;
 end;
 
 procedure TUICommand.SetTooltipDescription(const Value: String);
@@ -4269,6 +4293,29 @@ begin
     finally
       Bmp.Free;
       Png.Free;
+    end;
+  end;
+end;
+
+constructor TUIImage.Create(pImageList: TCustomImageList; pImageIndex: TImageIndex);
+var
+  lBitmap: TBitmap;
+begin
+  inherited Create;
+  if Assigned(FImageFactory) and Assigned(pImageList) then
+  begin
+    lBitmap := TBitmap.Create;
+    try
+      lBitmap.Width  := pImageList.Width;
+      lBitmap.Height := pImageList.Height;
+      lBitmap.PixelFormat := pf32bit;
+      lBitmap.Transparent := True;
+      if not ImageList_DrawEx(pImageList.Handle, pImageIndex, lBitmap.Canvas.Handle, (lBitmap.Width - pImageList.Width) div 2, (lBitmap.Height - pImageList.Height) div 2, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT) then
+        exit;
+      FHandle := FImageFactory.CreateImage(lBitmap.Handle, UIOwnershipCopy);
+      FBitmap := FHandle.GetBitmap;
+    finally
+      lBitmap.Free;
     end;
   end;
 end;

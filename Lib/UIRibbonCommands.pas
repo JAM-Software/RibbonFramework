@@ -993,8 +993,6 @@ type
   strict protected
     function GetPropertyValue(const Prop: TUIProperty): TValue; virtual; abstract;
   {$ENDREGION 'Internal Declarations'}
-  public
-    destructor Destroy; override;
   end;
 
   TUICollectionChangeEvent = procedure(const Collection: TUICollection;
@@ -3677,11 +3675,6 @@ begin
 end;
 
 { TUICollectionItem }
-
-destructor TUICollectionItem.Destroy;
-begin
-  inherited;
-end;
 
 function TUICollectionItem.GetValue(const Key: TUIPropertyKey;
   out Value: TPropVariant): HResult;

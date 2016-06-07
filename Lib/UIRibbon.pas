@@ -631,8 +631,8 @@ destructor TUIRibbon.Destroy;
 begin
   if roAutoPreserveState in Options then
     SaveRibbonSettings(); // Save quick toolbar, etc.
-  FFramework := nil;
   FreeAndNil(FCommands);
+  FFramework := nil;
   inherited;
 end;
 

@@ -32,7 +32,7 @@ implementation
 
 function RegisterRibbonElements(): TRibbonMarkupElementList;
 begin
-  Result := TRibbonMarkupElementList.Create('');
+  Result := TRibbonMarkupElementList.Create('APPLICATION');
   Result.Add(TRibbonMarkupElement.Create('IDR_CMD_TAB1', 10000, 200, -1, -1, -1));
   Result.Add(TRibbonMarkupElement.Create('cmdGroup1', 2, -1, -1, -1, -1));
   Result.Add(TRibbonMarkupElement.Create('cmdQat', 3, -1, -1, -1, -1));

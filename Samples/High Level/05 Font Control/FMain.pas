@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, RichEdit, UIRibbon, UIRibbonCommands,
-  uRichEditManager, RibbonConst, WinApiEx;
+  uRichEditManager, ribbonmarkup, WinApiEx;
 
 type
   TFormMain = class(TForm)

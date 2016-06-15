@@ -8,7 +8,7 @@ uses
   UIRibbonApi in '..\..\..\Lib\UIRibbonApi.pas',
   WinApiEx in '..\..\..\Lib\WinApiEx.pas',
   uRichEditManager in 'uRichEditManager.pas',
-  RibbonConst in 'Ribbon\RibbonConst.pas',
+  ribbonmarkup in 'Ribbon\ribbonmarkup.pas',
   UIRibbon in '..\..\..\Lib\UIRibbon.pas',
   UIRibbonCommands in '..\..\..\Lib\UIRibbonCommands.pas',
   UIRibbonForm in '..\..\..\Lib\UIRibbonForm.pas',

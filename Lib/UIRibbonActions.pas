@@ -18,6 +18,7 @@ type
     procedure SetAction(Value: TBasicAction); override;
     procedure AssignClient(AClient: TObject); override;
     function IsEnabledLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
     function IsOnExecuteLinked: Boolean; override;
     procedure SetCaption(const Value: String); override;
     procedure SetEnabled(Value: Boolean); override;
@@ -152,6 +153,7 @@ implementation
 uses
   Menus,
   Controls,
+  UIRibbon,
   {$if CompilerVersion >= 24}
   System.Actions,
   {$endif}
@@ -173,6 +175,11 @@ end;
 function TUICommandActionLink.IsEnabledLinked: Boolean;
 begin
   Result := inherited IsEnabledLinked and (FClient.Enabled = (Action as TCustomAction).Enabled);
+end;
+
+function TUICommandActionLink.IsImageIndexLinked: Boolean;
+begin
+  Result := inherited and (TUIRibbonOption.roAssignImagesFromActionManager in TUIRibbon(FClient.Owner).Options);
 end;
 
 function TUICommandActionLink.IsOnExecuteLinked: Boolean;
@@ -292,7 +299,7 @@ var
   lActionManager: TActionManager;
 begin
   inherited;
-  if (Value >= 0) and (Self.Action is TContainedAction) and (TContainedAction(Self.Action).ActionList is TActionManager) then begin
+  if (Value >= 0) and IsImageIndexLinked and (TContainedAction(Self.Action).ActionList is TActionManager) then begin
     lActionManager := TActionManager(TContainedAction(Self.Action).ActionList);
     if Assigned(lActionManager.Images) then
       FClient.SmallImage := TUIImage.Create(lActionManager.Images, Value);

@@ -98,7 +98,19 @@ type
   /// <author>marder@jam-software.com</author>
   TUILoadResourceStringEvent = procedure(const Sender: TUIRibbon; const pCommand: TUICommand; pResourceID: Integer; var pString: string) of object;
 
-  TUIRibbonOption = (roAutoPreserveState);
+  /// <summary>
+  /// Some options that configure the runtime behavior of the ribbon control.
+  /// </summary>
+  TUIRibbonOption = (
+    /// <summary>
+    /// If this flag is activated, the ribbon control will save its state automatically to the %AppData% folder of the current user
+    /// </summary>
+    /// <seealso cref="TUIRibbon.SaveRibbonSettings">
+    roAutoPreserveState,
+    /// <summary>
+    /// If this flag is activated, the ribbon control will assign images assigned to VCL actions to the ribbon elements.
+    /// </summary>
+    roAssignImagesFromActionManager);
   TUIRibbonOptions = set of TUIRibbonOption;
 
   TUIRibbon = class(TWinControl, IUIApplication)

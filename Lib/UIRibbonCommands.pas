@@ -3757,8 +3757,8 @@ destructor TUICollection.Destroy;
 begin
   { The ribbon takes additional ownership of the collection, so we must
     release it to avoid a memory leak. See issue #34 }
-  while FHandle._Release() > 1 do;
-  FHandle := nil;
+  while FHandle._Release() > 0 do;
+  Pointer(FHandle) := nil; // Set to nil without decreasing ref count, this was done the line before. See issue #39
   Inherited;
 end;
 

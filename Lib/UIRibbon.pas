@@ -384,7 +384,8 @@ type
 
     /// Adds an item to the list of recent path.
     /// <param name="pPath">The path that shall be added to the recent list.</param>
-    procedure AddToRecentItems(const pPath: string);
+    /// <param name="pDescription">Optional. A description for the path.</param>
+    procedure AddToRecentItems(const pPath: string; const pDescription: string = '');
 
     /// <summary>
     ///  Get the currently selected "recent item".
@@ -1331,12 +1332,13 @@ begin
   end;
 end;
 
-procedure TUIRibbon.AddToRecentItems(const pPath: string);
+procedure TUIRibbon.AddToRecentItems(const pPath: string; const pDescription: string = '');
 var
   lItem: TUIRecentItem;
 begin
   lItem := TUIRecentItem.Create;
   lItem.LabelText := pPath;
+  lItem.Description := pDescription;
   fRecentItems.Items.Add(lItem);
 end;
 

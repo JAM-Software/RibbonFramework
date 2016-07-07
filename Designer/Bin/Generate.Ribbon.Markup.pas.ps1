@@ -91,13 +91,21 @@ write-host "UICC.exe found: Using $UICCCmd"
 
 # Use the provided xml file to Create the .bml, .h and .rc file
 & $UICCCmd "/W0" "$xmlFilePath" "$bmlFilePath" "/header:$headerFilePath" "/res:$rcFilePath" "/name:$ResourceName"
+If ($LASTEXITCODE -ne 0) 
+{
+    exit $LASTEXITCODE
+}
 
 # Find rc.exe (Use the same locations as UICC.exe)
 $RCCmd = FindFileInLocation -pLocation $UICCDir -pFileName "rc.exe"
 write-host "RC.exe found: Using $RCCmd"
 
 # Create the .RES resource file
-rc "$rcFilePath"
+& $RCCmd "$rcFilePath"
+If ($LASTEXITCODE -ne 0) 
+{
+    exit $LASTEXITCODE
+}
 
 # Create a new Markup .pas file that will contain the Ribbon command constants.
 

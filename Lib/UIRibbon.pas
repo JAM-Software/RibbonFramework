@@ -674,8 +674,6 @@ begin
           pCommand.Assign(lAction)
         {$ifdef DEBUG}else
           OutputDebugString(PChar(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))){$endif};
-        if pCommand.CommandType = TUICommandType.ctRecentItems then
-          fRecentItems := (pCommand as TUICommandRecentItems);
       end;
       // Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
       // If not found, at least try to localize it.
@@ -692,6 +690,8 @@ begin
       Self.LocalizeRibbonElement(pCommand, lMarkupItem);
     end;// case/else
   end;// if RibbonMapper
+  if pCommand.CommandType = TUICommandType.ctRecentItems then
+    fRecentItems := (pCommand as TUICommandRecentItems);
   if Assigned(FOnCommandCreate) then
     FOnCommandCreate(Self, pCommand);
 end;

@@ -73,6 +73,12 @@ function FindFileInLocation($pLocation, $pFileName)
     {
         return "${env:ProgramFiles(x86)}\Windows Kits\8.1\bin\x86\$pFileName"
     }    
+# begin modification: add the path to windows 10 sdk.
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\$pFileName")
+    {
+        return "${env:ProgramFiles(x86)}\Windows Kits\10\bin\x86\$pFileName"
+    }    
+# end modification.
     elseif (Test-Path "$PSScriptRoot\$pFileName")
     {
         return "$PSScriptRoot\$pFileName"

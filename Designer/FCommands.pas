@@ -389,6 +389,9 @@ begin
   { Only allow valid Name/Symbol characters }
   Edit := Sender as TEdit;
   case Key of
+    #3, // Ctrl-C
+    #$16, // Ctrl-V
+    #$18, // Ctrl-X
     #8, // backspace
     'A'..'Z',
     'a'..'z',

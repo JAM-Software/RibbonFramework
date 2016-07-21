@@ -53,13 +53,20 @@ uses
   IOUtils;
 
 const
- cUiccDownloadUrl = 'http://www.microsoft.com/en-us/download/confirmation.aspx?id=8279';
+ cUiccDownloadUrl7 = 'http://www.microsoft.com/en-us/download/confirmation.aspx?id=8279'; //Windows 7 SDK
+ cUiccDownloadUrl8 = 'http://go.microsoft.com/fwlink/p/?LinkId=323507'; // Windows 8 SDK download permalink
 
-{ TFormSettings }
+ { TFormSettings }
 
 procedure TFormSettings.DownloadButtonClick(Sender: TObject);
+var
+  lDownloadUrl: String;
 begin
-  ShellExecute(0, nil, PChar(cUiccDownloadUrl), '', '', SW_SHOWNORMAL);
+  if TOSVersion.Check(6, 2) then
+    lDownloadUrl := cUiccDownloadUrl8   // Windows 8 and higher
+  else
+    lDownloadUrl := cUiccDownloadUrl7;   // Windows 7 and below
+  ShellExecute(0, nil, PChar(lDownloadUrl), '', '', SW_SHOWNORMAL);
 end;
 
 constructor TFormSettings.Create(const Settings: TSettings);

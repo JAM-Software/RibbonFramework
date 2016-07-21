@@ -116,6 +116,20 @@ begin
 
     if (FRibbonCompilerPath = '') then
     begin
+      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Microsoft SDKs\Windows\v7.1\Bin\UICC.exe';
+      if (not TFile.Exists(FRibbonCompilerPath)) then
+        FRibbonCompilerPath := '';
+    end;
+
+    if (FRibbonCompilerPath = '') then
+    begin
+      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\8.1\bin\x86\uicc.exe';
+      if (not TFile.Exists(FRibbonCompilerPath)) then
+        FRibbonCompilerPath := '';
+    end;
+
+    if (FRibbonCompilerPath = '') then
+    begin
       FRibbonCompilerPath := ExtractFilePath(ParamStr(0)) + 'UICC.exe';
       if (not TFile.Exists(FRibbonCompilerPath)) then
         FRibbonCompilerPath := '';

@@ -55,7 +55,7 @@ begin
   TreeViewXmlSource.Items.BeginUpdate;
   try
     TreeViewXmlSource.Items.Clear;
-    if FileExists(FDocument.Filename) then
+    if Assigned(FDocument) and FileExists(FDocument.Filename) then
     begin
       FXmlDoc.LoadFromFile(FDocument.Filename);
       LineNum := 2;

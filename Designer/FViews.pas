@@ -1561,6 +1561,8 @@ procedure TFrameViews.Activate;
 var
   Command: TRibbonCommand;
 begin
+  if TreeViewRibbon.Items.Count = 0 then
+    exit;// Nothing to do here
   ActionDelete.ShortCut := ShortCut(VK_DELETE, [ssCtrl]);
   ActionMoveUp.ShortCut := ShortCut(VK_UP, [ssCtrl]);
   ActionMoveDown.ShortCut := ShortCut(VK_DOWN, [ssCtrl]);;

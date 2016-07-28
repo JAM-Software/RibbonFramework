@@ -28,7 +28,7 @@ var
   lDesignerPath: string;
 begin
   RegisterComponents('Windows Ribbon Framework for Delphi', [TUIRibbon]);
-  RegisterActions(cPackageTitle, [TRibbonCollectionAction, TRibbonFontAction, TRibbonColorAction], nil);
+  RegisterActions(cPackageTitle, [TRibbonCollectionAction, TRibbonPopupMenuAction, TRibbonFontAction, TRibbonColorAction], nil);
 
   lDesignerPath := TMyRibbonFrameworkEditor.GetDesignerPath();
   if lDesignerPath.IsEmpty and (getActiveProject <> nil) then begin

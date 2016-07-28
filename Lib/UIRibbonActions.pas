@@ -4,9 +4,11 @@ interface
 
 uses
   System.Classes,
+  Vcl.Menus,
   ActnList,
   ActnMan,
-  UIRibbonCommands;
+  UIRibbonCommands,
+  System.Generics.Collections;
 
 type
   TUICommandActionLink = class abstract (TActionLink)
@@ -131,6 +133,54 @@ type
   end;
 
   TRibbonCollectionAction = class(TRibbonAction<TUICommandCollection>)
+    strict private
+      fActionList: TList<TPair<TCustomAction, string>>;
+      function GetItem(pIndex: Integer): TPair<TCustomAction, string>;
+    public
+      constructor Create(AOwner: TComponent); override;
+      destructor Destroy; override;
+      /// <summary>
+      /// Adds an action to the internal list and populates it to the command
+      /// </summary>
+      /// <param name="pAction">The action that will be added to the collection.</param>
+      /// <param name="pCategory">(Optional) The category index that will be used for the collection.
+      /// An empty category name will be ignored and the default category will be used instead</param>
+      /// <returns>None</returns>collection
+      procedure Add(pAction: TCustomAction; const pCategory: string = '');
+      /// Clears the internal list and the command collection.
+      procedure Clear;
+      /// Allows to add multiple actions add once.
+      procedure AddRange(pSource: TList<TPair<TCustomAction, string>>);
+      /// Returns the amount of actions that have been added.
+      function ItemCount: Integer;
+      property Items[Index: Integer]: TPair<TCustomAction, string> read GetItem; default;
+      /// <summary>
+      /// This method uses the action items that are stored in the internal list fActionList,
+      /// and dynamically creates commands that will be added to the collection.
+      /// </summary>
+      procedure RefreshCommandCollection();
+  end;
+
+  /// <summary>
+  /// This type of action can be used to link a TPopupMenu to a ribbon collection. The menu items, or rather their actions,
+  /// will automatically be populated to the collection.
+  /// </summary>
+  TRibbonPopupMenuAction = class(TRibbonCollectionAction)
+    strict private
+      fPopupMenu: TPopupMenu;
+      fOriginalOnMenuChange: TMenuChangeEvent;
+    strict protected
+      /// <summary> Setter for property Menu </summary>
+      procedure SetPopupMenu(pValue: TPopupMenu);
+      /// <summary> Event handler for the menu's OnChange-event. We use this to update the collection. </summary>
+      procedure MenuChange(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
+    published
+      /// <summary>
+      /// Property that can be used to dynamically fill the collection items:
+      /// If this type of action is assigned to a collection type ribbon, such as a Drop Down Gallery,
+      /// the collection is automatically filled using the menu items of this property.
+      /// </summary>
+      property Menu: TPopupMenu read fPopupMenu write SetPopupMenu;
   end;
 
   TRibbonColorAction = class(TRibbonAction<TUICommandColorAnchor>)
@@ -151,13 +201,13 @@ type
 implementation
 
 uses
-  Menus,
   Controls,
   UIRibbon,
   {$if CompilerVersion >= 24}
   System.Actions,
   {$endif}
-  System.SysUtils; 
+  System.SysUtils, 
+  System.Math;
 
 { TUICommandActionLink }
 
@@ -342,8 +392,10 @@ procedure TUICommandCollectionActionLink.SetAction(Value: TBasicAction);
 begin
   inherited;
   (Client as TUICommandCollection).OnSelect := CommandSelect;
-  if (Action is TRibbonCollectionAction) then
+  if (Action is TRibbonCollectionAction) then begin
     TRibbonCollectionAction(Action).UICommand := (Client as TUICommandCollection);
+    TRibbonCollectionAction(Action).RefreshCommandCollection;
+  end;
 end;
 
 { TUICommandDecimalActionLink }
@@ -461,6 +513,154 @@ begin
   inherited;
   if Assigned(Value) then
     (Client as TUICommandRecentItems).OnSelect := CommandSelect;
+end;
+
+{ TRibbonCollectionAction }
+
+procedure TRibbonCollectionAction.Add(pAction: TCustomAction; const pCategory: string = '');
+begin
+  fActionList.Add(TPair<TCustomAction, string>.Create(pAction, pCategory));
+  RefreshCommandCollection;
+end;
+
+procedure TRibbonCollectionAction.RefreshCommandCollection();
+var
+  lAction: TCustomAction;
+  lCategory: string;
+  lItem: TUIGalleryCollectionItem;
+  lCommandAction: TUICommandAction;
+  lCommandCollection: TUICommandCollection;
+  I, lTargetCategoryId: Integer;
+
+  function FindOrCreateCategory(pCategoryCaption: string): Integer;
+  var
+    lCurrentCollectionItem: IUICollectionItem;
+    lGalleryCollectionItem: TUIGalleryCollectionItem;
+  begin
+    Result := -1;
+
+    for lCurrentCollectionItem in lCommandCollection.Categories do begin
+      lGalleryCollectionItem := lCurrentCollectionItem as TUIGalleryCollectionItem;
+      if SameText(lGalleryCollectionItem.LabelText, pCategoryCaption) then
+        // Category with given caption found -> return the correct id.
+        Exit(lGalleryCollectionItem.CategoryId)
+      else
+        Result := Max(Result, lGalleryCollectionItem.CategoryId);  // Keep track of the highest used id. We may need it later to create a new category.
+    end;
+    // No category with given caption found -> create it
+    lGalleryCollectionItem := TUIGalleryCollectionItem.Create;
+    // Use highest seen category id, increased by one, for this new category
+    Inc(Result);
+    lGalleryCollectionItem.CategoryId := Result;
+    lGalleryCollectionItem.LabelText := pCategoryCaption;
+    lCommandCollection.Categories.Add(lGalleryCollectionItem);
+  end;
+
+begin
+  // Command link is not (yet) created -> exit.
+  if not Assigned(UICommand) then exit;
+
+  lCommandCollection := UICommand as TUICommandCollection;
+  // Clear the ribbon collection
+  lCommandCollection.Items.Clear;
+  // Iterate the internal list of actions and fill the ribbon collection
+  for I := 0 to fActionList.Count - 1 do begin
+    lAction := fActionList[I].Key;
+    lCategory := fActionList[I].Value;
+    if lCategory.IsEmpty then
+      lTargetCategoryId := -1
+    else
+      lTargetCategoryId := FindOrCreateCategory(lCategory);
+
+    // Create a new command item and assign the target action
+    lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), 0);
+    lCommandAction.Assign(lAction);
+    // Create a collection item, that holds the action and can be added to the collection.
+    lItem := TUIGalleryCollectionItem.Create;
+    lItem.Command := lCommandAction;
+    lItem.CategoryId := lTargetCategoryId;
+    lCommandCollection.Items.Add(lItem);
+  end;
+end;
+
+procedure TRibbonCollectionAction.AddRange(pSource: TList<TPair<TCustomAction, string>>);
+begin
+  fActionList.AddRange(pSource);
+  RefreshCommandCollection;
+end;
+
+procedure TRibbonCollectionAction.Clear;
+begin
+  fActionList.Clear;
+  RefreshCommandCollection;
+end;
+
+constructor TRibbonCollectionAction.Create(AOwner: TComponent);
+begin
+  inherited;
+  fActionList := TList<TPair<TCustomAction, string>>.Create;
+end;
+
+destructor TRibbonCollectionAction.Destroy;
+begin
+  FreeAndNil(fActionList);
+  inherited;
+end;
+
+
+function TRibbonCollectionAction.GetItem(pIndex: Integer): TPair<TCustomAction, string>;
+begin
+  Exit(fActionList[pIndex]);
+end;
+
+function TRibbonCollectionAction.ItemCount: Integer;
+begin
+  Result := fActionList.Count;
+end;
+
+{ TRibbonPopupMenuAction }
+
+procedure TRibbonPopupMenuAction.MenuChange(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
+var
+  I, J: Integer;
+  lCategory: string;
+  lCategoryActionList: TList<TPair<TCustomAction, string>>;
+begin
+  if Assigned(fOriginalOnMenuChange) then
+    fOriginalOnMenuChange(Sender, Source, Rebuild);
+
+  Clear; // Clear the collection and refill it.
+  lCategory := '';
+  // We use this list to collect actions category wise. We map Menu separators to ribbon categories.
+  lCategoryActionList := TList<TPair<TCustomAction, string>>.Create;
+  for I := 0 to Menu.Items.Count - 1 do begin
+    if not Assigned(Menu.Items[I].Action) and SameText(Menu.Items[I].Caption, cLineCaption) then begin
+      // This menu item is a separator -> use a category with empty caption
+      lCategory := lCategory + ' ';
+      // The first separator was found -> update the existing items
+      if lCategory = ' ' then begin
+        for J := 0 to lCategoryActionList.Count - 1 do begin
+          lCategoryActionList[J] := TPair<TCustomAction, string>.Create(lCategoryActionList[J].Key, lCategory);
+        end;
+      end;
+      // Submit this list and clear it for the next category
+      AddRange(lCategoryActionList);
+      lCategoryActionList.Clear;
+      // Change the category key, so that following items will use a different category.
+      lCategory := lCategory + ' ';
+    end else
+      lCategoryActionList.Add(TPair<TCustomAction, string>.Create(Menu.Items[I].Action as TCustomAction, lCategory));
+  end;
+  // Submit the last category
+  AddRange(lCategoryActionList);
+end;
+
+procedure TRibbonPopupMenuAction.SetPopupMenu(pValue: TPopupMenu);
+begin
+  fPopupMenu := pValue;
+  // Keep track of pre-existing event handlers. We call them together with our custom event handler.
+  fOriginalOnMenuChange := fPopupMenu.OnChange;
+  fPopupMenu.OnChange := MenuChange;
 end;
 
 end.

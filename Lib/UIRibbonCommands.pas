@@ -251,7 +251,7 @@ type
     property Tag: Integer read FTag write FTag;
 
     { The Id of the command as specified in the Ribbon markup }
-    property CommandId: Cardinal read FCommandId;
+    property CommandId: Cardinal read FCommandId write FCommandId;
 
     (************************************************************************
      * The properties below are available for most (but not all) command

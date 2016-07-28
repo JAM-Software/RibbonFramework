@@ -147,6 +147,8 @@ type
     fRecentItems: TUICommandRecentItems;
     /// Ribbon configuration options.
     fOptions: TUIRibbonOptions;
+    /// The highest command Id that was used until now. Used for the generation of a unique command id.
+    fMaxCommandId: Cardinal;
 
     /// <summary>
     ///  Sets the application modes for this Ribbon form.
@@ -241,7 +243,12 @@ type
     ///  Localize the given Ribbon command using the resource identifiers of the given markup item.
     /// </summary>
     procedure LocalizeRibbonElement(const pCommand: TUICommand; const pMarkupItem: TRibbonMarkupElement);
-
+    /// <summary>
+    /// Returns a command id that hasn't been used yet. We keep track of the previously used IDs by increasing the value of member fMaxCommandId.
+    /// </summary>
+    /// <returns>string A command id that has not been used yet.</returns>
+    /// <author>schaefer@jam-software.com</author>
+    function CreateUnusedCommandId(): Cardinal;
     /// <summary>
     ///  Gets or sets the mapping dictionary, which is automatically created by
     ///  the "Ribbon Designer" of the "Windows Ribbon Framework".
@@ -500,6 +507,7 @@ uses
   Forms,
   Menus,
   GraphUtil,
+  Math,
   UITypes,
   UIRibbonActions,
   UIRibbonUtils;
@@ -572,6 +580,11 @@ end;
 
 procedure TUIRibbon.AddCommand(const Command: TUICommand);
 begin
+  // If 0 was used as command id, we generate a unique command id and use it instead.
+  if Command.CommandId = 0 then
+    Command.CommandId := CreateUnusedCommandId
+  else
+    fMaxCommandId := Max(fMaxCommandId, Command.CommandId);  // Keep track of the highest command id that was used until now.
   FCommands.Add(Command.CommandId, Command);
 end;
 
@@ -1072,6 +1085,12 @@ begin
 
   if (pCommand.CommandType = TUICommandType.ctAnchor) and (not pCommand.Caption.IsEmpty()) then
     pCommand.Keytip := Trim(pCommand.Caption)[1];
+end;
+
+function TUIRibbon.CreateUnusedCommandId(): Cardinal;
+begin
+  Inc(fMaxCommandId);
+  Result := fMaxCommandId;
 end;
 
 procedure TUIRibbon.InvalidateUICommand(const Command: TUICommand;

@@ -128,6 +128,7 @@ type
     FOnCommandCreate: TUIRibbomCommandEvent;
     FOnLoaded: TNotifyEvent;
     FLoaded: Boolean;
+    FInitialized: Boolean;
     /// member variable for the property RibbonSettingsFilePath
     fRibbonSettingsFilePath: string;
     /// member variable for the property RibbonMapper
@@ -608,6 +609,7 @@ begin
   FResourceInstance := 0;
   FResourceName := 'APPLICATION';
   FCommands := TObjectDictionary<Cardinal, TUICommand>.Create([doOwnsValues]);
+  FInitialized := False;
 
   // Ensure the control is used on a TCustomForm.
   ParentForm := GetParentForm(AOwner as TWinControl);
@@ -641,9 +643,12 @@ begin
   inherited;
   if Visible then begin
     Load();
-	{ Redraw frame to prevent black caption bar on Aero }
-    SetWindowPos(Parent.Handle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or
-      SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
+
+	  { After the first paint, redraw frame to prevent black caption bar on Aero }
+    if not FInitialized then begin
+      SetWindowPos(Parent.Handle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
+      FInitialized := true;
+    end;
   end;
 end;
 

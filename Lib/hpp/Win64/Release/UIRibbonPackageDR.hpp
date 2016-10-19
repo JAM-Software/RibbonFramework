@@ -1,8 +1,8 @@
 ﻿// CodeGear C++Builder
-// Copyright (c) 1995, 2015 by Embarcadero Technologies, Inc.
+// Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbonPackageDR.dpk' rev: 30.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbonPackageDR.dpk' rev: 31.00 (Windows)
 
 #ifndef UiribbonpackagedrHPP
 #define UiribbonpackagedrHPP
@@ -35,17 +35,16 @@
 #include <System.VarUtils.hpp>	// (rtl)
 #include <System.Variants.hpp>	// (rtl)
 #include <Winapi.ActiveX.hpp>	// (rtl)
-#include <System.StrUtils.hpp>	// (rtl)
-#include <System.AnsiStrings.hpp>	// (rtl)
-#include <System.Hash.hpp>	// (rtl)
-#include <System.Math.hpp>	// (rtl)
-#include <System.Generics.Defaults.hpp>	// (rtl)
 #include <System.Generics.Collections.hpp>	// (rtl)
+#include <System.Hash.hpp>	// (rtl)
 #include <System.Rtti.hpp>	// (rtl)
 #include <System.TypInfo.hpp>	// (rtl)
+#include <System.Math.hpp>	// (rtl)
+#include <System.Generics.Defaults.hpp>	// (rtl)
 #include <System.Classes.hpp>	// (rtl)
 #include <Winapi.Wincodec.hpp>	// (rtl)
 #include <System.Masks.hpp>	// (rtl)
+#include <System.StrUtils.hpp>	// (rtl)
 #include <System.TimeSpan.hpp>	// (rtl)
 #include <System.DateUtils.hpp>	// (rtl)
 #include <System.IOUtils.hpp>	// (rtl)
@@ -97,6 +96,7 @@
 #include <Vcl.Dialogs.hpp>	// (vcl)
 #include <Vcl.ExtCtrls.hpp>	// (vcl)
 #include <Vcl.Themes.hpp>	// (vcl)
+#include <System.AnsiStrings.hpp>	// (rtl)
 #include <System.Win.ComConst.hpp>	// (rtl)
 #include <System.Win.ComObj.hpp>	// (rtl)
 #include <System.Win.Taskbar.hpp>	// (rtl)
@@ -114,6 +114,18 @@
 #include <Winapi.ShLwApi.hpp>	// (rtl)
 #include <Vcl.Imaging.pnglang.hpp>	// (vclimg)
 #include <Vcl.Imaging.pngimage.hpp>	// (vclimg)
+#include <Winapi.oleacc.hpp>	// (rtl)
+#include <Vcl.Buttons.hpp>	// (vcl)
+#include <Vcl.ExtDlgs.hpp>	// (vcl)
+#include <Winapi.Mapi.hpp>	// (rtl)
+#include <Vcl.ExtActns.hpp>	// (vcl)
+#include <Vcl.ActnColorMaps.hpp>	// (vclactnband)
+#include <Vcl.ActnCtrls.hpp>	// (vclactnband)
+#include <Vcl.ShadowWnd.hpp>	// (vclactnband)
+#include <Vcl.ABAccessibility.hpp>	// (vclactnband)
+#include <Winapi.MMSystem.hpp>	// (rtl)
+#include <Vcl.ActnMenus.hpp>	// (vclactnband)
+#include <Vcl.ActnMan.hpp>	// (vclactnband)
 
 //-- user supplied -----------------------------------------------------------
 

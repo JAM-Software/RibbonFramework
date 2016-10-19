@@ -1,8 +1,8 @@
 ﻿// CodeGear C++Builder
-// Copyright (c) 1995, 2015 by Embarcadero Technologies, Inc.
+// Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbonActions.pas' rev: 30.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbonActions.pas' rev: 31.00 (Windows)
 
 #ifndef UiribbonactionsHPP
 #define UiribbonactionsHPP
@@ -15,9 +15,15 @@
 #include <System.hpp>
 #include <SysInit.hpp>
 #include <System.Classes.hpp>
+#include <Vcl.Menus.hpp>
 #include <Vcl.ActnList.hpp>
+#include <Vcl.ActnMan.hpp>
 #include <UIRibbonCommands.hpp>
+#include <System.Generics.Collections.hpp>
 #include <System.Actions.hpp>
+#include <System.Generics.Defaults.hpp>
+#include <System.Types.hpp>
+#include <System.SysUtils.hpp>
 
 //-- user supplied -----------------------------------------------------------
 
@@ -35,6 +41,7 @@ class DELPHICLASS TUICommandColorAnchorActionLink;
 class DELPHICLASS TUICommandRecentItemsActionLink;
 template<typename T> class DELPHICLASS TRibbonAction__1;
 class DELPHICLASS TRibbonCollectionAction;
+class DELPHICLASS TRibbonPopupMenuAction;
 class DELPHICLASS TRibbonColorAction;
 class DELPHICLASS TRibbonFontAction;
 //-- type declarations -------------------------------------------------------
@@ -46,13 +53,17 @@ private:
 	Uiribboncommands::TUICommand* FClient;
 	
 protected:
+	virtual void __fastcall SetAction(System::Classes::TBasicAction* Value);
 	virtual void __fastcall AssignClient(System::TObject* AClient);
 	virtual bool __fastcall IsEnabledLinked(void);
+	virtual bool __fastcall IsImageIndexLinked(void);
 	virtual bool __fastcall IsOnExecuteLinked(void);
 	virtual void __fastcall SetCaption(const System::UnicodeString Value);
 	virtual void __fastcall SetEnabled(bool Value);
 	virtual void __fastcall SetVisible(bool Value);
 	virtual void __fastcall SetHint(const System::UnicodeString Value);
+	virtual void __fastcall SetShortCut(System::Classes::TShortCut Value);
+	virtual void __fastcall SetImageIndex(int Value);
 	virtual void __fastcall SetOnExecute(System::Classes::TNotifyEvent Value);
 	__property Uiribboncommands::TUICommand* Client = {read=FClient};
 	
@@ -246,8 +257,41 @@ class PASCALIMPLEMENTATION TRibbonCollectionAction : public TRibbonAction__1<Uir
 	typedef TRibbonAction__1<Uiribboncommands::TUICommandCollection*> inherited;
 	
 public:
-	/* TCustomAction.Create */ inline __fastcall virtual TRibbonCollectionAction(System::Classes::TComponent* AOwner) : TRibbonAction__1<Uiribboncommands::TUICommandCollection*>(AOwner) { }
-	/* TCustomAction.Destroy */ inline __fastcall virtual ~TRibbonCollectionAction(void) { }
+	System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> operator[](int Index) { return this->Items[Index]; }
+	
+private:
+	System::Generics::Collections::TList__1<System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> >* fActionList;
+	System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> __fastcall GetItem(int pIndex);
+	
+public:
+	__fastcall virtual TRibbonCollectionAction(System::Classes::TComponent* AOwner);
+	__fastcall virtual ~TRibbonCollectionAction(void);
+	void __fastcall Add(Vcl::Actnlist::TCustomAction* pAction, const System::UnicodeString pCategory = System::UnicodeString());
+	void __fastcall Clear(void);
+	void __fastcall AddRange(System::Generics::Collections::TList__1<System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> >* pSource);
+	int __fastcall ItemCount(void);
+	__property System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> Items[int Index] = {read=GetItem/*, default*/};
+	void __fastcall RefreshCommandCollection(void);
+};
+
+
+class PASCALIMPLEMENTATION TRibbonPopupMenuAction : public TRibbonCollectionAction
+{
+	typedef TRibbonCollectionAction inherited;
+	
+private:
+	Vcl::Menus::TPopupMenu* fPopupMenu;
+	Vcl::Menus::TMenuChangeEvent fOriginalOnMenuChange;
+	
+protected:
+	void __fastcall SetPopupMenu(Vcl::Menus::TPopupMenu* pValue);
+	void __fastcall MenuChange(System::TObject* Sender, Vcl::Menus::TMenuItem* Source, bool Rebuild);
+	
+__published:
+	__property Vcl::Menus::TPopupMenu* Menu = {read=fPopupMenu, write=SetPopupMenu};
+public:
+	/* TRibbonCollectionAction.Create */ inline __fastcall virtual TRibbonPopupMenuAction(System::Classes::TComponent* AOwner) : TRibbonCollectionAction(AOwner) { }
+	/* TRibbonCollectionAction.Destroy */ inline __fastcall virtual ~TRibbonPopupMenuAction(void) { }
 	
 };
 

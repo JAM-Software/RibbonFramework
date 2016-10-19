@@ -1,8 +1,8 @@
 ﻿// CodeGear C++Builder
-// Copyright (c) 1995, 2015 by Embarcadero Technologies, Inc.
+// Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbonCommands.pas' rev: 30.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbonCommands.pas' rev: 31.00 (Windows)
 
 #ifndef UiribboncommandsHPP
 #define UiribboncommandsHPP
@@ -27,6 +27,7 @@
 #include <Vcl.ActnList.hpp>
 #include <UIRibbonApi.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
+#include <Vcl.ImgList.hpp>
 #include <System.UITypes.hpp>
 #include <System.SysUtils.hpp>
 #include <System.Generics.Defaults.hpp>
@@ -143,6 +144,7 @@ private:
 	void __fastcall SetKeytip(const System::UnicodeString Value);
 	void __fastcall SetTooltipTitle(const System::UnicodeString Value);
 	void __fastcall SetTooltipDescription(const System::UnicodeString Value);
+	void __fastcall SetSmallImage(TUIImage* const Value);
 	Vcl::Actnlist::TActionLink* __fastcall GetActionLink(void);
 	
 private:
@@ -150,6 +152,7 @@ private:
 	HIDESBASE int __stdcall _Release(void);
 	HRESULT __stdcall Execute(unsigned CommandId, Uiribbonapi::_UIExecutionVerb Verb, Uiribbonapi::PUIPropertyKey Key, Winapi::Activex::PPropVariant CurrentValue, Uiribbonapi::_di_IUISimplePropertySet CommandExecutionProperties);
 	HRESULT __stdcall UpdateProperty(unsigned CommandId, const Uiribbonapi::TUIPropertyKey &Key, Winapi::Activex::PPropVariant CurrentValue, /* out */ tagPROPVARIANT &NewValue);
+	void __fastcall SetLargeImage(TUIImage* const Value);
 	
 private:
 	void __fastcall ImageChanged(System::TObject* Sender);
@@ -183,15 +186,15 @@ public:
 	void __fastcall SetShortCut(const System::Classes::TShiftState Shift, const System::WideChar Key)/* overload */;
 	virtual bool __fastcall HandleShortCut(const System::Classes::TShortCut ShortCut);
 	__property int Tag = {read=FTag, write=FTag, nodefault};
-	__property unsigned CommandId = {read=FCommandId, nodefault};
+	__property unsigned CommandId = {read=FCommandId, write=FCommandId, nodefault};
 	__property bool Enabled = {read=GetEnabled, write=SetEnabled, nodefault};
 	__property System::UnicodeString Caption = {read=FCaption, write=SetCaption};
 	__property System::UnicodeString Keytip = {read=FKeytip, write=SetKeytip};
 	__property System::Classes::TShortCut ShortCut = {read=FShortCut, write=FShortCut, nodefault};
 	__property System::UnicodeString TooltipTitle = {read=FTooltipTitle, write=SetTooltipTitle};
 	__property System::UnicodeString TooltipDescription = {read=FTooltipDescription, write=SetTooltipDescription};
-	__property TUIImage* LargeImage = {read=FLargeImage};
-	__property TUIImage* SmallImage = {read=FSmallImage};
+	__property TUIImage* LargeImage = {read=FLargeImage, write=SetLargeImage};
+	__property TUIImage* SmallImage = {read=FSmallImage, write=SetSmallImage};
 	__property TUIImage* LargeHighContrastImage = {read=FLargeHighContrastImage};
 	__property TUIImage* SmallHighContrastImage = {read=FSmallHighContrastImage};
 	__property Vcl::Actnlist::TActionLink* ActionLink = {read=GetActionLink};
@@ -673,11 +676,9 @@ private:
 	
 protected:
 	virtual System::Rtti::TValue __fastcall GetPropertyValue(const TUIProperty Prop) = 0 ;
-	
-public:
-	__fastcall virtual ~TUICollectionItem(void);
 public:
 	/* TObject.Create */ inline __fastcall TUICollectionItem(void) : System::TInterfacedObject() { }
+	/* TObject.Destroy */ inline __fastcall virtual ~TUICollectionItem(void) { }
 	
 private:
 	void *__IUISimplePropertySet;	// Uiribbonapi::IUISimplePropertySet 
@@ -798,7 +799,7 @@ public:
 	
 	
 public:
-	_di_IUICollectionItem operator[](const int Index) { return Items[Index]; }
+	_di_IUICollectionItem operator[](const int Index) { return this->Items[Index]; }
 	
 private:
 	Uiribbonapi::_di_IUICollection FHandle;
@@ -813,6 +814,7 @@ private:
 	
 public:
 	__fastcall TUICollection(void)/* overload */;
+	__fastcall virtual ~TUICollection(void);
 	__fastcall TUICollection(const Uiribbonapi::_di_IUICollection Handle)/* overload */;
 	void __fastcall BeginUpdate(void);
 	void __fastcall EndUpdate(void);
@@ -825,9 +827,6 @@ public:
 	__property int Count = {read=GetCount, nodefault};
 	__property _di_IUICollectionItem Items[const int Index] = {read=GetItem/*, default*/};
 	__property Uiribbonapi::_di_IUICollection Handle = {read=FHandle};
-public:
-	/* TObject.Destroy */ inline __fastcall virtual ~TUICollection(void) { }
-	
 };
 
 
@@ -845,13 +844,13 @@ protected:
 	virtual System::Rtti::TValue __fastcall GetPropertyValue(const TUIProperty Prop);
 	
 public:
-	__fastcall TUIGalleryCollectionItem(void);
+	__fastcall TUIGalleryCollectionItem(const System::UnicodeString pLabel, const Uiribbonapi::_di_IUIImage pImage);
 	__property System::UnicodeString LabelText = {read=FLabel, write=FLabel};
 	__property int CategoryId = {read=FCategoryId, write=FCategoryId, nodefault};
 	__property Uiribbonapi::_di_IUIImage Image = {read=FImage, write=FImage};
 	__property TUICommand* Command = {read=FCommand, write=FCommand};
 public:
-	/* TUICollectionItem.Destroy */ inline __fastcall virtual ~TUIGalleryCollectionItem(void) { }
+	/* TObject.Destroy */ inline __fastcall virtual ~TUIGalleryCollectionItem(void) { }
 	
 };
 
@@ -873,10 +872,8 @@ public:
 	__property System::UnicodeString Description = {read=FDescription, write=FDescription};
 	__property bool Pinned = {read=FPinned, write=FPinned, nodefault};
 public:
-	/* TUICollectionItem.Destroy */ inline __fastcall virtual ~TUIRecentItem(void) { }
-	
-public:
 	/* TObject.Create */ inline __fastcall TUIRecentItem(void) : TUICollectionItem() { }
+	/* TObject.Destroy */ inline __fastcall virtual ~TUIRecentItem(void) { }
 	
 };
 
@@ -909,6 +906,7 @@ public:
 	__fastcall TUIImage(const NativeUInt Instance, const System::UnicodeString ResourceName)/* overload */;
 	__fastcall TUIImage(const Uiribbonapi::_di_IUIImage Handle)/* overload */;
 	__fastcall TUIImage(const System::UnicodeString Filename, const bool HighContrast)/* overload */;
+	__fastcall TUIImage(Vcl::Imglist::TCustomImageList* pImageList, System::Uitypes::TImageIndex pImageIndex)/* overload */;
 	void __fastcall Load(const int ResourceId)/* overload */;
 	void __fastcall Load(const NativeUInt Instance, const int ResourceId)/* overload */;
 	void __fastcall Load(const NativeUInt Instance, const System::UnicodeString ResourceName)/* overload */;

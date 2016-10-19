@@ -1,8 +1,8 @@
 ﻿// CodeGear C++Builder
-// Copyright (c) 1995, 2015 by Embarcadero Technologies, Inc.
+// Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbonUtils.pas' rev: 30.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbonUtils.pas' rev: 31.00 (Windows)
 
 #ifndef UiribbonutilsHPP
 #define UiribbonutilsHPP
@@ -25,6 +25,9 @@ namespace Uiribbonutils
 //-- forward type declarations -----------------------------------------------
 //-- type declarations -------------------------------------------------------
 //-- var, const, procedure ---------------------------------------------------
+#define cPackageTitle L"Ribbon Framework"
+#define cRegistryPath L"Software\\Embarcadero\\Ribbon Framework"
+#define cRegistryKeyDesigner L"RibbonDesigner"
 extern DELPHI_PACKAGE System::Uitypes::TColor __fastcall HsbToColor(const unsigned Hsb)/* overload */;
 extern DELPHI_PACKAGE System::Uitypes::TColor __fastcall HsbToColor(const int H, const int S, const int B)/* overload */;
 extern DELPHI_PACKAGE unsigned __fastcall HsbToHsbColor(const int H, const int S, const int B);

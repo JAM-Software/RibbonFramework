@@ -1,8 +1,8 @@
 ﻿// CodeGear C++Builder
-// Copyright (c) 1995, 2015 by Embarcadero Technologies, Inc.
+// Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbon.pas' rev: 30.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbon.pas' rev: 31.00 (Windows)
 
 #ifndef UiribbonHPP
 #define UiribbonHPP
@@ -82,9 +82,9 @@ typedef void __fastcall (__closure *TUIRibbomCommandEvent)(TUIRibbon* const Send
 
 typedef void __fastcall (__closure *TUILoadResourceStringEvent)(TUIRibbon* const Sender, Uiribboncommands::TUICommand* const pCommand, int pResourceID, System::UnicodeString &pString);
 
-enum DECLSPEC_DENUM TUIRibbonOption : unsigned char { roAutoPreserveState };
+enum DECLSPEC_DENUM TUIRibbonOption : unsigned char { roAutoPreserveState, roAssignImagesFromActionManager };
 
-typedef System::Set<TUIRibbonOption, TUIRibbonOption::roAutoPreserveState, TUIRibbonOption::roAutoPreserveState> TUIRibbonOptions;
+typedef System::Set<TUIRibbonOption, TUIRibbonOption::roAutoPreserveState, TUIRibbonOption::roAssignImagesFromActionManager> TUIRibbonOptions;
 
 class PASCALIMPLEMENTATION TUIRibbon : public Vcl::Controls::TWinControl
 {
@@ -96,7 +96,7 @@ private:
 	
 	
 public:
-	Uiribboncommands::TUICommand* operator[](const unsigned CommandId) { return Commands[CommandId]; }
+	Uiribboncommands::TUICommand* operator[](const unsigned CommandId) { return this->Commands[CommandId]; }
 	
 private:
 	Uiribbonapi::_di_IUIFramework FFramework;
@@ -108,12 +108,14 @@ private:
 	TUIRibbomCommandEvent FOnCommandCreate;
 	System::Classes::TNotifyEvent FOnLoaded;
 	bool FLoaded;
+	bool FInitialized;
 	System::UnicodeString fRibbonSettingsFilePath;
 	TRibbonMarkupElementList* fRibbonMapper;
 	TRibbonApplicationModes fApplicationModes;
 	Vcl::Actnlist::TCustomActionList* fActionManager;
 	Uiribboncommands::TUICommandRecentItems* fRecentItems;
 	TUIRibbonOptions fOptions;
+	unsigned fMaxCommandId;
 	void __fastcall Set_ApplicationModes(const TRibbonApplicationModes pAppModes);
 	void __fastcall SetApplicationModes(const unsigned Modes)/* overload */;
 	Uiribboncommands::TUICommand* __fastcall Get_Command(const unsigned CommandId);
@@ -148,6 +150,7 @@ private:
 	
 protected:
 	virtual void __fastcall CreateWnd(void);
+	virtual void __fastcall DestroyWnd(void);
 	void __fastcall AddCommand(Uiribboncommands::TUICommand* const Command);
 	unsigned __fastcall GetColor(const Uiribbonapi::TUIPropertyKey &PropKey);
 	HIDESBASE void __fastcall SetColor(const Uiribbonapi::TUIPropertyKey &PropKey, const unsigned Value);
@@ -157,6 +160,7 @@ protected:
 	virtual System::UnicodeString __fastcall DoLoadResourceString(Uiribboncommands::TUICommand* const pCommand, int pResourceID);
 	void __fastcall DoCommandCreated(Uiribboncommands::TUICommand* const pCommand);
 	void __fastcall LocalizeRibbonElement(Uiribboncommands::TUICommand* const pCommand, const TRibbonMarkupElement &pMarkupItem);
+	unsigned __fastcall CreateUnusedCommandId(void);
 	__property TRibbonMarkupElementList* RibbonMapper = {read=fRibbonMapper, write=fRibbonMapper};
 	
 public:
@@ -169,7 +173,7 @@ public:
 	void __fastcall InvalidateUICommand(Uiribboncommands::TUICommand* const Command, const Uiribboncommands::TUIProperty Prop)/* overload */;
 	void __fastcall ShowContextPopup(const unsigned PopupId, const System::Types::TPoint &ScreenPos)/* overload */;
 	void __fastcall ShowContextPopup(const unsigned PopupId)/* overload */;
-	void __fastcall SetApplicationModes(int const *Modes, const int Modes_High)/* overload */;
+	void __fastcall SetApplicationModes(const int *Modes, const int Modes_High)/* overload */;
 	bool __fastcall SaveSettings(const System::UnicodeString Filename)/* overload */;
 	bool __fastcall SaveSettings(System::Classes::TStream* const Stream)/* overload */;
 	bool __fastcall LoadSettings(const System::UnicodeString Filename)/* overload */;
@@ -185,7 +189,9 @@ public:
 	void __fastcall HideAllContextTabs(unsigned pExceptCommandId = (unsigned)(0xffffffff));
 	Uiribboncommands::TUICommand* __fastcall GetCommand(Vcl::Actnlist::TCustomAction* pAction);
 	void __fastcall SetRecentItems(Vcl::Actnlist::TAction* pAction, System::Classes::TStrings* pPaths)/* overload */;
+	void __fastcall AddToRecentItems(const System::UnicodeString pPath, const System::UnicodeString pDescription = System::UnicodeString());
 	Uiribboncommands::TUIRecentItem* __fastcall GetSelectedRecentItem(void);
+	__property bool IsLoaded = {read=FLoaded, nodefault};
 	__property bool Available = {read=FAvailable, nodefault};
 	__property bool Visible = {read=GetVisible, write=SetVisible, nodefault};
 	__property bool Minimized = {read=GetMinimized, write=SetMinimized, nodefault};

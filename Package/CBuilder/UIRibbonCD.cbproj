@@ -83,7 +83,7 @@
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <ILINK_GenerateImportLibrary>true</ILINK_GenerateImportLibrary>
         <SanitizedProjectName>UIRibbonCD</SanitizedProjectName>
-        <DllSuffix>230</DllSuffix>
+        <DllSuffix>240</DllSuffix>
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
         <DynamicRTL>true</DynamicRTL>
         <UsePackages>true</UsePackages>

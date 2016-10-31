@@ -4303,6 +4303,9 @@ begin
       lBitmap.Height := pImageList.Height;
       lBitmap.PixelFormat := pf32bit;
       lBitmap.Transparent := True;
+      // Draw empty background (for transparency)
+      lBitmap.Canvas.Brush.Color := clNone;
+      lBitmap.Canvas.FillRect(lBitmap.Canvas.ClipRect);
       if not ImageList_DrawEx(pImageList.Handle, pImageIndex, lBitmap.Canvas.Handle, (lBitmap.Width - pImageList.Width) div 2, (lBitmap.Height - pImageList.Height) div 2, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT) then
         exit;
       FHandle := FImageFactory.CreateImage(lBitmap.Handle, UIOwnershipCopy);

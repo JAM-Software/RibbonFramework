@@ -10,10 +10,11 @@ UIRibbonPackage: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.d
 	msbuild "Package\UIRibbonPackage.dproj"
 	$(MAKE) _samples
 	
-_XE8: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
-	SET BDS=$(STUDIO)\16.0
-	msbuild "Package\UIRibbonPackage.dproj"
-	$(MAKE) _samples
+_Berlin: 
+	$(MAKE) UIRibbonPackage "BDSVersion=18.0"
+
+_XE8:
+	$(MAKE) UIRibbonPackage "BDSVersion=16.0"
 
 _XE7:
 	$(MAKE) UIRibbonPackage "BDSVersion=15.0"
@@ -50,4 +51,4 @@ _XE5: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
 	
 _samples: "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe" "Samples\High Level\02 Context Popup\ContextPopup.exe" "Samples\High Level\03 DropDown Color Picker\DropDownColorPicker.exe" "Samples\High Level\04 Gallery\Gallery.exe" "Samples\High Level\05 Font Control\Gallery.exe" "Samples\High Level\06 Text Pad\Gallery.exe" "Samples\High Level\07 Text Pad with Action List\Gallery.exe"
 	
-_continuousbuilds: clean _XE7 "Designer\Bin\RibbonDesigner.exe"
+_continuousbuilds: clean _XE7 _Berlin "Designer\Bin\RibbonDesigner.exe"

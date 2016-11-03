@@ -11,15 +11,12 @@ UIRibbonPackage: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.d
 	$(MAKE) _samples
 	
 _XE8: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
-#$(MAKE) UIRibbonPackage "BDSVersion=16.0"
 	SET BDS=$(STUDIO)\16.0
 	msbuild "Package\UIRibbonPackage.dproj"
 	$(MAKE) _samples
 
-_XE7: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
-	SET BDS=$(STUDIO)\15.0
-	msbuild "Package\UIRibbonPackage.dproj"
-	$(MAKE) _samples
+_XE7:
+	$(MAKE) UIRibbonPackage "BDSVersion=15.0"
 
 _XE5: Lib\*.pas Package\UIRibbonPackage.dpk Package\UIRibbonPackage.dproj
 	SET BDS=$(EMBARCADERO)\12.0

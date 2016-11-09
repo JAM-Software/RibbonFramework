@@ -134,8 +134,8 @@ type
 
   TRibbonCollectionAction = class(TRibbonAction<TUICommandCollection>)
     strict private
-      fActionList: TList<TPair<TCustomAction, string>>;
-      function GetItem(pIndex: Integer): TPair<TCustomAction, string>;
+      fActionList: TList<TCustomAction>;
+      function GetItem(pIndex: Integer): TCustomAction;
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -143,17 +143,16 @@ type
       /// Adds an action to the internal list and populates it to the command
       /// </summary>
       /// <param name="pAction">The action that will be added to the collection.</param>
-      /// <param name="pCategory">(Optional) The category index that will be used for the collection.
-      /// An empty category name will be ignored and the default category will be used instead</param>
+      /// The action's category will be used for the ribbon command as well.</param>
       /// <returns>None</returns>collection
-      procedure Add(pAction: TCustomAction; const pCategory: string = '');
+      procedure Add(pAction: TCustomAction);
       /// Clears the internal list and the command collection.
       procedure Clear;
       /// Allows to add multiple actions add once.
-      procedure AddRange(pSource: TList<TPair<TCustomAction, string>>);
+      procedure AddRange(pSource: TList<TCustomAction>);
       /// Returns the amount of actions that have been added.
       function ItemCount: Integer;
-      property Items[Index: Integer]: TPair<TCustomAction, string> read GetItem; default;
+      property Items[Index: Integer]: TCustomAction read GetItem; default;
       /// <summary>
       /// This method uses the action items that are stored in the internal list fActionList,
       /// and dynamically creates commands that will be added to the collection.
@@ -206,7 +205,7 @@ uses
   {$if CompilerVersion >= 24}
   System.Actions,
   {$endif}
-  System.SysUtils, 
+  System.SysUtils,
   System.Math;
 
 { TUICommandActionLink }
@@ -517,9 +516,9 @@ end;
 
 { TRibbonCollectionAction }
 
-procedure TRibbonCollectionAction.Add(pAction: TCustomAction; const pCategory: string = '');
+procedure TRibbonCollectionAction.Add(pAction: TCustomAction);
 begin
-  fActionList.Add(TPair<TCustomAction, string>.Create(pAction, pCategory));
+  fActionList.Add(pAction);
   RefreshCommandCollection;
 end;
 
@@ -565,8 +564,8 @@ begin
   lCommandCollection.Items.Clear;
   // Iterate the internal list of actions and fill the ribbon collection
   for I := 0 to fActionList.Count - 1 do begin
-    lAction := fActionList[I].Key;
-    lCategory := fActionList[I].Value;
+    lAction := fActionList[I];
+    lCategory := fActionList[I].Category;
     if lCategory.IsEmpty then
       lTargetCategoryId := -1
     else
@@ -583,7 +582,7 @@ begin
   end;
 end;
 
-procedure TRibbonCollectionAction.AddRange(pSource: TList<TPair<TCustomAction, string>>);
+procedure TRibbonCollectionAction.AddRange(pSource: TList<TCustomAction>);
 begin
   fActionList.AddRange(pSource);
   RefreshCommandCollection;
@@ -598,7 +597,7 @@ end;
 constructor TRibbonCollectionAction.Create(AOwner: TComponent);
 begin
   inherited;
-  fActionList := TList<TPair<TCustomAction, string>>.Create;
+  fActionList := TList<TCustomAction>.Create;
 end;
 
 destructor TRibbonCollectionAction.Destroy;
@@ -608,7 +607,7 @@ begin
 end;
 
 
-function TRibbonCollectionAction.GetItem(pIndex: Integer): TPair<TCustomAction, string>;
+function TRibbonCollectionAction.GetItem(pIndex: Integer): TCustomAction;
 begin
   Exit(fActionList[pIndex]);
 end;
@@ -624,35 +623,41 @@ procedure TRibbonPopupMenuAction.MenuChange(Sender: TObject; Source: TMenuItem; 
 var
   I, J: Integer;
   lCategory: string;
-  lCategoryActionList: TList<TPair<TCustomAction, string>>;
+  lActionList: TList<TCustomAction>;
 begin
   if Assigned(fOriginalOnMenuChange) then
     fOriginalOnMenuChange(Sender, Source, Rebuild);
 
   Clear; // Clear the collection and refill it.
-  lCategory := '';
+  lCategory := ' ';
   // We use this list to collect actions category wise. We map Menu separators to ribbon categories.
-  lCategoryActionList := TList<TPair<TCustomAction, string>>.Create;
-  for I := 0 to Menu.Items.Count - 1 do begin
-    if not Assigned(Menu.Items[I].Action) and SameText(Menu.Items[I].Caption, cLineCaption) then begin
-      // This menu item is a separator -> use a category with empty caption
-      lCategory := lCategory + ' ';
-      // The first separator was found -> update the existing items
-      if lCategory = ' ' then begin
-        for J := 0 to lCategoryActionList.Count - 1 do begin
-          lCategoryActionList[J] := TPair<TCustomAction, string>.Create(lCategoryActionList[J].Key, lCategory);
+  lActionList := TList<TCustomAction>.Create;
+  try
+    for I := 0 to Menu.Items.Count - 1 do begin
+      if not Assigned(Menu.Items[I].Action) and SameText(Menu.Items[I].Caption, cLineCaption) then begin
+        // This menu item is a separator -> use a category with empty caption
+        lCategory := lCategory + ' ';
+        // The first separator was found -> update the existing items
+        if lCategory = ' ' then begin
+          for J := 0 to lActionList.Count - 1 do
+            lActionList[J].Category := lCategory;
         end;
-      end;
-      // Submit this list and clear it for the next category
-      AddRange(lCategoryActionList);
-      lCategoryActionList.Clear;
-      // Change the category key, so that following items will use a different category.
-      lCategory := lCategory + ' ';
-    end else
-      lCategoryActionList.Add(TPair<TCustomAction, string>.Create(Menu.Items[I].Action as TCustomAction, lCategory));
+        // Submit this list and clear it for the next category
+        AddRange(lActionList);
+        lActionList.Clear;
+        // Change the category key, so that following items will use a different category.
+        lCategory := lCategory + ' ';
+      end
+      else begin
+        (Menu.Items[I].Action as TCustomAction).Category := lCategory;
+        lActionList.Add(Menu.Items[I].Action as TCustomAction);
+      end
+    end;
+    // Submit the last category
+    AddRange(lActionList);
+  finally
+    FreeAndNil(lActionList);
   end;
-  // Submit the last category
-  AddRange(lCategoryActionList);
 end;
 
 procedure TRibbonPopupMenuAction.SetPopupMenu(pValue: TPopupMenu);

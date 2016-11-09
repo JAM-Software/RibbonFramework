@@ -54,6 +54,8 @@ type
   public
     class function LookupListByResourceName(const pResourceName: string): TRibbonMarkupElementList;
     function TryGetItem(pID: integer; out pItem: TRibbonMarkupElement): boolean;
+    /// Returns the highest ID of all commands that are included in this list.
+    function GetMaxCommandId(): Integer;
     /// Creates an instance of this class
     /// <param name="pResourceName">The name of the resource of the ribbon to which this list of ribbon elements belongs</param>
     constructor Create(pResourceName: string);
@@ -544,6 +546,16 @@ begin
   fContainer.Add(Self);
 end;
 
+function TRibbonMarkupElementList.GetMaxCommandId: Integer;
+var
+  lElement: TRibbonMarkupElement;
+begin
+  Result := 0;
+  for lElement in Self do begin
+    Result := Max(Result, lElement.ID);
+  end
+end;
+
 class function TRibbonMarkupElementList.LookupListByResourceName(const pResourceName: string): TRibbonMarkupElementList;
 var
   lElement: TRibbonMarkupElementList;
@@ -993,6 +1005,8 @@ begin
   begin
     // Load mapper for mapping between commands and VCL actions
     fRibbonMapper := TRibbonMarkupElementList.LookupListByResourceName(FResourceName);
+    // Initialize with max command id from ribbon mapper
+    fMaxCommandId := RibbonMapper.GetMaxCommandId;
     if (FResourceInstance = 0) then
       Inst := HInstance
     else

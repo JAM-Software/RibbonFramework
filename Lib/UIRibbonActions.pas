@@ -152,6 +152,7 @@ type
       procedure AddRange(pSource: TList<TCustomAction>);
       /// Returns the amount of actions that have been added.
       function ItemCount: Integer;
+      function GetEnumerator: TEnumerator<TCustomAction>;
       property Items[Index: Integer]: TCustomAction read GetItem; default;
       /// <summary>
       /// This method uses the action items that are stored in the internal list fActionList,
@@ -606,6 +607,10 @@ begin
   inherited;
 end;
 
+function TRibbonCollectionAction.GetEnumerator: TEnumerator<TCustomAction>;
+begin
+  Result := fActionList.GetEnumerator;
+end;
 
 function TRibbonCollectionAction.GetItem(pIndex: Integer): TCustomAction;
 begin

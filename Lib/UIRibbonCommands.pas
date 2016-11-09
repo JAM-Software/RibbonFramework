@@ -1808,7 +1808,8 @@ end;
 
 destructor TUICommand.Destroy;
 begin
-  Notifier.Remove(Self);
+  if Assigned(Notifier) then
+    Notifier.Remove(Self);
   FCachedProperties.Free;
   FLargeImage.Free;
   FSmallImage.Free;
@@ -4328,6 +4329,6 @@ initialization
 
 finalization
   TUICommand.FProperties.Free;
-  Notifier.Free;
+  FreeAndNil(Notifier);
 
 end.

@@ -150,15 +150,17 @@ type
       procedure Clear;
       /// Allows to add multiple actions add once.
       procedure AddRange(pSource: TList<TCustomAction>);
-      /// Returns the amount of actions that have been added.
-      function ItemCount: Integer;
-      function GetEnumerator: TEnumerator<TCustomAction>;
-      property Items[Index: Integer]: TCustomAction read GetItem; default;
       /// <summary>
       /// This method uses the action items that are stored in the internal list fActionList,
       /// and dynamically creates commands that will be added to the collection.
       /// </summary>
       procedure RefreshCommandCollection();
+      /// Returns the amount of actions that have been added.
+      function ItemCount: Integer;
+      function GetEnumerator: TEnumerator<TCustomAction>;
+      property Items[Index: Integer]: TCustomAction read GetItem; default;
+    published
+      property ImageIndex;
   end;
 
   /// <summary>

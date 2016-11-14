@@ -517,7 +517,7 @@ type
 
     // Informs of the current value of a property, and queries for the new one
     function UpdateProperty(CommandId: UInt32; const Key: TUIPropertyKey;
-      CurrentValue: PPropVariant; out NewValue: TPropVariant): HRESULT; stdcall;
+      CurrentValue: PPropVariant; var NewValue: TPropVariant): HRESULT; stdcall;
   end;
 
   // Types of UI commands

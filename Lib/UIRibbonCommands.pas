@@ -138,8 +138,8 @@ type
 {$REGION 'Abstract base command'}
   TUIImage = class;
 
-  TUICommandUpdateImageEvent = procedure (Sender: TObject; const PropKey: TUIPropertyKey;
-    out NewValue: TPropVariant; var Handled: boolean) of object;
+  TUICommandUpdatePropertyEvent = procedure (Sender: TObject; const PropKey: TUIPropertyKey;
+    var NewValue: TPropVariant; var Handled: boolean) of object;
 
   TUICommandUpdateHintEvent = procedure (Sender: TObject; const Value: string) of object;
 
@@ -170,7 +170,7 @@ type
       vpIncrement, vpDecimalPlaces, vpRepresentativeString, vpFormatString);
     FActionLink: TActionLink;
     FOnUpdateHint: TUICommandUpdateHintEvent;
-    FOnUpdateImage: TUICommandUpdateImageEvent;
+    FOnUpdateProperty: TUICommandUpdatePropertyEvent;
     procedure SetAlive(const Value: Boolean);
   strict private
     function GetEnabled: Boolean;
@@ -192,7 +192,7 @@ type
       CommandExecutionProperties: IUISimplePropertySet): HRESULT; stdcall;
 
     function UpdateProperty(CommandId: UInt32; const Key: TUIPropertyKey;
-      CurrentValue: PPropVariant; out NewValue: TPropVariant): HRESULT; stdcall;
+      CurrentValue: PPropVariant; var NewValue: TPropVariant): HRESULT; stdcall;
     procedure SetLargeImage(const Value: TUIImage);
   strict private
     procedure ImageChanged(Sender: TObject);
@@ -312,8 +312,8 @@ type
     property ActionLink: TActionLink read GetActionLink;
 
     { Can be used to dynamically generate an image for a command.}
-    property OnUpdateImage: TUICommandUpdateImageEvent read FOnUpdateImage write
-      FOnUpdateImage;
+    property OnUpdateProperty: TUICommandUpdatePropertyEvent read FOnUpdateProperty write
+      FOnUpdateProperty;
 
     { Allows you to override automation action.Hint changes.
       If assigned, event handler should process hint and set up command properties
@@ -1823,18 +1823,13 @@ procedure TUICommand.DoUpdate(const Prop: TUIProperty;
   const CurrentValue: PPropVariant; out NewValue: TPropVariant;
   var Result: HRESULT);
 
+var
+  Handled: Boolean;
+
   procedure UpdateImage(var Image: TUIImage; const PropKey: TUIPropertyKey);
   var
     Handle: IUIImage;
-    Handled: Boolean;
   begin
-    if assigned(FOnUpdateImage) then begin
-      Handled := False;
-      FOnUpdateImage(Self, PropKey, NewValue, Handled);
-      if Handled then
-        Exit;
-    end;
-
     if ((Image = nil) or (Image.Handle = nil)) and Assigned(CurrentValue) then
     begin
       UIPropertyToImage(PropKey, CurrentValue^, Handle);
@@ -1851,6 +1846,14 @@ procedure TUICommand.DoUpdate(const Prop: TUIProperty;
   end;
 
 begin
+  if Assigned(FOnUpdateProperty) then begin
+    Handled := False;
+    FOnUpdateProperty(Self, GetPropertyKey(Prop)^, NewValue, Handled);
+    if Handled then
+      Exit;
+  end;
+
+
   case Prop of
     upKeytip:
       begin
@@ -2170,7 +2173,7 @@ begin
 end;
 
 function TUICommand.UpdateProperty(CommandId: UInt32; const Key: TUIPropertyKey;
-  CurrentValue: PPropVariant; out NewValue: TPropVariant): HRESULT;
+  CurrentValue: PPropVariant; var NewValue: TPropVariant): HRESULT;
 var
   Prop: TUIProperty;
 begin

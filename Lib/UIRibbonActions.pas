@@ -8,7 +8,9 @@ uses
   ActnList,
   ActnMan,
   UIRibbonCommands,
-  System.Generics.Collections;
+  System.Generics.Collections,
+  Winapi.ActiveX, 
+  UIRibbonApi;
 
 type
   TUICommandActionLink = class abstract (TActionLink)
@@ -146,10 +148,20 @@ type
       /// The action's category will be used for the ribbon command as well.</param>
       /// <returns>None</returns>collection
       procedure Add(pAction: TCustomAction);
+      /// <summary>
+      /// Removes an action from the internal list and populates it to the command.
+      /// </summary>
+      /// <param name="pAction">The action that will be added to the collection.</param>
+      procedure Remove(pAction: TCustomAction);
       /// Clears the internal list and the command collection.
       procedure Clear;
       /// Allows to add multiple actions add once.
       procedure AddRange(pSource: TList<TCustomAction>);
+      /// <summary>
+      /// Update handler for TUICommand.UpdateProperty. We assign this handler to the commands' OnUpdateProperty event, so that we can remove
+      /// them from the collection as soon as they become invisible.
+      /// </summary>
+      procedure PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; var Handled: boolean);
       /// <summary>
       /// This method uses the action items that are stored in the internal list fActionList,
       /// and dynamically creates commands that will be added to the collection.
@@ -288,11 +300,16 @@ begin
 end;
 
 procedure TUICommandActionLink.SetVisible(Value: Boolean);
+var
+  lCurrentValue, lNewValue: TPropVariant;
 begin
   inherited;
   // The Windows ribbon framework does not off to make a button invisible at runtime, so we at least disable the button
   if not Value then
     FClient.Enabled := False;
+  if Succeeded(UIInitPropertyFromBoolean(UI_PKEY_Viewable, TCUstomAction(Action).Visible, lCurrentValue))
+  and Succeeded(UIInitPropertyFromBoolean(UI_PKEY_Viewable, Value, lNewValue)) then
+    (FClient as IUICommandHandler).UpdateProperty(FClient.CommandId, UI_PKEY_Viewable, @lCurrentValue, lNewValue);
 end;
 
 procedure TUICommandActionLink.SetShortCut(Value: System.Classes.TShortCut);
@@ -568,6 +585,9 @@ begin
   // Iterate the internal list of actions and fill the ribbon collection
   for I := 0 to fActionList.Count - 1 do begin
     lAction := fActionList[I];
+    if not lAction.Visible then
+      continue;
+
     lCategory := fActionList[I].Category;
     if lCategory.IsEmpty then
       lTargetCategoryId := -1
@@ -577,11 +597,34 @@ begin
     // Create a new command item and assign the target action
     lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), 0);
     lCommandAction.Assign(lAction);
+    lCommandAction.OnUpdateProperty := PropertyUpdated;
+
     // Create a collection item, that holds the action and can be added to the collection.
     lItem := TUIGalleryCollectionItem.Create;
     lItem.Command := lCommandAction;
     lItem.CategoryId := lTargetCategoryId;
     lCommandCollection.Items.Add(lItem);
+  end;
+end;
+
+procedure TRibbonCollectionAction.Remove(pAction: TCustomAction);
+begin
+  fActionList.Remove(pAction);
+  RefreshCommandCollection;
+end;
+
+procedure TRibbonCollectionAction.PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; var Handled: boolean);
+var
+  lActionVisible: Boolean;
+begin
+  if PropKey = UI_PKEY_Viewable then begin
+    // Update is triggered before visibilty changes -> negate value
+    if not Succeeded(UIPropertyToBoolean(PropKey, NewValue, lActionVisible)) then
+      Exit;
+    if not lActionVisible then begin
+      fActionList.Remove((Sender as TUICommand).ActionLink.Action as TCustomAction);
+      RefreshCommandCollection;
+    end;
   end;
 end;
 

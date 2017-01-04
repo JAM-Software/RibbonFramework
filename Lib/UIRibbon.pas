@@ -1005,8 +1005,9 @@ begin
   begin
     // Load mapper for mapping between commands and VCL actions
     fRibbonMapper := TRibbonMarkupElementList.LookupListByResourceName(FResourceName);
-    // Initialize with max command id from ribbon mapper
-    fMaxCommandId := RibbonMapper.GetMaxCommandId;
+    if Assigned(fRibbonMapper) then
+      // Initialize with max command id from ribbon mapper
+      fMaxCommandId := fRibbonMapper.GetMaxCommandId;
     if (FResourceInstance = 0) then
       Inst := HInstance
     else

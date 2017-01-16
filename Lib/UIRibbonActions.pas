@@ -621,10 +621,15 @@ begin
     // Update is triggered before visibilty changes -> negate value
     if not Succeeded(UIPropertyToBoolean(PropKey, NewValue, lActionVisible)) then
       Exit;
-    if not lActionVisible then begin
-      fActionList.Remove((Sender as TUICommand).ActionLink.Action as TCustomAction);
-      RefreshCommandCollection;
-    end;
+
+//    This code is disabled at the moment. The next few lines would remove an action from the gallery as soon as it becomes invisible.
+//    However, modifying the gallery while it is open will cause it to be emptied completely and new changes are only visble the next time it is opened.
+//    See issue #60 (https://github.com/TurboPack/RibbonFramework/issues/60)
+
+//    if not lActionVisible then begin
+//      fActionList.Remove((Sender as TUICommand).ActionLink.Action as TCustomAction);
+//      RefreshCommandCollection;
+//    end;
   end;
 end;
 

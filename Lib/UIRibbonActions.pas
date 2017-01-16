@@ -137,7 +137,13 @@ type
   TRibbonCollectionAction = class(TRibbonAction<TUICommandCollection>)
     strict private
       fActionList: TList<TCustomAction>;
+      fSelectedItem: Integer;
+      fSelectionInitialized: Boolean;
+      fOriginalOnSelect: TUICommandCollectionSelectEvent;
       function GetItem(pIndex: Integer): TCustomAction;
+      procedure SetSelectedItem(const pValue: Integer);
+      /// Triggered on user induced selection changes. This handler will apply them to the action.
+      procedure UICommandItemSelected(const Args: TUICommandCollectionEventArgs);
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -147,7 +153,8 @@ type
       /// <param name="pAction">The action that will be added to the collection.</param>
       /// The action's category will be used for the ribbon command as well.</param>
       /// <returns>None</returns>collection
-      procedure Add(pAction: TCustomAction);
+      procedure Add(pAction: TCustomAction); overload;
+      procedure Add(const pLabel: string); overload;
       /// <summary>
       /// Removes an action from the internal list and populates it to the command.
       /// </summary>
@@ -167,10 +174,15 @@ type
       /// and dynamically creates commands that will be added to the collection.
       /// </summary>
       procedure RefreshCommandCollection();
+      function Update(): Boolean; override;
       /// Returns the amount of actions that have been added.
       function ItemCount: Integer;
       function GetEnumerator: TEnumerator<TCustomAction>;
       property Items[Index: Integer]: TCustomAction read GetItem; default;
+      /// <summary> This property correlates to the ribbon collection's SelecteItem property. We additionally store the value in member variable fSelectedItem and apply
+      /// the index during the first call to the action's Update() method.
+      /// </summary>
+      property SelectedItem: Integer read fSelectedItem write SetSelectedItem;
     published
       property ImageIndex;
   end;
@@ -222,6 +234,9 @@ uses
   {$endif}
   System.SysUtils,
   System.Math;
+
+const
+  cNoSelection = -1;
 
 { TUICommandActionLink }
 
@@ -613,6 +628,34 @@ begin
   RefreshCommandCollection;
 end;
 
+procedure TRibbonCollectionAction.UICommandItemSelected(const Args: TUICommandCollectionEventArgs);
+begin
+  fSelectedItem := UICommand.SelectedItem;
+  if Assigned(fOriginalOnSelect) then
+    fOriginalOnSelect(Args);
+end;
+
+procedure TRibbonCollectionAction.SetSelectedItem(const pValue: Integer);
+begin
+  fSelectedItem := pValue;
+  if Assigned(UICommand) then
+    UICommand.SelectedItem := fSelectedItem
+end;
+
+function TRibbonCollectionAction.Update(): Boolean;
+begin
+  Result := inherited;
+  // If "SelectedItem" is set during program start, it will not be applied correctly by the framework (value will stay unchanged). Therefore, we store the index in member variable fSelectedItem
+  // and apply it as soon as Update() is called for this action. After this point in time, we can assign it normally.
+  if Assigned(UICommand) and not (fSelectionInitialized) then
+  begin
+    UICommand.SelectedItem := fSelectedItem;
+    fOriginalOnSelect := UICommand.OnSelect;
+    UICommand.OnSelect := UICommandItemSelected;
+    fSelectionInitialized := True;
+  end;
+end;
+
 procedure TRibbonCollectionAction.PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; var Handled: boolean);
 var
   lActionVisible: Boolean;
@@ -633,6 +676,21 @@ begin
   end;
 end;
 
+procedure TRibbonCollectionAction.Add(const pLabel: string);
+var
+  lItem: TUIGalleryCollectionItem;
+begin
+  lItem := TUIGalleryCollectionItem.Create;
+  lItem.LabelText := pLabel;
+  UICommand.Items.Add(lItem);
+  // Setting the RepresentativeString property will reserve enough space for the given text.
+  // Though it's not perfectly accurate to just compare the string length, it should suffice in most cases.
+  if Length(pLabel) > Length(UICommand.RepresentativeString) then
+    UICommand.RepresentativeString := pLabel;
+  if (UICommand.Items.Count = 1) and (fSelectedItem = -1) then  // Only one item exists and nothing has been selected yet -> Select it, so that we have a default selection.
+    SelectedItem := 0;
+end;
+
 procedure TRibbonCollectionAction.AddRange(pSource: TList<TCustomAction>);
 begin
   fActionList.AddRange(pSource);
@@ -649,6 +707,8 @@ constructor TRibbonCollectionAction.Create(AOwner: TComponent);
 begin
   inherited;
   fActionList := TList<TCustomAction>.Create;
+  fSelectionInitialized := False;
+  fSelectedItem := cNoSelection;
 end;
 
 destructor TRibbonCollectionAction.Destroy;

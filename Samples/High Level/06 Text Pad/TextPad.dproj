@@ -56,9 +56,9 @@
         <DCC_K>false</DCC_K>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
@@ -68,6 +68,8 @@
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <BT_BuildType>Debug</BT_BuildType>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <Manifest_File>None</Manifest_File>
     </PropertyGroup>
@@ -149,8 +151,6 @@
                     <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
                 </Parameters>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k170.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp170.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>

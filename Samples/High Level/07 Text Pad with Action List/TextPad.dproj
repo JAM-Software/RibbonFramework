@@ -41,6 +41,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <SanitizedProjectName>TextPad</SanitizedProjectName>
         <DCC_UnitSearchPath>..\..\..\Lib;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -56,20 +57,20 @@
         <DCC_K>false</DCC_K>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
-        <DCC_Inlining>off</DCC_Inlining>
         <DCC_Optimize>false</DCC_Optimize>
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <BT_BuildType>Debug</BT_BuildType>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <Manifest_File>None</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>

@@ -1,7 +1,7 @@
+BUILD=C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBUILD.exe
 EMBARCADERO = $(PROGRAMFILES)\Embarcadero\RAD Studio
 STUDIO = $(PROGRAMFILES)\Embarcadero\Studio
 BDSCOMMONDIRMAIN = %PUBLIC%\Documents\Embarcadero\Studio\
-BUILD = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 
 clean: 
 	DEL /S *.EXE

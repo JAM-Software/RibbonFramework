@@ -263,6 +263,7 @@ type
     ///  corresponding Action of the assigned ActionManager.
     /// </remarks>
     property RibbonMapper: TRibbonMarkupElementList read fRibbonMapper write fRibbonMapper;
+    procedure ChangeScale(M, D: Integer{$if CompilerVersion >= 31}; isDpiChange: Boolean{$ifend}); override;
   {$ENDREGION 'Internal Declarations'}
   public
 
@@ -662,6 +663,13 @@ begin
       FInitialized := true;
     end;
   end;
+end;
+
+procedure TUIRibbon.ChangeScale(M, D: Integer{$if CompilerVersion >= 31}; isDpiChange: Boolean{$ifend});
+begin
+  inherited;
+  if Assigned(FRibbon) {$if CompilerVersion >= 31}and isDpiChange{$ifend} then
+    Height := FRibbon.GetHeight;
 end;
 
 constructor TUIRibbon.Create(const pParent: TWinControl; const pOnCommandCreate: TUIRibbomCommandEvent);

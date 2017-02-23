@@ -2,7 +2,7 @@
 // Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbonActions.pas' rev: 31.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbonActions.pas' rev: 32.00 (Windows)
 
 #ifndef UiribbonactionsHPP
 #define UiribbonactionsHPP
@@ -20,7 +20,10 @@
 #include <Vcl.ActnMan.hpp>
 #include <UIRibbonCommands.hpp>
 #include <System.Generics.Collections.hpp>
+#include <Winapi.ActiveX.hpp>
+#include <UIRibbonApi.hpp>
 #include <System.Actions.hpp>
+#include <System.UITypes.hpp>
 #include <System.Generics.Defaults.hpp>
 #include <System.Types.hpp>
 #include <System.SysUtils.hpp>
@@ -257,21 +260,35 @@ class PASCALIMPLEMENTATION TRibbonCollectionAction : public TRibbonAction__1<Uir
 	typedef TRibbonAction__1<Uiribboncommands::TUICommandCollection*> inherited;
 	
 public:
-	System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> operator[](int Index) { return this->Items[Index]; }
+	Vcl::Actnlist::TCustomAction* operator[](int Index) { return this->Items[Index]; }
 	
 private:
-	System::Generics::Collections::TList__1<System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> >* fActionList;
-	System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> __fastcall GetItem(int pIndex);
+	System::Generics::Collections::TList__1<Vcl::Actnlist::TCustomAction*>* fActionList;
+	int fSelectedItem;
+	bool fSelectionInitialized;
+	Uiribboncommands::TUICommandCollectionSelectEvent fOriginalOnSelect;
+	Vcl::Actnlist::TCustomAction* __fastcall GetItem(int pIndex);
+	void __fastcall SetSelectedItem(const int pValue);
+	void __fastcall UICommandItemSelected(const Uiribboncommands::TUICommandCollectionEventArgs &Args);
 	
 public:
 	__fastcall virtual TRibbonCollectionAction(System::Classes::TComponent* AOwner);
 	__fastcall virtual ~TRibbonCollectionAction(void);
-	void __fastcall Add(Vcl::Actnlist::TCustomAction* pAction, const System::UnicodeString pCategory = System::UnicodeString());
+	void __fastcall Add(Vcl::Actnlist::TCustomAction* pAction)/* overload */;
+	void __fastcall Add(const System::UnicodeString pLabel)/* overload */;
+	HIDESBASE void __fastcall Remove(Vcl::Actnlist::TCustomAction* pAction);
 	void __fastcall Clear(void);
-	void __fastcall AddRange(System::Generics::Collections::TList__1<System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> >* pSource);
-	int __fastcall ItemCount(void);
-	__property System::Generics::Collections::TPair__2<Vcl::Actnlist::TCustomAction*,System::UnicodeString> Items[int Index] = {read=GetItem/*, default*/};
+	void __fastcall AddRange(System::Generics::Collections::TList__1<Vcl::Actnlist::TCustomAction*>* pSource);
+	void __fastcall PropertyUpdated(System::TObject* Sender, const Uiribbonapi::TUIPropertyKey &PropKey, tagPROPVARIANT &NewValue, bool &Handled);
 	void __fastcall RefreshCommandCollection(void);
+	virtual bool __fastcall Update(void);
+	int __fastcall ItemCount(void);
+	HIDESBASE System::Generics::Collections::TEnumerator__1<Vcl::Actnlist::TCustomAction*>* __fastcall GetEnumerator(void);
+	__property Vcl::Actnlist::TCustomAction* Items[int Index] = {read=GetItem/*, default*/};
+	__property int SelectedItem = {read=fSelectedItem, write=SetSelectedItem, nodefault};
+	
+__published:
+	__property ImageIndex = {default=-1};
 };
 
 

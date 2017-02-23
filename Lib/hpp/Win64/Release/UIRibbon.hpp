@@ -2,7 +2,7 @@
 // Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbon.pas' rev: 31.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbon.pas' rev: 32.00 (Windows)
 
 #ifndef UiribbonHPP
 #define UiribbonHPP
@@ -64,6 +64,7 @@ private:
 public:
 	__classmethod TRibbonMarkupElementList* __fastcall LookupListByResourceName(const System::UnicodeString pResourceName);
 	bool __fastcall TryGetItem(int pID, /* out */ TRibbonMarkupElement &pItem);
+	int __fastcall GetMaxCommandId(void);
 	__fastcall TRibbonMarkupElementList(System::UnicodeString pResourceName);
 	__property System::UnicodeString ResourceName = {read=fResourceName, write=fResourceName};
 public:
@@ -162,6 +163,7 @@ protected:
 	void __fastcall LocalizeRibbonElement(Uiribboncommands::TUICommand* const pCommand, const TRibbonMarkupElement &pMarkupItem);
 	unsigned __fastcall CreateUnusedCommandId(void);
 	__property TRibbonMarkupElementList* RibbonMapper = {read=fRibbonMapper, write=fRibbonMapper};
+	DYNAMIC void __fastcall ChangeScale(int M, int D, bool isDpiChange)/* overload */;
 	
 public:
 	__fastcall virtual TUIRibbon(System::Classes::TComponent* AOwner)/* overload */;
@@ -217,6 +219,11 @@ __published:
 	__property TUILoadResourceStringEvent OnLoadResourceString = {read=fOnLoadResourceString, write=fOnLoadResourceString};
 public:
 	/* TWinControl.CreateParented */ inline __fastcall TUIRibbon(HWND ParentWindow) : Vcl::Controls::TWinControl(ParentWindow) { }
+	
+	/* Hoisted overloads: */
+	
+protected:
+	DYNAMIC inline void __fastcall  ChangeScale(int M, int D){ Vcl::Controls::TControl::ChangeScale(M, D); }
 	
 private:
 	void *__IUIApplication;	// Uiribbonapi::IUIApplication 

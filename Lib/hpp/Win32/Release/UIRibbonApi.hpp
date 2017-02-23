@@ -2,7 +2,7 @@
 // Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbonApi.pas' rev: 31.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbonApi.pas' rev: 32.00 (Windows)
 
 #ifndef UiribbonapiHPP
 #define UiribbonapiHPP
@@ -157,7 +157,7 @@ enum DECLSPEC_DENUM _UIExecutionVerb : unsigned int { UIExecutionVerbExecute, UI
 __interface  INTERFACE_UUID("{75AE0A2D-DC03-4C9F-8883-069660D0BEB6}") IUICommandHandler  : public System::IInterface 
 {
 	virtual HRESULT __stdcall Execute(unsigned CommandId, _UIExecutionVerb Verb, PUIPropertyKey Key, Winapi::Activex::PPropVariant Value, _di_IUISimplePropertySet CommandExecutionProperties) = 0 ;
-	virtual HRESULT __stdcall UpdateProperty(unsigned CommandId, const TUIPropertyKey &Key, Winapi::Activex::PPropVariant CurrentValue, /* out */ tagPROPVARIANT &NewValue) = 0 ;
+	virtual HRESULT __stdcall UpdateProperty(unsigned CommandId, const TUIPropertyKey &Key, Winapi::Activex::PPropVariant CurrentValue, tagPROPVARIANT &NewValue) = 0 ;
 };
 
 enum DECLSPEC_DENUM _UICommandType : unsigned int { UICommandTypeUnknown, UICommandTypeGroup, UICommandTypeAction, UICommandTypeAnchor, UICommandTypeContext, UICommandTypeCollection, UICommandTypeCommandCollection, UICommandTypeDecimal, UICommandTypeBoolean, UICommandTypeFont, UICommandTypeRecentItems, UICommandTypeColorAnchor, UICommandTypeColorCollection };

@@ -2,7 +2,7 @@
 // Copyright (c) 1995, 2016 by Embarcadero Technologies, Inc.
 // All rights reserved
 
-// (DO NOT EDIT: machine generated header) 'UIRibbonCommands.pas' rev: 31.00 (Windows)
+// (DO NOT EDIT: machine generated header) 'UIRibbonCommands.pas' rev: 32.00 (Windows)
 
 #ifndef UiribboncommandsHPP
 #define UiribboncommandsHPP
@@ -96,7 +96,7 @@ public:
 };
 
 
-typedef void __fastcall (__closure *TUICommandUpdateImageEvent)(System::TObject* Sender, const Uiribbonapi::TUIPropertyKey &PropKey, /* out */ tagPROPVARIANT &NewValue, bool &Handled);
+typedef void __fastcall (__closure *TUICommandUpdatePropertyEvent)(System::TObject* Sender, const Uiribbonapi::TUIPropertyKey &PropKey, tagPROPVARIANT &NewValue, bool &Handled);
 
 typedef void __fastcall (__closure *TUICommandUpdateHintEvent)(System::TObject* Sender, const System::UnicodeString Value);
 
@@ -134,7 +134,7 @@ protected:
 	System::Set<_TUICommand__1, _TUICommand__1::vpCaption, _TUICommand__1::vpFormatString> FValidProperties;
 	Vcl::Actnlist::TActionLink* FActionLink;
 	TUICommandUpdateHintEvent FOnUpdateHint;
-	TUICommandUpdateImageEvent FOnUpdateImage;
+	TUICommandUpdatePropertyEvent FOnUpdateProperty;
 	void __fastcall SetAlive(const bool Value);
 	
 private:
@@ -151,7 +151,7 @@ private:
 	HIDESBASE int __stdcall _AddRef(void);
 	HIDESBASE int __stdcall _Release(void);
 	HRESULT __stdcall Execute(unsigned CommandId, Uiribbonapi::_UIExecutionVerb Verb, Uiribbonapi::PUIPropertyKey Key, Winapi::Activex::PPropVariant CurrentValue, Uiribbonapi::_di_IUISimplePropertySet CommandExecutionProperties);
-	HRESULT __stdcall UpdateProperty(unsigned CommandId, const Uiribbonapi::TUIPropertyKey &Key, Winapi::Activex::PPropVariant CurrentValue, /* out */ tagPROPVARIANT &NewValue);
+	HRESULT __stdcall UpdateProperty(unsigned CommandId, const Uiribbonapi::TUIPropertyKey &Key, Winapi::Activex::PPropVariant CurrentValue, tagPROPVARIANT &NewValue);
 	void __fastcall SetLargeImage(TUIImage* const Value);
 	
 private:
@@ -198,7 +198,7 @@ public:
 	__property TUIImage* LargeHighContrastImage = {read=FLargeHighContrastImage};
 	__property TUIImage* SmallHighContrastImage = {read=FSmallHighContrastImage};
 	__property Vcl::Actnlist::TActionLink* ActionLink = {read=GetActionLink};
-	__property TUICommandUpdateImageEvent OnUpdateImage = {read=FOnUpdateImage, write=FOnUpdateImage};
+	__property TUICommandUpdatePropertyEvent OnUpdateProperty = {read=FOnUpdateProperty, write=FOnUpdateProperty};
 	__property TUICommandUpdateHintEvent OnUpdateHint = {read=FOnUpdateHint, write=FOnUpdateHint};
 private:
 	void *__IUICommandHandler;	// Uiribbonapi::IUICommandHandler 

@@ -1004,7 +1004,7 @@ end;
 
 procedure TUIRibbon.Load();
 resourcestring
-  sErrorLoadingRibbonRessource = 'An error occurred while trying to load the Ribbon resource "%s": %s';
+  sErrorLoadingRibbonRessource = 'An error occurred while trying to load the Ribbon resource "%s": %s (%x)';
 var
   Inst: THandle;
   lForm: TCustomForm;
@@ -1023,16 +1023,16 @@ begin
     try
       FFramework.LoadUI(Inst, PChar(FResourceName + '_RIBBON'));
       FLoaded := True;
-      if Assigned(FOnLoaded) then
-        FOnLoaded(Self);
-      if roAutoPreserveState in Options then
-        LoadRibbonSettings();
     except
       on E: EOleException do begin
-        E.Message := Format(sErrorLoadingRibbonRessource, [Self.ResourceName, e.Message]);
+        E.Message := Format(sErrorLoadingRibbonRessource, [Self.ResourceName, e.Message, e.ErrorCode]);
         raise;
       end;
     end;//try..except
+    if Assigned(FOnLoaded) then
+      FOnLoaded(Self);
+    if roAutoPreserveState in Options then
+      LoadRibbonSettings();
 
     lForm := GetParentForm(Self);
     // Set the background color for the form if not yet defined. Use the same

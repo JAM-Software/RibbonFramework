@@ -210,6 +210,7 @@ type
     procedure SetBackgroundColor(const Value: TColor);
     procedure SetHighlightColor(const Value: TColor);
     procedure SetTextColor(const Value: TColor);
+    procedure LoadFramework();
   protected
     procedure CreateWnd(); override;
     procedure DestroyWnd(); override;
@@ -604,7 +605,6 @@ end;
 
 constructor TUIRibbon.Create(AOwner: TComponent);
 var
-  Intf: IUnknown;
   ParentForm: TCustomForm;
 const
   cControlErrorMsg = 'TUIRibbon control can be used on TCustomForm or descendants only.';
@@ -640,15 +640,7 @@ begin
   if csDesigning in ComponentState then
     exit; // Initializing the ribbon doesn't work in design time, so exit here.
 
-  FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil,
-    CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
-  if (not FAvailable) then
-    Height := 0
-  else
-  begin
-    FFramework := Intf as IUIFramework;
-    FFramework.Initialize(ParentForm.Handle, Self);
-  end;
+  LoadFramework;
 end;
 
 procedure TUIRibbon.WMPaint(var Message: TMessage);
@@ -1051,11 +1043,26 @@ begin
   end;
 end;
 
+procedure TUIRibbon.LoadFramework;
+var
+  Intf: IUnknown;
+begin
+  FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil,
+      CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
+  if (not FAvailable) and not (csDesigning in ComponentState) then
+    Height := 0
+  else
+  begin
+    FFramework := Intf as IUIFramework;
+    FFramework.Initialize(GetParentForm(Self.Owner as TControl).Handle, Self);
+  end;
+end;
+
 procedure TUIRibbon.CreateWnd;
 begin
   inherited;
-  if csRecreating in ControlState then
-    FFramework.Initialize(Parent.Handle, Self);
+  if (csRecreating in ControlState) and Available then
+    LoadFramework;
   Load();
 end;
 
@@ -1063,7 +1070,9 @@ procedure TUIRibbon.DestroyWnd;
 begin
   inherited;
   if Assigned(FFramework) then
-    FFramework.Destroy();
+    FFramework := nil;
+  FCommands.Clear;
+  FInitialized := False;
   fLoaded := False;
 end;
 

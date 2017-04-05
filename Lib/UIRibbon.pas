@@ -333,8 +333,8 @@ type
 
     { Loads the ribbon settings previously saved with SaveSettings.
       Returns True on success and False on failure. }
-    function LoadSettings(const Filename: String): Boolean; overload;
-    function LoadSettings(const Stream: TStream): Boolean; overload;
+    procedure LoadSettings(const Filename: String); overload;
+    procedure LoadSettings(const Stream: TStream); overload;
 
     { Allows for..in enumerator over all commands. }
     function GetEnumerator: TCommandEnumerator;
@@ -982,13 +982,14 @@ begin
   Result := (fRecentItems.ActionLink as TUICommandRecentItemsActionLink).Selected;
 end;
 
-function TUIRibbon.LoadSettings(const Filename: String): Boolean;
+procedure TUIRibbon.LoadSettings(const Filename: String);
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
   try
-    Result := (Stream.Size = 0) or LoadSettings(Stream);
+    if (Stream.Size > 0) then
+      LoadSettings(Stream);
   finally
     Stream.Free;
   end;
@@ -1089,20 +1090,23 @@ begin
   if not FileExists(RibbonSettingsFilePath) then
     exit(false);
   // Otherwise, try to load the file.
-  Result := Self.LoadSettings(lSettingsFileFullPath);
-  Assert(Result, 'Loading ribbon settings failed with unknown error. File: ' + lSettingsFileFullPath);
+  try
+    Self.LoadSettings(lSettingsFileFullPath);
+  except
+    on E: EOleError do
+      {$IFDEF DEBUG}raise;{$else}Exit(False);{$endif}
+  end;
+  Exit(True);
 end;
 
-function TUIRibbon.LoadSettings(const Stream: TStream): Boolean;
+procedure TUIRibbon.LoadSettings(const Stream: TStream);
 var
   ComStream: IStream;
 begin
-  Result := Assigned(FRibbon);
-  if (Result) then
-  begin
-    ComStream := TStreamAdapter.Create(Stream, soReference);
-    Result := Succeeded(FRibbon.LoadSettingsFromStream(ComStream));
-  end;
+  if not Assigned(FRibbon) then
+    raise EOleError.Create('Ribbon control was not properly initialzed');
+  ComStream := TStreamAdapter.Create(Stream, soReference);
+  FRibbon.LoadSettingsFromStream(ComStream);
 end;
 
 procedure TUIRibbon.LocalizeRibbonElement(const pCommand: TUICommand; const pMarkupItem: TRibbonMarkupElement);

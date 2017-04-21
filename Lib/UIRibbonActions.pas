@@ -265,7 +265,7 @@ end;
 
 function TUICommandActionLink.IsImageIndexLinked: Boolean;
 begin
-  Result := inherited and (TUIRibbonOption.roAssignImagesFromActionManager in TUIRibbon(FClient.Owner).Options);
+  Result := inherited and (FClient.UseImageFromAction or (TUIRibbonOption.roAssignImagesFromActionManager in TUIRibbon(FClient.Owner).Options));
 end;
 
 function TUICommandActionLink.IsOnExecuteLinked: Boolean;
@@ -617,8 +617,7 @@ begin
       lTargetCategoryId := FindOrCreateCategory(lCategory);
 
     // Create a new command item and assign the target action
-    lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), 0);
-    lCommandAction.Assign(lAction);
+    lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), lAction);
     lCommandAction.OnUpdateProperty := PropertyUpdated;
 
     // Create a collection item, that holds the action and can be added to the collection.

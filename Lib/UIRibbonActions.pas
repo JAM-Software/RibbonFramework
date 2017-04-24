@@ -329,7 +329,7 @@ begin
   // The Windows ribbon framework does not off to make a button invisible at runtime, so we at least disable the button
   if not Value then
     FClient.Enabled := False;
-  if Succeeded(UIInitPropertyFromBoolean(UI_PKEY_Viewable, TCUstomAction(Action).Visible, lCurrentValue))
+  if Succeeded(UIInitPropertyFromBoolean(UI_PKEY_Viewable, TCustomAction(Action).Visible, lCurrentValue))
   and Succeeded(UIInitPropertyFromBoolean(UI_PKEY_Viewable, Value, lNewValue)) then
     (FClient as IUICommandHandler).UpdateProperty(FClient.CommandId, UI_PKEY_Viewable, @lCurrentValue, lNewValue);
 end;
@@ -686,10 +686,7 @@ begin
 
     if not lActionVisible then begin
       fActionList.Remove((Sender as TUICommand).ActionLink.Action as TCustomAction);
-      if not IsCurrentlyDisplayed then
-        RefreshCommandCollection
-      else
-        fRefreshWhenNotDisplayed := True;  //Gallery is displayed -> Postpone the refresh.
+      fRefreshWhenNotDisplayed := True; // "Schedule" a refresh, during the next update.
     end
   end;
 end;

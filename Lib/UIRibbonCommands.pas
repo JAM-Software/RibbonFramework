@@ -171,6 +171,7 @@ type
     FActionLink: TActionLink;
     FOnUpdateHint: TUICommandUpdateHintEvent;
     FOnUpdateProperty: TUICommandUpdatePropertyEvent;
+    FUseImageFromAction: Boolean;
     procedure SetAlive(const Value: Boolean);
   strict private
     function GetEnabled: Boolean;
@@ -220,13 +221,19 @@ type
     property Alive: Boolean read FAlive write SetAlive;
   {$ENDREGION 'Internal Declarations'}
   public
-    constructor Create(const Ribbon: TObject{TUIRibbon}; const CommandId: Cardinal); reintroduce; virtual;
+    constructor Create(const Ribbon: TObject{TUIRibbon}; const CommandId: Cardinal); reintroduce; overload; virtual;
+    /// <summary>
+    /// This overload can be used to create a UICommand that is directly assiciated to the given action. This can be useful when
+    /// commands are added to a gallery, at runtime, instead of via markup XML. The UICommand will automatically use the same image as the action.
+    /// </summary>
+    /// <param name="pAction">The action that will be associated with this command.</param>
+    constructor Create(const Ribbon: TObject{TUIRibbon}; const pAction: TCustomAction); reintroduce; overload;
     destructor Destroy; override;
 
     /// <summary>
     /// Allows to assign the values of a VCL action to a ribbon command
     /// </summary>
-    /// <param name="pAction">The action from whcih teh values should be taken.</param>
+    /// <param name="pAction">The action from which the values should be taken.</param>
     /// <remarks></remarks>
     procedure Assign(const pAction: TCustomAction); reintroduce;
 
@@ -321,6 +328,11 @@ type
       UIRibbonActions.pas/TUICommandActionLink.SetHint. }
     property OnUpdateHint: TUICommandUpdateHintEvent read FOnUpdateHint write
       FOnUpdateHint;
+
+    { This property decides whether or not this command should use the same icon as the associated action.
+      This is the case, if the command is not created through a mapping from the XML markup, but at runtime
+      (e.g. while filling a ribbon gallery dynamically. }
+    property UseImageFromAction: Boolean read FUseImageFromAction write fUseImageFromAction;
 
     (************************************************************************
      * A note about command events
@@ -1794,6 +1806,14 @@ begin
 end;
 
 constructor TUICommand.Create(const Ribbon: TObject;
+  const pAction: TCustomAction);
+begin
+  Create(Ribbon, 0);
+  FUseImageFromAction := True;
+  Assign(pAction);
+end;
+
+constructor TUICommand.Create(const Ribbon: TObject;
   const CommandId: Cardinal);
 begin
   if (not (Ribbon is TUIRibbon)) then
@@ -1801,6 +1821,7 @@ begin
   inherited Create(Ribbon as TUIRibbon);
   FFramework := TUIRibbon(Ribbon).Framework;
   FCommandId := CommandId;
+  FUseImageFromAction := False;
   TUIRibbonAccess(Ribbon).AddCommand(Self);
 //  FFramework.InvalidateUICommand(FCommandId, [UIInvalidationsProperty], @UI_PKEY_LargeImage);
 //  FFramework.InvalidateUICommand(FCommandId, [UIInvalidationsProperty], @UI_PKEY_SmallImage);

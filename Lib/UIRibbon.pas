@@ -210,6 +210,7 @@ type
     procedure SetBackgroundColor(const Value: TColor);
     procedure SetHighlightColor(const Value: TColor);
     procedure SetTextColor(const Value: TColor);
+    procedure LoadFramework();
   protected
     procedure CreateWnd(); override;
     procedure DestroyWnd(); override;
@@ -332,8 +333,8 @@ type
 
     { Loads the ribbon settings previously saved with SaveSettings.
       Returns True on success and False on failure. }
-    function LoadSettings(const Filename: String): Boolean; overload;
-    function LoadSettings(const Stream: TStream): Boolean; overload;
+    procedure LoadSettings(const Filename: String); overload;
+    procedure LoadSettings(const Stream: TStream); overload;
 
     { Allows for..in enumerator over all commands. }
     function GetEnumerator: TCommandEnumerator;
@@ -604,7 +605,6 @@ end;
 
 constructor TUIRibbon.Create(AOwner: TComponent);
 var
-  Intf: IUnknown;
   ParentForm: TCustomForm;
 const
   cControlErrorMsg = 'TUIRibbon control can be used on TCustomForm or descendants only.';
@@ -640,15 +640,7 @@ begin
   if csDesigning in ComponentState then
     exit; // Initializing the ribbon doesn't work in design time, so exit here.
 
-  FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil,
-    CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
-  if (not FAvailable) then
-    Height := 0
-  else
-  begin
-    FFramework := Intf as IUIFramework;
-    FFramework.Initialize(ParentForm.Handle, Self);
-  end;
+  LoadFramework;
 end;
 
 procedure TUIRibbon.WMPaint(var Message: TMessage);
@@ -990,13 +982,14 @@ begin
   Result := (fRecentItems.ActionLink as TUICommandRecentItemsActionLink).Selected;
 end;
 
-function TUIRibbon.LoadSettings(const Filename: String): Boolean;
+procedure TUIRibbon.LoadSettings(const Filename: String);
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
   try
-    Result := (Stream.Size = 0) or LoadSettings(Stream);
+    if (Stream.Size > 0) then
+      LoadSettings(Stream);
   finally
     Stream.Free;
   end;
@@ -1004,7 +997,7 @@ end;
 
 procedure TUIRibbon.Load();
 resourcestring
-  sErrorLoadingRibbonRessource = 'An error occurred while trying to load the Ribbon resource "%s": %s';
+  sErrorLoadingRibbonRessource = 'An error occurred while trying to load the Ribbon resource "%s": %s (%x)';
 var
   Inst: THandle;
   lForm: TCustomForm;
@@ -1023,16 +1016,16 @@ begin
     try
       FFramework.LoadUI(Inst, PChar(FResourceName + '_RIBBON'));
       FLoaded := True;
-      if Assigned(FOnLoaded) then
-        FOnLoaded(Self);
-      if roAutoPreserveState in Options then
-        LoadRibbonSettings();
     except
       on E: EOleException do begin
-        E.Message := Format(sErrorLoadingRibbonRessource, [Self.ResourceName, e.Message]);
+        E.Message := Format(sErrorLoadingRibbonRessource, [Self.ResourceName, e.Message, e.ErrorCode]);
         raise;
       end;
     end;//try..except
+    if Assigned(FOnLoaded) then
+      FOnLoaded(Self);
+    if roAutoPreserveState in Options then
+      LoadRibbonSettings();
 
     lForm := GetParentForm(Self);
     // Set the background color for the form if not yet defined. Use the same
@@ -1051,11 +1044,26 @@ begin
   end;
 end;
 
+procedure TUIRibbon.LoadFramework;
+var
+  Intf: IUnknown;
+begin
+  FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil,
+      CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
+  if (not FAvailable) and not (csDesigning in ComponentState) then
+    Height := 0
+  else
+  begin
+    FFramework := Intf as IUIFramework;
+    FFramework.Initialize(GetParentForm(Self.Owner as TControl).Handle, Self);
+  end;
+end;
+
 procedure TUIRibbon.CreateWnd;
 begin
   inherited;
-  if csRecreating in ControlState then
-    FFramework.Initialize(Parent.Handle, Self);
+  if (csRecreating in ControlState) and Available then
+    LoadFramework;
   Load();
 end;
 
@@ -1063,7 +1071,9 @@ procedure TUIRibbon.DestroyWnd;
 begin
   inherited;
   if Assigned(FFramework) then
-    FFramework.Destroy();
+    FFramework := nil;
+  FCommands.Clear;
+  FInitialized := False;
   fLoaded := False;
 end;
 
@@ -1080,20 +1090,23 @@ begin
   if not FileExists(RibbonSettingsFilePath) then
     exit(false);
   // Otherwise, try to load the file.
-  Result := Self.LoadSettings(lSettingsFileFullPath);
-  Assert(Result, 'Loading ribbon settings failed with unknown error. File: ' + lSettingsFileFullPath);
+  try
+    Self.LoadSettings(lSettingsFileFullPath);
+  except
+    on E: EOleError do
+      {$IFDEF DEBUG}raise;{$else}Exit(False);{$endif}
+  end;
+  Exit(True);
 end;
 
-function TUIRibbon.LoadSettings(const Stream: TStream): Boolean;
+procedure TUIRibbon.LoadSettings(const Stream: TStream);
 var
   ComStream: IStream;
 begin
-  Result := Assigned(FRibbon);
-  if (Result) then
-  begin
-    ComStream := TStreamAdapter.Create(Stream, soReference);
-    Result := Succeeded(FRibbon.LoadSettingsFromStream(ComStream));
-  end;
+  if not Assigned(FRibbon) then
+    raise EOleError.Create('Ribbon control was not properly initialzed');
+  ComStream := TStreamAdapter.Create(Stream, soReference);
+  FRibbon.LoadSettingsFromStream(ComStream);
 end;
 
 procedure TUIRibbon.LocalizeRibbonElement(const pCommand: TUICommand; const pMarkupItem: TRibbonMarkupElement);

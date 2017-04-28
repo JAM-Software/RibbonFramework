@@ -140,6 +140,8 @@ type
       fSelectedItem: Integer;
       fSelectionInitialized: Boolean;
       fOriginalOnSelect: TUICommandCollectionSelectEvent;
+      /// This flag indicates that a refresh should be performed as soon as the collection is not being displayed anymore.
+      fRefreshWhenNotDisplayed: Boolean;
       function GetItem(pIndex: Integer): TCustomAction;
       procedure SetSelectedItem(const pValue: Integer);
       /// Triggered on user induced selection changes. This handler will apply them to the action.
@@ -178,6 +180,11 @@ type
       /// Returns the amount of actions that have been added.
       function ItemCount: Integer;
       function GetEnumerator: TEnumerator<TCustomAction>;
+      /// <summary>
+      /// This function indicates whether the collection is currently being displayed. The default implementation uses the visible state
+      /// of the action. You might want to override this function in a subclass if you want to perform a more suffisticated check.
+      /// </summary>
+      function IsCurrentlyDisplayed: Boolean; virtual;
       property Items[Index: Integer]: TCustomAction read GetItem; default;
       /// <summary> This property correlates to the ribbon collection's SelecteItem property. We additionally store the value in member variable fSelectedItem and apply
       /// the index during the first call to the action's Update() method.
@@ -258,7 +265,7 @@ end;
 
 function TUICommandActionLink.IsImageIndexLinked: Boolean;
 begin
-  Result := inherited and (TUIRibbonOption.roAssignImagesFromActionManager in TUIRibbon(FClient.Owner).Options);
+  Result := inherited and (FClient.UseImageFromAction or (TUIRibbonOption.roAssignImagesFromActionManager in TUIRibbon(FClient.Owner).Options));
 end;
 
 function TUICommandActionLink.IsOnExecuteLinked: Boolean;
@@ -322,7 +329,7 @@ begin
   // The Windows ribbon framework does not off to make a button invisible at runtime, so we at least disable the button
   if not Value then
     FClient.Enabled := False;
-  if Succeeded(UIInitPropertyFromBoolean(UI_PKEY_Viewable, TCUstomAction(Action).Visible, lCurrentValue))
+  if Succeeded(UIInitPropertyFromBoolean(UI_PKEY_Viewable, TCustomAction(Action).Visible, lCurrentValue))
   and Succeeded(UIInitPropertyFromBoolean(UI_PKEY_Viewable, Value, lNewValue)) then
     (FClient as IUICommandHandler).UpdateProperty(FClient.CommandId, UI_PKEY_Viewable, @lCurrentValue, lNewValue);
 end;
@@ -610,8 +617,7 @@ begin
       lTargetCategoryId := FindOrCreateCategory(lCategory);
 
     // Create a new command item and assign the target action
-    lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), 0);
-    lCommandAction.Assign(lAction);
+    lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), lAction);
     lCommandAction.OnUpdateProperty := PropertyUpdated;
 
     // Create a collection item, that holds the action and can be added to the collection.
@@ -654,6 +660,12 @@ begin
     UICommand.OnSelect := UICommandItemSelected;
     fSelectionInitialized := True;
   end;
+  // Check if a refresh was postponed while the collection was displayed and if we can now perform the refresh.
+  if fRefreshWhenNotDisplayed and not IsCurrentlyDisplayed then
+  begin
+    RefreshCommandCollection;
+    fRefreshWhenNotDisplayed := False;
+  end;
 end;
 
 procedure TRibbonCollectionAction.PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; var Handled: boolean);
@@ -665,14 +677,17 @@ begin
     if not Succeeded(UIPropertyToBoolean(PropKey, NewValue, lActionVisible)) then
       Exit;
 
-//    This code is disabled at the moment. The next few lines would remove an action from the gallery as soon as it becomes invisible.
-//    However, modifying the gallery while it is open will cause it to be emptied completely and new changes are only visble the next time it is opened.
+//    This code is called whenever an action within the gallery becomes invisible.
+//    Modifying the gallery while it is open will cause it to be emptied completely and new changes are only visble the next time it is opened.
+//    To counter that effect, we check if the gallery is currently displayed and postpone the refresh until the gallery is not visibile anymore.
+//    PLEASE NOTE: The default implementation of IsCurrentlyDisplayed does not check this. You have to override this and perform a more sophisticated check
+//    if you want to prevent this effect.
 //    See issue #60 (https://github.com/TurboPack/RibbonFramework/issues/60)
 
-//    if not lActionVisible then begin
-//      fActionList.Remove((Sender as TUICommand).ActionLink.Action as TCustomAction);
-//      RefreshCommandCollection;
-//    end;
+    if not lActionVisible then begin
+      fActionList.Remove((Sender as TUICommand).ActionLink.Action as TCustomAction);
+      fRefreshWhenNotDisplayed := True; // "Schedule" a refresh, during the next update.
+    end
   end;
 end;
 
@@ -708,6 +723,7 @@ begin
   inherited;
   fActionList := TList<TCustomAction>.Create;
   fSelectionInitialized := False;
+  fRefreshWhenNotDisplayed := False;
   fSelectedItem := cNoSelection;
 end;
 
@@ -725,6 +741,11 @@ end;
 function TRibbonCollectionAction.GetItem(pIndex: Integer): TCustomAction;
 begin
   Exit(fActionList[pIndex]);
+end;
+
+function TRibbonCollectionAction.IsCurrentlyDisplayed: Boolean;
+begin
+  Result := Self.Visible;
 end;
 
 function TRibbonCollectionAction.ItemCount: Integer;

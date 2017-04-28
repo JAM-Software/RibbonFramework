@@ -148,6 +148,7 @@ private:
 	void __fastcall SetBackgroundColor(const System::Uitypes::TColor Value);
 	void __fastcall SetHighlightColor(const System::Uitypes::TColor Value);
 	void __fastcall SetTextColor(const System::Uitypes::TColor Value);
+	void __fastcall LoadFramework(void);
 	
 protected:
 	virtual void __fastcall CreateWnd(void);
@@ -178,8 +179,8 @@ public:
 	void __fastcall SetApplicationModes(const int *Modes, const int Modes_High)/* overload */;
 	bool __fastcall SaveSettings(const System::UnicodeString Filename)/* overload */;
 	bool __fastcall SaveSettings(System::Classes::TStream* const Stream)/* overload */;
-	bool __fastcall LoadSettings(const System::UnicodeString Filename)/* overload */;
-	bool __fastcall LoadSettings(System::Classes::TStream* const Stream)/* overload */;
+	void __fastcall LoadSettings(const System::UnicodeString Filename)/* overload */;
+	void __fastcall LoadSettings(System::Classes::TStream* const Stream)/* overload */;
 	HIDESBASE System::Generics::Collections::TEnumerator__1<Uiribboncommands::TUICommand*>* __fastcall GetEnumerator(void);
 	bool __fastcall HandleShortCut(const System::Classes::TShortCut ShortCut)/* overload */;
 	bool __fastcall HandleShortCut(const Winapi::Messages::TWMKey &pMessage)/* overload */;

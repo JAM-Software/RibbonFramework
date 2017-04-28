@@ -267,6 +267,7 @@ private:
 	int fSelectedItem;
 	bool fSelectionInitialized;
 	Uiribboncommands::TUICommandCollectionSelectEvent fOriginalOnSelect;
+	bool fRefreshWhenNotDisplayed;
 	Vcl::Actnlist::TCustomAction* __fastcall GetItem(int pIndex);
 	void __fastcall SetSelectedItem(const int pValue);
 	void __fastcall UICommandItemSelected(const Uiribboncommands::TUICommandCollectionEventArgs &Args);
@@ -284,6 +285,7 @@ public:
 	virtual bool __fastcall Update(void);
 	int __fastcall ItemCount(void);
 	HIDESBASE System::Generics::Collections::TEnumerator__1<Vcl::Actnlist::TCustomAction*>* __fastcall GetEnumerator(void);
+	virtual bool __fastcall IsCurrentlyDisplayed(void);
 	__property Vcl::Actnlist::TCustomAction* Items[int Index] = {read=GetItem/*, default*/};
 	__property int SelectedItem = {read=fSelectedItem, write=SetSelectedItem, nodefault};
 	

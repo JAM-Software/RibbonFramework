@@ -137,6 +137,7 @@ protected:
 	Vcl::Actnlist::TActionLink* FActionLink;
 	TUICommandUpdateHintEvent FOnUpdateHint;
 	TUICommandUpdatePropertyEvent FOnUpdateProperty;
+	bool FUseImageFromAction;
 	void __fastcall SetAlive(const bool Value);
 	
 private:
@@ -180,7 +181,8 @@ protected:
 	__property bool Alive = {read=FAlive, write=SetAlive, nodefault};
 	
 public:
-	__fastcall virtual TUICommand(System::TObject* const Ribbon, const unsigned CommandId);
+	__fastcall virtual TUICommand(System::TObject* const Ribbon, const unsigned CommandId)/* overload */;
+	__fastcall TUICommand(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */;
 	__fastcall virtual ~TUICommand(void);
 	HIDESBASE void __fastcall Assign(Vcl::Actnlist::TCustomAction* const pAction);
 	virtual __classmethod TUICommandType __fastcall CommandType() = 0 ;
@@ -202,6 +204,7 @@ public:
 	__property Vcl::Actnlist::TActionLink* ActionLink = {read=GetActionLink};
 	__property TUICommandUpdatePropertyEvent OnUpdateProperty = {read=FOnUpdateProperty, write=FOnUpdateProperty};
 	__property TUICommandUpdateHintEvent OnUpdateHint = {read=FOnUpdateHint, write=FOnUpdateHint};
+	__property bool UseImageFromAction = {read=FUseImageFromAction, write=FUseImageFromAction, nodefault};
 private:
 	void *__IUICommandHandler;	// Uiribbonapi::IUICommandHandler 
 	
@@ -234,7 +237,8 @@ protected:
 public:
 	__classmethod virtual TUICommandType __fastcall CommandType();
 public:
-	/* TUICommand.Create */ inline __fastcall virtual TUICommandGroup(System::TObject* const Ribbon, const unsigned CommandId) : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall virtual TUICommandGroup(System::TObject* const Ribbon, const unsigned CommandId)/* overload */ : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall TUICommandGroup(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
 	/* TUICommand.Destroy */ inline __fastcall virtual ~TUICommandGroup(void) { }
 	
 };
@@ -271,7 +275,8 @@ public:
 	__property System::UnicodeString LabelDescription = {read=FLabelDescription, write=SetLabelDescription};
 	__property TUICommandActionExecuteEvent OnExecute = {read=FOnExecute, write=FOnExecute};
 public:
-	/* TUICommand.Create */ inline __fastcall virtual TUICommandAction(System::TObject* const Ribbon, const unsigned CommandId) : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall virtual TUICommandAction(System::TObject* const Ribbon, const unsigned CommandId)/* overload */ : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall TUICommandAction(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
 	/* TUICommand.Destroy */ inline __fastcall virtual ~TUICommandAction(void) { }
 	
 };
@@ -321,7 +326,7 @@ protected:
 	virtual void __fastcall Notify(const int Flag);
 	
 public:
-	__fastcall virtual TUICommandCollection(System::TObject* const Ribbon, const unsigned CommandId);
+	__fastcall virtual TUICommandCollection(System::TObject* const Ribbon, const unsigned CommandId)/* overload */;
 	__fastcall virtual ~TUICommandCollection(void);
 	__classmethod virtual TUICommandType __fastcall CommandType();
 	virtual bool __fastcall HandleShortCut(const System::Classes::TShortCut ShortCut);
@@ -332,6 +337,9 @@ public:
 	__property System::UnicodeString RepresentativeString = {read=FRepresentativeString, write=SetRepresentativeString};
 	__property bool Checked = {read=GetChecked, write=SetChecked, nodefault};
 	__property TUICommandCollectionSelectEvent OnSelect = {read=FOnSelect, write=FOnSelect};
+public:
+	/* TUICommand.Create */ inline __fastcall TUICommandCollection(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
+	
 };
 
 
@@ -375,7 +383,8 @@ public:
 	__property System::UnicodeString FormatString = {read=FFormatString, write=SetFormatString};
 	__property TUICommandDecimalChangeEvent OnChange = {read=FOnChange, write=FOnChange};
 public:
-	/* TUICommand.Create */ inline __fastcall virtual TUICommandDecimal(System::TObject* const Ribbon, const unsigned CommandId) : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall virtual TUICommandDecimal(System::TObject* const Ribbon, const unsigned CommandId)/* overload */ : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall TUICommandDecimal(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
 	/* TUICommand.Destroy */ inline __fastcall virtual ~TUICommandDecimal(void) { }
 	
 };
@@ -419,7 +428,8 @@ public:
 	__property bool Checked = {read=GetChecked, write=SetChecked, nodefault};
 	__property TUICommandBooleanToggleEvent OnToggle = {read=FOnToggle, write=FOnToggle};
 public:
-	/* TUICommand.Create */ inline __fastcall virtual TUICommandBoolean(System::TObject* const Ribbon, const unsigned CommandId) : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall virtual TUICommandBoolean(System::TObject* const Ribbon, const unsigned CommandId)/* overload */ : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall TUICommandBoolean(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
 	/* TUICommand.Destroy */ inline __fastcall virtual ~TUICommandBoolean(void) { }
 	
 };
@@ -436,7 +446,8 @@ protected:
 public:
 	__classmethod virtual TUICommandType __fastcall CommandType();
 public:
-	/* TUICommand.Create */ inline __fastcall virtual TUICommandAnchor(System::TObject* const Ribbon, const unsigned CommandId) : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall virtual TUICommandAnchor(System::TObject* const Ribbon, const unsigned CommandId)/* overload */ : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall TUICommandAnchor(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
 	/* TUICommand.Destroy */ inline __fastcall virtual ~TUICommandAnchor(void) { }
 	
 };
@@ -458,7 +469,8 @@ public:
 	__classmethod virtual TUICommandType __fastcall CommandType();
 	__property TUIContextAvailability Availability = {read=GetAvailability, write=SetAvailability, nodefault};
 public:
-	/* TUICommand.Create */ inline __fastcall virtual TUICommandContext(System::TObject* const Ribbon, const unsigned CommandId) : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall virtual TUICommandContext(System::TObject* const Ribbon, const unsigned CommandId)/* overload */ : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall TUICommandContext(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
 	/* TUICommand.Destroy */ inline __fastcall virtual ~TUICommandContext(void) { }
 	
 };
@@ -557,11 +569,14 @@ private:
 	void __fastcall FontChanged(void);
 	
 public:
-	__fastcall virtual TUICommandFont(System::TObject* const Ribbon, const unsigned CommandId);
+	__fastcall virtual TUICommandFont(System::TObject* const Ribbon, const unsigned CommandId)/* overload */;
 	__fastcall virtual ~TUICommandFont(void);
 	__classmethod virtual TUICommandType __fastcall CommandType();
 	__property TUIFont* Font = {read=FFont};
 	__property TUICommandFontChangedEvent OnChanged = {read=FOnChanged, write=FOnChanged};
+public:
+	/* TUICommand.Create */ inline __fastcall TUICommandFont(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
+	
 };
 
 
@@ -630,7 +645,8 @@ public:
 	__property System::UnicodeString MoreColorsLabel = {read=GetMoreColorsLabel, write=SetMoreColorsLabel};
 	__property TUICommandColorAnchorExecuteEvent OnExecute = {read=FOnExecute, write=FOnExecute};
 public:
-	/* TUICommand.Create */ inline __fastcall virtual TUICommandColorAnchor(System::TObject* const Ribbon, const unsigned CommandId) : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall virtual TUICommandColorAnchor(System::TObject* const Ribbon, const unsigned CommandId)/* overload */ : TUICommand(Ribbon, CommandId) { }
+	/* TUICommand.Create */ inline __fastcall TUICommandColorAnchor(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
 	/* TUICommand.Destroy */ inline __fastcall virtual ~TUICommandColorAnchor(void) { }
 	
 };
@@ -658,11 +674,14 @@ protected:
 	virtual void __fastcall Notify(const int Flag);
 	
 public:
-	__fastcall virtual TUICommandRecentItems(System::TObject* const Ribbon, const unsigned CommandId);
+	__fastcall virtual TUICommandRecentItems(System::TObject* const Ribbon, const unsigned CommandId)/* overload */;
 	__fastcall virtual ~TUICommandRecentItems(void);
 	__classmethod virtual TUICommandType __fastcall CommandType();
 	__property TUICollection* Items = {read=FItems};
 	__property TUICommandRecentItemsSelectEvent OnSelect = {read=FOnSelect, write=FOnSelect};
+public:
+	/* TUICommand.Create */ inline __fastcall TUICommandRecentItems(System::TObject* const Ribbon, Vcl::Actnlist::TCustomAction* const pAction)/* overload */ : TUICommand(Ribbon, pAction) { }
+	
 };
 
 

@@ -636,6 +636,10 @@ end;
 
 procedure TRibbonCollectionAction.UICommandItemSelected(const Args: TUICommandCollectionEventArgs);
 begin
+  // If the actual selection did not change, ignore the event.
+  if fSelectedItem = UICommand.SelectedItem then
+    exit;
+
   fSelectedItem := UICommand.SelectedItem;
   if Assigned(fOriginalOnSelect) then
     fOriginalOnSelect(Args);

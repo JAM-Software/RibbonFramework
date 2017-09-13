@@ -702,7 +702,7 @@ begin
         lAction := Self.GetActionForCommand(pCommand);
         if Assigned(lAction) then
           pCommand.Assign(lAction)
-        {$ifdef DEBUG}else
+        {$ifdef DEBUG}else if pCommand.CommandType in [TUICommandType.ctAction, TUICommandType.ctBoolean] then
           OutputDebugString(PChar(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))){$endif};
       end;
       // Try mapping ctAnchor (Tabs) to an action. If found, assign properties.

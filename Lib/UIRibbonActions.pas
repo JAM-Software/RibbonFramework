@@ -278,6 +278,8 @@ begin
   inherited;
   if Value is TCustomAction then with TCustomAction(Value) do
   begin
+    if FClient.CommandType <> TUICommandType.ctAction then
+      DisableIfNoHandler := False;
     // Trigger assigned OnUpdate method to determine whether the Ribbon command
     // shall be enabled or disabled (greyed out).
     Value.Update();

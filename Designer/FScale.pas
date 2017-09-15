@@ -40,7 +40,6 @@ begin
     if (NewRef <> FScale.GroupRef) then
     begin
       FScale.GroupRef := NewRef;
-      UpdateCurrentNode;
       Modified;
     end;
   end;

@@ -33,7 +33,6 @@ begin
   begin
     FContextMenu.Name := EditName.Text;
     Modified;
-    UpdateCurrentNode;
   end;
 end;
 

@@ -44,7 +44,6 @@ begin
   if (EditName.Text <> FRibbon.Name) then
   begin
     FRibbon.Name := EditName.Text;
-    UpdateCurrentNode;
     Modified;
   end;
 end;

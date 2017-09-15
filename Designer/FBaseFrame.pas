@@ -57,8 +57,10 @@ end;
 
 procedure TBaseFrame.Modified;
 begin
-  if (not FUpdating) then
+  if (not FUpdating) then begin
     FormMain.Modified;
+    UpdateCurrentNode;
+  end;
 end;
 
 procedure TBaseFrame.ShowProperties(const Subject: TRibbonObject;

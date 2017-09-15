@@ -73,7 +73,6 @@ begin
   if (ControlName <> FSizeDef.ControlName) then
   begin
     FSizeDef.ControlName := ControlName;
-    UpdateCurrentNode;
     Modified;
   end;
 end;

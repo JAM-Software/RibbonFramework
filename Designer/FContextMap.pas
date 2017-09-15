@@ -44,7 +44,6 @@ begin
   begin
     FContextMap.ContextMenuRef := NewRef;
     Modified;
-    UpdateCurrentNode;
   end;
 end;
 
@@ -60,7 +59,6 @@ begin
   begin
     FContextMap.MiniToolbarRef := NewRef;
     Modified;
-    UpdateCurrentNode;
   end;
 end;
 

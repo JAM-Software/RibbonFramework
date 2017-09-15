@@ -63,7 +63,6 @@ begin
     if (NewRef <> FCommandRefSubject.CommandRef) then
     begin
       FCommandRefSubject.CommandRef := NewRef;
-      UpdateCurrentNode;
       Modified;
     end;
   end;

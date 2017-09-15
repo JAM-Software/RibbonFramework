@@ -32,7 +32,6 @@ begin
   if (ComboBoxSize.ItemIndex <> Ord(FSizeDef.Size)) then
   begin
     FSizeDef.Size := TRibbonGroupSizeType(ComboBoxSize.ItemIndex);
-    UpdateCurrentNode;
     Modified;
   end;
 end;

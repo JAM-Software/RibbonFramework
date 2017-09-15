@@ -44,7 +44,6 @@ begin
     if (EditName.Text <> Def.Name) then
     begin
       Def.Name := EditName.Text;
-      UpdateCurrentNode;
       Modified;
     end;
   end;

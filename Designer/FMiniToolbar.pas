@@ -33,7 +33,6 @@ begin
   begin
     FToolbar.Name := EditName.Text;
     Modified;
-    UpdateCurrentNode;
   end;
 end;
 

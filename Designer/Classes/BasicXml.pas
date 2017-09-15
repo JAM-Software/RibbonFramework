@@ -1065,7 +1065,7 @@ var
 begin
   FName := nil;
   FValue := nil;
-  Result := False;
+  {$if CompilerVersion < 32}Result := False;{$endif}  // avoid compiler warning in older Delphi versions
   while True do
   begin
     CurWithWhitespace := FCur;

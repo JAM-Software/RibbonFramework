@@ -638,8 +638,8 @@ end;
 
 procedure TRibbonCollectionAction.UICommandItemSelected(const Args: TUICommandCollectionEventArgs);
 begin
-  // If the actual selection did not change, ignore the event.
-  if fSelectedItem = UICommand.SelectedItem then
+  // Ignore events where the user only hovers over a selection. We only want to react to actual click events, i.e. when the selection changes.
+  if Args.Verb <> TUICommandVerb.cvExecute then
     exit;
 
   fSelectedItem := UICommand.SelectedItem;

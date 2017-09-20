@@ -603,6 +603,14 @@ begin
   // Command link is not (yet) created -> exit.
   if not Assigned(UICommand) then exit;
 
+  // Check if a refresh was postponed while the collection was displayed and if we can now perform the refresh.
+  if IsCurrentlyDisplayed then
+  begin
+    fRefreshWhenNotDisplayed := True;
+    exit;
+  end;
+
+  fRefreshWhenNotDisplayed := False;
   lCommandCollection := UICommand as TUICommandCollection;
   // Clear the ribbon collection
   lCommandCollection.Items.Clear;
@@ -666,12 +674,8 @@ begin
     UICommand.OnSelect := UICommandItemSelected;
     fSelectionInitialized := True;
   end;
-  // Check if a refresh was postponed while the collection was displayed and if we can now perform the refresh.
   if fRefreshWhenNotDisplayed and not IsCurrentlyDisplayed then
-  begin
     RefreshCommandCollection;
-    fRefreshWhenNotDisplayed := False;
-  end;
 end;
 
 procedure TRibbonCollectionAction.PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; var Handled: boolean);

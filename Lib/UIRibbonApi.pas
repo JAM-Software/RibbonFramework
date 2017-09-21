@@ -35,17 +35,8 @@ type
 
 {$REGION 'UIRibbonKeydef.h'}
 type
-  TUIPropertyKey = packed record
-  public
-    FmtId: TGuid;
-    PId: DWord;
-  public
-    class operator Equal(const A, B: TUIPropertyKey): Boolean;
-    class operator Equal(const A: TUIPropertyKey; const B: TPropertyKey): Boolean;
-    class operator NotEqual(const A, B: TUIPropertyKey): Boolean;
-    class operator NotEqual(const A: TUIPropertyKey; const B: TPropertyKey): Boolean;
-  end;
-  PUIPropertyKey = ^TUIPropertyKey;
+  TUIPropertyKey = TPropertyKey;
+  PUIPropertyKey = PPropertyKey;
 
 (*#define DEFINE_UIPROPERTYKEY(name, type, index) EXTERN_C \\
     const PROPERTYKEY DECLSPEC_SELECTANY name = { { 0x00000000 + index, 0x7363, \\
@@ -659,32 +650,6 @@ uses
   SysUtils,
   WinApiEx;
 
-{$REGION 'UIRibbonKeydef.h'}
-
-{ TUIPropertyKey }
-
-class operator TUIPropertyKey.Equal(const A, B: TUIPropertyKey): Boolean;
-begin
-  Result := CompareMem(@A, @B, SizeOf(TUIPropertyKey));
-end;
-
-class operator TUIPropertyKey.Equal(const A: TUIPropertyKey;
-  const B: TPropertyKey): Boolean;
-begin
-  Result := CompareMem(@A, @B, SizeOf(TUIPropertyKey));
-end;
-
-class operator TUIPropertyKey.NotEqual(const A, B: TUIPropertyKey): Boolean;
-begin
-  Result := not CompareMem(@A, @B, SizeOf(TUIPropertyKey));
-end;
-
-class operator TUIPropertyKey.NotEqual(const A: TUIPropertyKey;
-  const B: TPropertyKey): Boolean;
-begin
-  Result := not CompareMem(@A, @B, SizeOf(TUIPropertyKey));
-end;
-{$ENDREGION 'UIRibbonKeydef.h'}
 
 {$REGION 'UIRibbon.h/idl'}
 function UIHsb(const Hue, Saturation, Brightness: Byte): TUIHsbColor; inline;
@@ -883,7 +848,5 @@ begin
 end;
 {$ENDREGION 'UIRibbonPropertyHelpers.h'}
 
-initialization
-  Assert(SizeOf(TUIPropertyKey) = SizeOf(TPropertyKey));
 
 end.

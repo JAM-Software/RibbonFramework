@@ -136,12 +136,9 @@ begin
     end;
 
     Reg.RootKey := HKEY_CURRENT_USER;
-    for BdsVersion := 10 downto 7 do
+    for BdsVersion := 20 downto 10 do
     begin
-      if (BdsVersion = 7) then
-        BdsKey := 'Software\CodeGear\BDS\7.0'
-      else
-        BdsKey := 'Software\Embarcadero\BDS\' + IntToStr(BdsVersion) + '.0';
+      BdsKey := 'Software\Embarcadero\BDS\' + IntToStr(BdsVersion) + '.0';
       if (Reg.OpenKeyReadOnly(BdsKey)) then
       begin
         BdsPath := Reg.ReadString('RootDir');

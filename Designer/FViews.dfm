@@ -1564,22 +1564,27 @@ object FrameViews: TFrameViews
       Caption = 'Add'
       Hint = 'Adds a subitem to the selected node'
       ImageIndex = 36
+      OnExecute = ActionAddButtonExecute
+      OnUpdate = TreeActionUpdate
     end
     object ActionDelete: TAction
       Caption = 'Delete'
       Hint = 'Deletes the selected item'
       ImageIndex = 37
       OnExecute = ActionDeleteExecute
+      OnUpdate = TreeActionUpdate
     end
     object ActionMoveUp: TAction
       Caption = 'Up'
       ImageIndex = 38
       OnExecute = ActionMoveUpExecute
+      OnUpdate = TreeActionUpdate
     end
     object ActionMoveDown: TAction
       Caption = 'Down'
       ImageIndex = 39
       OnExecute = ActionMoveDownExecute
+      OnUpdate = TreeActionUpdate
     end
     object ActionAddButton: TAction
       Caption = 'Add Button'

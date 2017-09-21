@@ -116,7 +116,7 @@ type
     procedure EditDescriptionIdChange(Sender: TObject);
     procedure EditDescriptionSymbolChange(Sender: TObject);
     procedure UpDownChangingEx(Sender: TObject; var AllowChange: Boolean;
-      NewValue: SmallInt; Direction: TUpDownDirection);
+      NewValue: Integer; Direction: TUpDownDirection);
     procedure EditTooltipTitleChange(Sender: TObject);
     procedure EditTooltipTitleIdChange(Sender: TObject);
     procedure EditTooltipTitleSymbolChange(Sender: TObject);
@@ -135,6 +135,8 @@ type
     procedure ActionMoveUpExecute(Sender: TObject);
     procedure ActionMoveDownExecute(Sender: TObject);
     procedure BtnGenerateIDClick(Sender: TObject);
+    procedure ActionUpdate(Sender: TObject);
+    procedure ActionAddCommandUpdate(Sender: TObject);
   private
     { Private declarations }
     FDocument: TRibbonDocument;
@@ -186,6 +188,16 @@ begin
   ListViewCommands.Selected.MakeVisible(False);
   EditName.SetFocus;
   Modified;
+end;
+
+procedure TFrameCommands.ActionUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := Assigned(ListViewCommands.Selected);
+end;
+
+procedure TFrameCommands.ActionAddCommandUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := Assigned(FDocument);
 end;
 
 procedure TFrameCommands.ActionDeleteCommandExecute(Sender: TObject);
@@ -645,7 +657,7 @@ begin
 end;
 
 procedure TFrameCommands.UpDownChangingEx(Sender: TObject;
-  var AllowChange: Boolean; NewValue: SmallInt; Direction: TUpDownDirection);
+  var AllowChange: Boolean; NewValue: Integer; Direction: TUpDownDirection);
 var
   UpDown: TUpDown;
 begin

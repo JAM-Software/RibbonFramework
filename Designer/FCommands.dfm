@@ -10,9 +10,6 @@ object FrameCommands: TFrameCommands
     Top = 0
     Height = 304
     ResizeStyle = rsUpdate
-    ExplicitLeft = 210
-    ExplicitTop = 1
-    ExplicitHeight = 414
   end
   object PanelCommands: TPanel
     Left = 0
@@ -116,7 +113,6 @@ object FrameCommands: TFrameCommands
       ParentFont = False
       Transparent = False
       Layout = tlCenter
-      ExplicitWidth = 757
     end
     object PanelProps: TPanel
       Left = 0
@@ -586,9 +582,6 @@ object FrameCommands: TFrameCommands
           ParentFont = False
           Transparent = False
           Layout = tlCenter
-          ExplicitLeft = 1
-          ExplicitTop = 1
-          ExplicitWidth = 286
         end
       end
       object PanelLargeImages: TPanel
@@ -617,8 +610,6 @@ object FrameCommands: TFrameCommands
           ParentFont = False
           Transparent = False
           Layout = tlCenter
-          ExplicitTop = -6
-          ExplicitWidth = 469
         end
       end
     end
@@ -657,8 +648,6 @@ object FrameCommands: TFrameCommands
           ParentFont = False
           Transparent = False
           Layout = tlCenter
-          ExplicitLeft = 6
-          ExplicitTop = -6
         end
       end
       object PanelLargeHCImages: TPanel
@@ -687,8 +676,6 @@ object FrameCommands: TFrameCommands
           ParentFont = False
           Transparent = False
           Layout = tlCenter
-          ExplicitTop = -6
-          ExplicitWidth = 469
         end
       end
     end
@@ -980,6 +967,7 @@ object FrameCommands: TFrameCommands
       ImageIndex = 0
       ShortCut = 24621
       OnExecute = ActionAddCommandExecute
+      OnUpdate = ActionAddCommandUpdate
     end
     object ActionDeleteCommand: TAction
       Category = 'Commands'
@@ -987,6 +975,7 @@ object FrameCommands: TFrameCommands
       Hint = 'Deletes the selected command'
       ImageIndex = 1
       OnExecute = ActionDeleteCommandExecute
+      OnUpdate = ActionUpdate
     end
     object ActionMoveUp: TAction
       Category = 'Commands'
@@ -994,6 +983,7 @@ object FrameCommands: TFrameCommands
       Hint = 'Moves the selected command up in the list'
       ImageIndex = 2
       OnExecute = ActionMoveUpExecute
+      OnUpdate = ActionUpdate
     end
     object ActionMoveDown: TAction
       Category = 'Commands'
@@ -1001,6 +991,7 @@ object FrameCommands: TFrameCommands
       Hint = 'Moves the selected command down in the list'
       ImageIndex = 3
       OnExecute = ActionMoveDownExecute
+      OnUpdate = ActionUpdate
     end
   end
   object PopupMenuList: TPopupMenu

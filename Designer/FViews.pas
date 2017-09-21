@@ -214,6 +214,7 @@ type
     procedure ActionAddFloatieFontControlExecute(Sender: TObject);
     procedure ActionMoveUpExecute(Sender: TObject);
     procedure ActionMoveDownExecute(Sender: TObject);
+    procedure TreeActionUpdate(Sender: TObject);
   private
     { Private declarations }
     FDocument: TRibbonDocument;
@@ -1555,6 +1556,11 @@ end;
 procedure TFrameViews.ActionMoveUpExecute(Sender: TObject);
 begin
   MoveNode(-1);
+end;
+
+procedure TFrameViews.TreeActionUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := Assigned(TreeViewRibbon.Selected);
 end;
 
 procedure TFrameViews.Activate;

@@ -686,6 +686,8 @@ var
   lMarkupItem : TRibbonMarkupElement;
   lAction     : TCustomAction;
 begin
+  if pCommand.CommandType = TUICommandType.ctRecentItems then
+    fRecentItems := (pCommand as TUICommandRecentItems);
   // When a Ribbon command is created, we check if there is a corresponding
   // TAction element available. If so, we assign the properties of that action
   // (Caption, Hint, etc.) to that ribbon element.
@@ -720,8 +722,6 @@ begin
       Self.LocalizeRibbonElement(pCommand, lMarkupItem);
     end;// case/else
   end;// if RibbonMapper
-  if pCommand.CommandType = TUICommandType.ctRecentItems then
-    fRecentItems := (pCommand as TUICommandRecentItems);
   if Assigned(FOnCommandCreate) then
     FOnCommandCreate(Self, pCommand);
 end;

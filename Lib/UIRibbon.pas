@@ -647,7 +647,7 @@ begin
   if Visible then
     Load();
   { Redraw frame to prevent black caption bar }
-  SetWindowPos(Parent.Handle, 0, 0, 0, Parent.Width, Parent.Height, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
+  SetWindowPos(Parent.Handle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
 end;
 
 procedure TUIRibbon.ChangeScale(M, D: Integer{$if CompilerVersion >= 31}; isDpiChange: Boolean{$ifend});

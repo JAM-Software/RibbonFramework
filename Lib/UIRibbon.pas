@@ -644,12 +644,10 @@ end;
 procedure TUIRibbon.WMPaint(var Message: TMessage);
 begin
   inherited;
-  if Visible then begin
+  if Visible then
     Load();
-
-    { Redraw frame to prevent black caption bar on Aero }
-    SetWindowPos(Parent.Handle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
-  end;
+  { Redraw frame to prevent black caption bar }
+  SetWindowPos(Parent.Handle, 0, 0, 0, Parent.Width, Parent.Height, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
 end;
 
 procedure TUIRibbon.ChangeScale(M, D: Integer{$if CompilerVersion >= 31}; isDpiChange: Boolean{$ifend});
@@ -1429,13 +1427,13 @@ var
 begin
   if Value then
     Self.Load();
-  inherited Visible := Value;
   if Assigned(FRibbon) and Supports(FRibbon, IPropertyStore, PropertyStore) and FLoaded then
   begin
     UIInitPropertyFromBoolean(UI_PKEY_Viewable, Value, PropValue);
     PropertyStore.SetValue(TPropertyKey(UI_PKEY_Viewable), PropValue);
     PropertyStore.Commit;
-  end;
+  end else
+    inherited Visible := Value;
 end;
 
 procedure TUIRibbon.ShowContextPopup(const PopupId: Cardinal);

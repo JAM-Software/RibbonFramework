@@ -165,6 +165,7 @@
             <Deployment/>
             <Platforms>
                 <Platform value="Win32">True</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

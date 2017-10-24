@@ -87,6 +87,11 @@ type
 
   TUIQuickAccessToolbarPosition = (qpTop, qpBottom);
 
+  /// This enum is used to track the time when the first paint message was processed by the ribbon. Until then, some operations (such as "Minimize") have to be postponed (See issue #70: https://github.com/TurboPack/RibbonFramework/issues/70)
+  TUIRibbonState = (MinimizePending, PaintInitialized);
+
+  TUIRibbonStates = set of TUIRibbonState;
+
   TUIRibbomCommandEvent = procedure(const Sender: TUIRibbon; const Command: TUICommand) of object;
 
   /// <summary>
@@ -151,6 +156,7 @@ type
     fOptions: TUIRibbonOptions;
     /// The highest command Id that was used until now. Used for the generation of a unique command id.
     fMaxCommandId: Cardinal;
+    fRibbonState: TUIRibbonStates;
 
     /// <summary>
     ///  Sets the application modes for this Ribbon form.
@@ -645,7 +651,22 @@ procedure TUIRibbon.WMPaint(var Message: TMessage);
 begin
   inherited;
   if Visible then
+  begin
     Load();
+    if TUIRibbonState.PaintInitialized in fRibbonState then
+    begin
+      // Check pending states
+      if TUIRibbonState.MinimizePending in fRibbonState then
+      begin
+        Minimized := True;
+        fRibbonState := fRibbonState - [TUIRibbonState.MinimizePending];
+      end;
+    end else
+    begin
+      fRibbonState := fRibbonState + [TUIRibbonState.PaintInitialized];
+      Invalidate; //Trigger another paint message to apply possible pending changes
+    end;
+  end;
   { Redraw frame to prevent black caption bar }
   SetWindowPos(Parent.Handle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_DRAWFRAME);
 end;
@@ -1357,12 +1378,13 @@ var
   PropertyStore: IPropertyStore;
   PropValue: TPropVariant;
 begin
-  if Assigned(FRibbon) and Supports(FRibbon, IPropertyStore, PropertyStore) then
+  if Assigned(FRibbon) and Supports(FRibbon, IPropertyStore, PropertyStore) and (TUIRibbonState.PaintInitialized in fRibbonState) then
   begin
     UIInitPropertyFromBoolean(UI_PKEY_Minimized, Value, PropValue);
     PropertyStore.SetValue(TPropertyKey(UI_PKEY_Minimized), PropValue);
     PropertyStore.Commit;
-  end;
+  end else
+    fRibbonState := fRibbonState + [TUIRibbonState.MinimizePending]; //Ribbon hasn't received a paint message yet -> Postpone until WMPaint is called.
 end;
 
 procedure TUIRibbon.SetQuickAccessToolbarPosition(

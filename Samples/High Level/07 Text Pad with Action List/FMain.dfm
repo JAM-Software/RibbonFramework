@@ -51,6 +51,7 @@ object FormMain: TFormMain
     Width = 783
     Height = 117
     ResourceName = 'APPLICATION'
+    RibbonSourceFile = 'Ribbon\RibbonMarkup.xml'
     ActionManager = Actions
     OnCommandCreate = CommandCreated
     OnLoaded = RibbonLoaded

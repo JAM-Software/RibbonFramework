@@ -21,7 +21,7 @@ implementation
 
 uses
   Classes, UIRibbon, SysUtils, UIRibbonActions, System.Actions, System.Win.Registry,
-  Winapi.ShellAPI, Winapi.Windows, UIRibbonUtils, ToolsApi;
+  Winapi.ShellAPI, Winapi.Windows, UIRibbonUtils, ToolsApi, Vcl.Dialogs;
 
 procedure Register;
 var
@@ -54,6 +54,26 @@ begin
   end;//if lDesignerPath
 end;
 
+
+/// Shows a file open dialog that allows to browse for an XML file.
+function BrowseForXmlFile(): string;
+begin
+  With TOpenDialog.Create(nil) do
+    try
+      Filter := 'XML files|*.xml';
+      if not Execute then
+        Exit;
+      Result := FileName;
+    finally
+      Free;
+    end;
+  // Make the path relative tothe project, so the the settings is portable
+  Result :=  ExtractRelativePath(getActiveProject.FileName, Result);
+  ShowMessage(getActiveProject.FileName);
+  ShowMessage(Result);
+end;
+
+
 { TMyRibbonFrameworkEditor }
 
 class function TMyRibbonFrameworkEditor.GetDesignerPath: string;
@@ -68,13 +88,15 @@ begin
 end;
 
 procedure TMyRibbonFrameworkEditor.ExecuteVerb(pIndex: Integer);
-//var
-//  lRibbon: TUIRibbon;
+var
+  lRibbon: TUIRibbon;
 begin
   inherited;
-//  lRibbon := (Self.Component as TUiRibbon);
+  lRibbon := (Self.Component as TUiRibbon);
+  if lRibbon.RibbonSourceFile.IsEmpty or not FileExists(lRibbon.RibbonSourceFile) then
+    lRibbon.RibbonSourceFile := BrowseForXmlFile();
   case pIndex of
-    0: ShellExecute(0, 'open', PChar(GetDesignerPath()), nil, nil, SW_SHOWNORMAL);
+    0: ShellExecute(0, 'open', PChar(GetDesignerPath()), PChar('"'+lRibbon.RibbonSourceFile+'"'), nil, SW_SHOWNORMAL);
   end;
 end;
 

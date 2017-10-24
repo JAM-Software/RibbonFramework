@@ -135,9 +135,11 @@ type
     FOnCommandCreate: TUIRibbomCommandEvent;
     FOnLoaded: TNotifyEvent;
     FLoaded: Boolean;
-    /// member variable for the property RibbonSettingsFilePath
+    /// Member variable for the property RibbonSettingsFilePath.
     fRibbonSettingsFilePath: string;
-    /// member variable for the property RibbonMapper
+    /// Member variable for the property RibbonSourceFile.
+    fRibbonSourceFile: string;
+    /// Member variable for the property RibbonMapper.
     fRibbonMapper: TRibbonMarkupElementList;
     /// <summary>
     ///  The set of currently active Ribbon application modes.
@@ -473,6 +475,16 @@ type
     ///  "RibbonSettings.xml".
     /// </summary>
     property RibbonSettingsFilePath: string read fRibbonSettingsFilePath write fRibbonSettingsFilePath;
+
+    /// <summary>
+    ///  The full path to the source XML file that is edited using the Ribbon editor.
+    /// </summary>
+    /// <remarks>
+    ///  This property is used at designtime only, in order to conveniently open the
+    ///  the Ribbon Editor with the Ribbon XML file. IF the value is not set, a file open dislog will be shown.
+    ///  At runtime this property is empty.
+    /// </remarks>
+    property RibbonSourceFile: string read fRibbonSourceFile write fRibbonSourceFile;
 
     /// <summary>
     ///  Gets or sets the TActionManager component that is assigned to this Ribbon form.

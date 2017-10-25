@@ -280,7 +280,7 @@ public:
 	HIDESBASE void __fastcall Remove(Vcl::Actnlist::TCustomAction* pAction);
 	void __fastcall Clear(void);
 	void __fastcall AddRange(System::Generics::Collections::TList__1<Vcl::Actnlist::TCustomAction*>* pSource);
-	void __fastcall PropertyUpdated(System::TObject* Sender, const Uiribbonapi::TUIPropertyKey &PropKey, tagPROPVARIANT &NewValue, bool &Handled);
+	void __fastcall PropertyUpdated(System::TObject* Sender, const _tagpropertykey &PropKey, tagPROPVARIANT &NewValue, bool &Handled);
 	void __fastcall RefreshCommandCollection(void);
 	virtual bool __fastcall Update(void);
 	int __fastcall ItemCount(void);

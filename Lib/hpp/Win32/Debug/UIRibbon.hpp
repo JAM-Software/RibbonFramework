@@ -79,6 +79,10 @@ typedef System::Set<TRibbonApplicationMode, 0, 31> TRibbonApplicationModes;
 
 enum DECLSPEC_DENUM TUIQuickAccessToolbarPosition : unsigned char { qpTop, qpBottom };
 
+enum DECLSPEC_DENUM TUIRibbonState : unsigned char { MinimizePending, PaintInitialized };
+
+typedef System::Set<TUIRibbonState, TUIRibbonState::MinimizePending, TUIRibbonState::PaintInitialized> TUIRibbonStates;
+
 typedef void __fastcall (__closure *TUIRibbomCommandEvent)(TUIRibbon* const Sender, Uiribboncommands::TUICommand* const Command);
 
 typedef void __fastcall (__closure *TUILoadResourceStringEvent)(TUIRibbon* const Sender, Uiribboncommands::TUICommand* const pCommand, int pResourceID, System::UnicodeString &pString);
@@ -109,14 +113,15 @@ private:
 	TUIRibbomCommandEvent FOnCommandCreate;
 	System::Classes::TNotifyEvent FOnLoaded;
 	bool FLoaded;
-	bool FInitialized;
 	System::UnicodeString fRibbonSettingsFilePath;
+	System::UnicodeString fRibbonSourceFile;
 	TRibbonMarkupElementList* fRibbonMapper;
 	TRibbonApplicationModes fApplicationModes;
 	Vcl::Actnlist::TCustomActionList* fActionManager;
 	Uiribboncommands::TUICommandRecentItems* fRecentItems;
 	TUIRibbonOptions fOptions;
 	unsigned fMaxCommandId;
+	TUIRibbonStates fRibbonState;
 	void __fastcall Set_ApplicationModes(const TRibbonApplicationModes pAppModes);
 	void __fastcall SetApplicationModes(const unsigned Modes)/* overload */;
 	Uiribboncommands::TUICommand* __fastcall Get_Command(const unsigned CommandId);
@@ -154,8 +159,8 @@ protected:
 	virtual void __fastcall CreateWnd(void);
 	virtual void __fastcall DestroyWnd(void);
 	void __fastcall AddCommand(Uiribboncommands::TUICommand* const Command);
-	unsigned __fastcall GetColor(const Uiribbonapi::TUIPropertyKey &PropKey);
-	HIDESBASE void __fastcall SetColor(const Uiribbonapi::TUIPropertyKey &PropKey, const unsigned Value);
+	unsigned __fastcall GetColor(const _tagpropertykey &PropKey);
+	HIDESBASE void __fastcall SetColor(const _tagpropertykey &PropKey, const unsigned Value);
 	System::UnicodeString __fastcall GetRibbonSettingsFilePath(void);
 	bool __fastcall LoadRibbonSettings(void);
 	void __fastcall SaveRibbonSettings(void);
@@ -213,6 +218,7 @@ __published:
 	__property System::UnicodeString ResourceName = {read=FResourceName, write=FResourceName};
 	__property NativeUInt ResourceInstance = {read=FResourceInstance, write=FResourceInstance, stored=false, nodefault};
 	__property System::UnicodeString RibbonSettingsFilePath = {read=fRibbonSettingsFilePath, write=fRibbonSettingsFilePath};
+	__property System::UnicodeString RibbonSourceFile = {read=fRibbonSourceFile, write=fRibbonSourceFile};
 	__property Vcl::Actnlist::TCustomActionList* ActionManager = {read=fActionManager, write=fActionManager};
 	__property TUIRibbonOptions Options = {read=fOptions, write=fOptions, default=1};
 	__property TUIRibbomCommandEvent OnCommandCreate = {read=FOnCommandCreate, write=FOnCommandCreate};

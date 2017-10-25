@@ -98,7 +98,7 @@ public:
 
 #pragma pack(pop)
 
-typedef void __fastcall (__closure *TUICommandUpdatePropertyEvent)(System::TObject* Sender, const Uiribbonapi::TUIPropertyKey &PropKey, tagPROPVARIANT &NewValue, bool &Handled);
+typedef void __fastcall (__closure *TUICommandUpdatePropertyEvent)(System::TObject* Sender, const _tagpropertykey &PropKey, tagPROPVARIANT &NewValue, bool &Handled);
 
 typedef void __fastcall (__closure *TUICommandUpdateHintEvent)(System::TObject* Sender, const System::UnicodeString Value);
 
@@ -132,7 +132,7 @@ protected:
 	TUIImage* FSmallImage;
 	TUIImage* FLargeHighContrastImage;
 	TUIImage* FSmallHighContrastImage;
-	System::Generics::Collections::TDictionary__2<Uiribbonapi::TUIPropertyKey,System::Rtti::TValue>* FCachedProperties;
+	System::Generics::Collections::TDictionary__2<_tagpropertykey,System::Rtti::TValue>* FCachedProperties;
 	System::Set<_TUICommand__1, _TUICommand__1::vpCaption, _TUICommand__1::vpFormatString> FValidProperties;
 	Vcl::Actnlist::TActionLink* FActionLink;
 	TUICommandUpdateHintEvent FOnUpdateHint;
@@ -153,25 +153,25 @@ private:
 private:
 	HIDESBASE int __stdcall _AddRef(void);
 	HIDESBASE int __stdcall _Release(void);
-	HRESULT __stdcall Execute(unsigned CommandId, Uiribbonapi::_UIExecutionVerb Verb, Uiribbonapi::PUIPropertyKey Key, Winapi::Activex::PPropVariant CurrentValue, Uiribbonapi::_di_IUISimplePropertySet CommandExecutionProperties);
-	HRESULT __stdcall UpdateProperty(unsigned CommandId, const Uiribbonapi::TUIPropertyKey &Key, Winapi::Activex::PPropVariant CurrentValue, tagPROPVARIANT &NewValue);
+	HRESULT __stdcall Execute(unsigned CommandId, Uiribbonapi::_UIExecutionVerb Verb, Winapi::Activex::PPropertyKey Key, Winapi::Activex::PPropVariant CurrentValue, Uiribbonapi::_di_IUISimplePropertySet CommandExecutionProperties);
+	HRESULT __stdcall UpdateProperty(unsigned CommandId, const _tagpropertykey &Key, Winapi::Activex::PPropVariant CurrentValue, tagPROPVARIANT &NewValue);
 	void __fastcall SetLargeImage(TUIImage* const Value);
 	
 private:
 	void __fastcall ImageChanged(System::TObject* Sender);
 	
 protected:
-	void __fastcall GetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, /* out */ bool &Value)/* overload */;
-	void __fastcall GetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, /* out */ unsigned &Value)/* overload */;
-	void __fastcall GetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, /* out */ int &Value)/* overload */;
-	void __fastcall GetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, /* out */ System::UnicodeString &Value)/* overload */;
-	void __fastcall GetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, /* out */ double &Value)/* overload */;
-	void __fastcall SetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, const bool Value)/* overload */;
-	void __fastcall SetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, const unsigned Value)/* overload */;
-	void __fastcall SetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, const int Value)/* overload */;
-	void __fastcall SetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, const System::UnicodeString Value)/* overload */;
-	void __fastcall SetPropertyValue(const Uiribbonapi::TUIPropertyKey &Key, const double Value)/* overload */;
-	void __fastcall CachePropertyValue(const Uiribbonapi::TUIPropertyKey &Key, const System::Rtti::TValue &Value);
+	void __fastcall GetPropertyValue(const _tagpropertykey &Key, /* out */ bool &Value)/* overload */;
+	void __fastcall GetPropertyValue(const _tagpropertykey &Key, /* out */ unsigned &Value)/* overload */;
+	void __fastcall GetPropertyValue(const _tagpropertykey &Key, /* out */ int &Value)/* overload */;
+	void __fastcall GetPropertyValue(const _tagpropertykey &Key, /* out */ System::UnicodeString &Value)/* overload */;
+	void __fastcall GetPropertyValue(const _tagpropertykey &Key, /* out */ double &Value)/* overload */;
+	void __fastcall SetPropertyValue(const _tagpropertykey &Key, const bool Value)/* overload */;
+	void __fastcall SetPropertyValue(const _tagpropertykey &Key, const unsigned Value)/* overload */;
+	void __fastcall SetPropertyValue(const _tagpropertykey &Key, const int Value)/* overload */;
+	void __fastcall SetPropertyValue(const _tagpropertykey &Key, const System::UnicodeString Value)/* overload */;
+	void __fastcall SetPropertyValue(const _tagpropertykey &Key, const double Value)/* overload */;
+	void __fastcall CachePropertyValue(const _tagpropertykey &Key, const System::Rtti::TValue &Value);
 	virtual void __fastcall DoExecute(const TUIProperty Prop, const TUICommandVerb Verb, const Winapi::Activex::PPropVariant CurrentValue, HRESULT &Result) = 0 ;
 	virtual void __fastcall DoUpdate(const TUIProperty Prop, const Winapi::Activex::PPropVariant CurrentValue, /* out */ tagPROPVARIANT &NewValue, HRESULT &Result);
 	virtual Vcl::Actnlist::TActionLink* __fastcall CreateActionLink(void) = 0 ;
@@ -696,7 +696,7 @@ class PASCALIMPLEMENTATION TUICollectionItem : public System::TInterfacedObject
 	typedef System::TInterfacedObject inherited;
 	
 private:
-	HRESULT __stdcall GetValue(const Uiribbonapi::TUIPropertyKey &Key, /* out */ tagPROPVARIANT &Value);
+	HRESULT __stdcall GetValue(const _tagpropertykey &Key, /* out */ tagPROPVARIANT &Value);
 	
 protected:
 	virtual System::Rtti::TValue __fastcall GetPropertyValue(const TUIProperty Prop) = 0 ;
@@ -983,8 +983,8 @@ public:
 //-- var, const, procedure ---------------------------------------------------
 static const System::Word WM_RIBBONCMD_NOTIFY = System::Word(0x4f1);
 extern DELPHI_PACKAGE System::StaticArray<TUICommandClass, 13> UI_COMMAND_CLASSES;
-extern DELPHI_PACKAGE Uiribbonapi::PUIPropertyKey __fastcall GetPropertyKey(const TUIProperty Prop);
-extern DELPHI_PACKAGE TUIProperty __fastcall GetProperty(const Uiribbonapi::TUIPropertyKey &Key);
+extern DELPHI_PACKAGE Winapi::Activex::PPropertyKey __fastcall GetPropertyKey(const TUIProperty Prop);
+extern DELPHI_PACKAGE TUIProperty __fastcall GetProperty(const _tagpropertykey &Key);
 }	/* namespace Uiribboncommands */
 #if !defined(DELPHIHEADER_NO_IMPLICIT_NAMESPACE_USE) && !defined(NO_USING_NAMESPACE_UIRIBBONCOMMANDS)
 using namespace Uiribboncommands;

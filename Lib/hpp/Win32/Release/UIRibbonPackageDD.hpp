@@ -74,7 +74,6 @@
 #include <ToolsAPI.hpp>	// (designide)
 #include <Proxies.hpp>	// (designide)
 #include <DesignEditors.hpp>	// (designide)
-#include <UIRibbonApi.hpp>	// (UIRibbonPackageDR)
 #include <Vcl.Imaging.pngimage.hpp>	// (vclimg)
 #include <UIRibbonCommands.hpp>	// (UIRibbonPackageDR)
 #include <UIRibbonUtils.hpp>	// (UIRibbonPackageDR)

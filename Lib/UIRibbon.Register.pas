@@ -61,6 +61,7 @@ begin
   With TOpenDialog.Create(nil) do
     try
       Filter := 'XML files|*.xml';
+      InitialDir := ExtractFilePath( getActiveProject.FileName );
       if not Execute then
         Exit;
       Result := FileName;
@@ -69,8 +70,6 @@ begin
     end;
   // Make the path relative tothe project, so the the settings is portable
   Result :=  ExtractRelativePath(getActiveProject.FileName, Result);
-  ShowMessage(getActiveProject.FileName);
-  ShowMessage(Result);
 end;
 
 

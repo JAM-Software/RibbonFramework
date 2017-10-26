@@ -21,7 +21,8 @@ implementation
 
 uses
   Classes, UIRibbon, SysUtils, UIRibbonActions, System.Actions, System.Win.Registry,
-  Winapi.ShellAPI, Winapi.Windows, UIRibbonUtils, ToolsApi, Vcl.Dialogs;
+  Winapi.ShellAPI, Winapi.Windows, UIRibbonUtils, ToolsApi, Vcl.Dialogs,
+  System.IOUtils;
 
 procedure Register;
 var
@@ -92,10 +93,12 @@ var
 begin
   inherited;
   lRibbon := (Self.Component as TUiRibbon);
-  if lRibbon.RibbonSourceFile.IsEmpty or not FileExists(lRibbon.RibbonSourceFile) then
+  if lRibbon.RibbonSourceFile.IsEmpty or
+     not FileExists(TPath.Combine(ExtractFilePath(getActiveProject.FileName), lRibbon.RibbonSourceFile))
+  then
     lRibbon.RibbonSourceFile := BrowseForXmlFile();
   case pIndex of
-    0: ShellExecute(0, 'open', PChar(GetDesignerPath()), PChar('"'+lRibbon.RibbonSourceFile+'"'), nil, SW_SHOWNORMAL);
+    0: ShellExecute(0, 'open', PChar(GetDesignerPath()), PChar('"'+ TPath.Combine(ExtractFilePath(getActiveProject.FileName), lRibbon.RibbonSourceFile) +'"'), nil, SW_SHOWNORMAL);
   end;
 end;
 

@@ -1284,6 +1284,7 @@ implementation
 
 uses
   Menus,
+  Forms,
   SysUtils,
   CommCtrl,
   WinApiEx,
@@ -1919,14 +1920,22 @@ function TUICommand.Execute(CommandId: UInt32; Verb: _UIExecutionVerb;
 var
   Prop: TUIProperty;
 begin
-  if (Key = nil) then
-    Prop := upNone
-  else
-    Prop := GetProperty(Key^);
+  try
+    if (Key = nil) then
+      Prop := upNone
+    else
+      Prop := GetProperty(Key^);
 
-  FProperties.FPropertySet := CommandExecutionProperties;
-  Result := S_OK;
-  DoExecute(Prop, TUICommandVerb(Verb), CurrentValue, Result);
+    FProperties.FPropertySet := CommandExecutionProperties;
+    Result := S_OK;
+    try
+      DoExecute(Prop, TUICommandVerb(Verb), CurrentValue, Result);
+    except
+      Exception.RaiseOuterException(EInvalidOperation.Create('CommandId: ' + CommandId.ToString));
+    end;
+  except
+    Application.HandleException(Self); // Process otherwise completely unhandled exceptions in this scenario, see #24311
+  end;
 end;
 
 function TUICommand.GetActionLink: TActionLink;

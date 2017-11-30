@@ -1928,11 +1928,7 @@ begin
 
     FProperties.FPropertySet := CommandExecutionProperties;
     Result := S_OK;
-    try
-      DoExecute(Prop, TUICommandVerb(Verb), CurrentValue, Result);
-    except
-      Exception.RaiseOuterException(EInvalidOperation.Create('CommandId: ' + CommandId.ToString));
-    end;
+    DoExecute(Prop, TUICommandVerb(Verb), CurrentValue, Result);
   except
     Application.HandleException(Self); // Process otherwise completely unhandled exceptions in this scenario, see #24311
   end;

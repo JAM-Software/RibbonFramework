@@ -2413,7 +2413,7 @@ begin
 
     NOTIFY_CATEGORIES:
       begin
-        UIInitPropertyFromInterface(UI_PKEY_ItemsSource, FCategories.Handle, Val);
+        UIInitPropertyFromInterface(UI_PKEY_Categories, FCategories.Handle, Val);
         FFramework.SetUICommandProperty(FCommandId, UI_PKEY_Categories, Val);
         { The ribbon takes additional ownership of the collection, so we must
           release it to avoid a memory leak. }

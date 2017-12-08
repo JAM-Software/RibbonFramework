@@ -612,30 +612,38 @@ begin
 
   fRefreshWhenNotDisplayed := False;
   lCommandCollection := UICommand as TUICommandCollection;
-  // Clear the ribbon collection
-  lCommandCollection.Items.Clear;
-  // Iterate the internal list of actions and fill the ribbon collection
-  for I := 0 to fActionList.Count - 1 do begin
-    lAction := fActionList[I];
-    if not lAction.Visible then
-      continue;
 
-    lCategory := fActionList[I].Category;
-    if lCategory.IsEmpty then
-      lTargetCategoryId := -1
-    else
-      lTargetCategoryId := FindOrCreateCategory(lCategory);
+  lCommandCollection.Categories.BeginUpdate;
+  lCommandCollection.Items.BeginUpdate;
+  try
+    // Clear the ribbon collection
+    lCommandCollection.Items.Clear;
+    // Iterate the internal list of actions and fill the ribbon collection
+    for I := 0 to fActionList.Count - 1 do begin
+      lAction := fActionList[I];
+      if not lAction.Visible then
+        continue;
 
-    // Create a new command item and assign the target action
-    lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), lAction);
-    lCommandAction.OnUpdateProperty := PropertyUpdated;
+      lCategory := fActionList[I].Category;
+      if lCategory.IsEmpty then
+        lTargetCategoryId := -1
+      else
+        lTargetCategoryId := FindOrCreateCategory(lCategory);
 
-    // Create a collection item, that holds the action and can be added to the collection.
-    lItem := TUIGalleryCollectionItem.Create;
-    lItem.Command := lCommandAction;
-    lItem.CategoryId := lTargetCategoryId;
-    lCommandCollection.Items.Add(lItem);
-  end;
+      // Create a new command item and assign the target action
+      lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), lAction);
+      lCommandAction.OnUpdateProperty := PropertyUpdated;
+
+      // Create a collection item, that holds the action and can be added to the collection.
+      lItem := TUIGalleryCollectionItem.Create;
+      lItem.Command := lCommandAction;
+      lItem.CategoryId := lTargetCategoryId;
+      lCommandCollection.Items.Add(lItem);
+    end;
+  finally
+    lCommandCollection.Items.EndUpdate;
+    lCommandCollection.Categories.EndUpdate;
+  end;//try
 end;
 
 procedure TRibbonCollectionAction.Remove(pAction: TCustomAction);

@@ -31,7 +31,7 @@ This Delphi library is much more than a simple header translation. It has the fo
 
 ## Bug Reporting and Support ##
 
-Our issue tracker is intended to file bugs, it is not a support forum. Please use e.g. [stackoverflow.com](http://stackoverflow.com/) to get support. IMPORTANT: Before submitting bugs, make sure you are suign the latest version. When submitting bugs, please include a screenshot of the problem or the exact error messages, and a sample project or steps how to replicate the problem with one of the included sample projects.
+Our issue tracker is intended to file bugs, it is not a support forum. Please use e.g. [stackoverflow.com](http://stackoverflow.com/) to get support. IMPORTANT: Before submitting bugs, make sure you are suign the latest version. When submitting bugs, please include a screenshot of the problem or the exact error messages and exception call stacks, and a sample project or steps how to replicate the problem with one of the included sample projects.
 
 ## Getting Started ##
 

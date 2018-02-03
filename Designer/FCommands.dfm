@@ -2,20 +2,21 @@ object FrameCommands: TFrameCommands
   Left = 0
   Top = 0
   Width = 451
-  Height = 304
+  Height = 305
   Align = alClient
   TabOrder = 0
   object SplitterCommands: TSplitter
     Left = 225
     Top = 0
-    Height = 304
+    Height = 305
     ResizeStyle = rsUpdate
+    ExplicitHeight = 304
   end
   object PanelCommands: TPanel
     Left = 0
     Top = 0
     Width = 225
-    Height = 304
+    Height = 305
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
@@ -63,7 +64,7 @@ object FrameCommands: TFrameCommands
       Left = 0
       Top = 22
       Width = 225
-      Height = 282
+      Height = 283
       Align = alClient
       Columns = <
         item
@@ -74,7 +75,6 @@ object FrameCommands: TFrameCommands
           AutoSize = True
           Caption = 'Caption'
         end>
-      ColumnClick = False
       GridLines = True
       HideSelection = False
       ReadOnly = True
@@ -82,6 +82,7 @@ object FrameCommands: TFrameCommands
       PopupMenu = PopupMenuList
       TabOrder = 1
       ViewStyle = vsReport
+      OnColumnClick = ListViewCommandsColumnClick
       OnSelectItem = ListViewCommandsSelectItem
     end
   end
@@ -89,7 +90,7 @@ object FrameCommands: TFrameCommands
     Left = 228
     Top = 0
     Width = 223
-    Height = 304
+    Height = 305
     Align = alClient
     BevelOuter = bvNone
     ParentBackground = False
@@ -685,7 +686,7 @@ object FrameCommands: TFrameCommands
     Left = 32
     Top = 60
     Bitmap = {
-      494C0101040008006C0010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C0101040008007C0010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -24,6 +24,12 @@ uses
   FImageList, Menus;
 
 type
+
+  TListViewCommandsOrder = record
+    keyColumnID : Integer;
+    Ascend    : Boolean;
+    end;
+
   TFrameCommands = class(TFrame)
     PanelCommands: TPanel;
     ToolBarCommands: TToolBar;
@@ -137,6 +143,7 @@ type
     procedure BtnGenerateIDClick(Sender: TObject);
     procedure ActionUpdate(Sender: TObject);
     procedure ActionAddCommandUpdate(Sender: TObject);
+    procedure ListViewCommandsColumnClick(Sender: TObject; Column: TListColumn);
   private
     { Private declarations }
     FDocument: TRibbonDocument;
@@ -147,11 +154,15 @@ type
     FFrameSmallHCImages: TFrameImageList;
     FFrameLargeHCImages: TFrameImageList;
     FNewCommandIndex: Integer;
+    FCommandsIsSorted : Boolean;
+    FCommandsOrder : TListViewCommandsOrder;
     function AddCommand(const Command: TRibbonCommand): TListItem;
     procedure ShowSelection;
     procedure Modified;
     procedure EnableControls(const Enable: Boolean);
     procedure MoveCommand(const Direction: Integer);
+    procedure SortCommands( ColumnIDToSrot : Integer; ascned : Boolean);
+    procedure OnAfterCommandOrderChanged;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -160,6 +171,12 @@ type
     procedure ClearDocument;
     procedure ShowDocument(const Document: TRibbonDocument);
   end;
+
+resourcestring
+  str_header_name    = 'Name';
+  str_header_caption = 'Caption';
+  str_header_sort_ascend_mark = '->';
+  str_header_sort_dscend_mark = '<-';
 
 const
   RS_DELETE_COMMAND_HEADER = 'Delete command?';
@@ -174,6 +191,16 @@ implementation
 uses
   UITypes,
   FMain;
+
+type
+  TCommandsSortOption = (CSRT_NAME_ASC, CSRT_NAME_DSC, CSRT_CAPTION_ASC, CSRT_CAPTION_DSC);
+
+const
+  COLIDX_NAME    = 0;
+  COLIDX_CAPTION = 1;
+  COMMAND_CAPTION_SUBITEM_IDX = 0;
+
+function CommandsSorter(lParam1, lParam2, lParamSort: Integer): Integer stdcall; forward;
 
 { TFrameCommands }
 
@@ -238,11 +265,15 @@ begin
   Result.Caption := Command.Name;
   Result.SubItems.Add(Command.LabelTitle.Content);
   Result.Data := Command;
+
+  FCommandsIsSorted := False;
+  OnAfterCommandOrderChanged;
 end;
 
 procedure TFrameCommands.ClearDocument;
 begin
   ListViewCommands.Clear;
+  OnAfterCommandOrderChanged;
 end;
 
 constructor TFrameCommands.Create(AOwner: TComponent);
@@ -263,6 +294,9 @@ begin
   FFrameLargeHCImages := TFrameImageList.Create(Self);
   FFrameLargeHCImages.Name := 'FrameLargeHCImages';
   FFrameLargeHCImages.Parent := PanelLargeHCImages;
+
+  FCommandsIsSorted := False;
+  OnAfterCommandOrderChanged;
 end;
 
 procedure TFrameCommands.BtnGenerateIDClick(Sender: TObject);
@@ -289,7 +323,7 @@ begin
   if Assigned(FCommand) and (FCommand.LabelTitle.Content <> EditCaption.Text) then
   begin
     FCommand.LabelTitle.Content := EditCaption.Text;
-    ListViewCommands.Selected.SubItems[0] := EditCaption.Text;
+    ListViewCommands.Selected.SubItems[COMMAND_CAPTION_SUBITEM_IDX] := EditCaption.Text;
     Modified;
   end;
 end;
@@ -490,6 +524,22 @@ begin
   ActionDeleteCommand.Enabled := Enable;
 end;
 
+procedure TFrameCommands.ListViewCommandsColumnClick(Sender: TObject;
+  Column: TListColumn);
+  begin
+  if not FCommandsIsSorted then
+    SortCommands(Column.ID, True)
+  else
+    begin
+      if Column.ID = FCommandsOrder.keyColumnID then
+        SortCommands(Column.ID, not FCommandsOrder.Ascend)
+      else
+        SortCommands(Column.ID, True);
+    end;
+
+  OnAfterCommandOrderChanged;
+  end;
+
 procedure TFrameCommands.ListViewCommandsSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
@@ -525,7 +575,31 @@ begin
     NewItem.MakeVisible(False);
     Modified;
   end;
+
+  FCommandsIsSorted := False;
+  OnAfterCommandOrderChanged;
 end;
+
+procedure TFrameCommands.OnAfterCommandOrderChanged;
+  var
+    sortSign : String;
+    colIdx   : Integer;
+  begin
+  ListViewCommands.Columns.Items[COLIDX_NAME].Caption := str_header_name;
+  ListViewCommands.Columns.Items[COLIDX_CAPTION].Caption := str_header_caption;
+
+  if not FCommandsIsSorted then
+    exit;
+
+  if FCommandsOrder.Ascend then
+    sortSign := str_header_sort_ascend_mark
+  else
+    sortSign := str_header_sort_dscend_mark;
+
+  colIdx := FCommandsOrder.keyColumnID;
+  ListViewCommands.Columns.Items[colIdx].Caption :=
+    ListViewCommands.Columns.Items[colIdx].Caption + ' ' + sortSign;
+  end;
 
 procedure TFrameCommands.PanelCommandPropertiesResize(Sender: TObject);
 begin
@@ -569,6 +643,9 @@ begin
   finally
     ListViewCommands.Items.EndUpdate;
   end;
+
+  FCommandsIsSorted := False;
+  OnAfterCommandOrderChanged;
 end;
 
 procedure TFrameCommands.ShowSelection;
@@ -656,6 +733,35 @@ begin
   end;
 end;
 
+procedure TFrameCommands.SortCommands(ColumnIDToSrot: Integer; ascned : Boolean);
+  var
+    sortOpt : TCommandsSortOption;
+  begin
+  sortOpt := CSRT_NAME_ASC;
+  if ColumnIDToSrot = COLIDX_NAME then
+  begin
+    if ascned then
+      sortOpt := CSRT_NAME_ASC
+    else
+      sortOpt := CSRT_NAME_DSC
+  end
+  else if ColumnIDToSrot = COLIDX_CAPTION then
+  begin
+    if ascned then
+      sortOpt := CSRT_CAPTION_ASC
+    else
+      sortOpt := CSRT_CAPTION_DSC
+  end
+  else
+    Assert(False, 'Cannot sort by this key');
+
+  ListViewCommands.CustomSort(@CommandsSorter, NativeInt(sortOpt));
+
+  FCommandsIsSorted := True;
+  FCommandsOrder.keyColumnID := ColumnIDToSrot;
+  FCommandsOrder.Ascend      := ascned;
+  end;
+
 procedure TFrameCommands.UpDownChangingEx(Sender: TObject;
   var AllowChange: Boolean; NewValue: Integer; Direction: TUpDownDirection);
 var
@@ -672,5 +778,33 @@ begin
       UpDown.Position := 0;
   end;
 end;
+
+function CommandsSorter(lParam1, lParam2, lParamSort: Integer): Integer stdcall;
+  var
+    Command1, Command2 : TListItem;
+    TargetStr1, TargetStr2 : String;
+    sortOption   : TCommandsSortOption;
+  begin
+  Command1     := TListItem(lParam1);
+  Command2     := TListItem(lParam2);
+  sortOption   := TCommandsSortOption(lParamSort);
+
+  if (sortOption=CSRT_NAME_ASC) OR (sortOption=CSRT_NAME_DSC)then
+  begin
+    TargetStr1 := Command1.Caption;
+    TargetStr2 := Command2.Caption;
+  end
+  else if(sortOption=CSRT_CAPTION_ASC) OR (sortOption=CSRT_CAPTION_DSC)then
+  begin
+    TargetStr1 := Command1.SubItems[COMMAND_CAPTION_SUBITEM_IDX];
+    TargetStr2 := Command2.SubItems[COMMAND_CAPTION_SUBITEM_IDX];
+  end
+  else
+    Assert(False, 'Unsupported sort option is specified');
+
+  result := CompareStr(TargetStr1, TargetStr2);
+  if (result <> 0) and ( (sortOption=CSRT_NAME_DSC) OR (sortOption=CSRT_CAPTION_DSC) )then
+    result := -result;
+  end;
 
 end.

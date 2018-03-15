@@ -726,6 +726,7 @@ begin
       TUICommandType.ctCollection,
       TUICommandType.ctFont,
       TUICommandType.ctRecentItems,
+      TUICommandType.ctContext,
 	  TUICommandType.ctGroup:
       begin
         lAction := Self.GetActionForCommand(pCommand);

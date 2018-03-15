@@ -725,7 +725,8 @@ begin
       TUICommandType.ctColorAnchor,
       TUICommandType.ctCollection,
       TUICommandType.ctFont,
-      TUICommandType.ctRecentItems:
+      TUICommandType.ctRecentItems,
+	  TUICommandType.ctGroup:
       begin
         lAction := Self.GetActionForCommand(pCommand);
         if Assigned(lAction) then

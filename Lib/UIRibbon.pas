@@ -718,37 +718,20 @@ begin
   // TAction element available. If so, we assign the properties of that action
   // (Caption, Hint, etc.) to that ribbon element.
   if Assigned(Self.RibbonMapper) and Self.RibbonMapper.TryGetItem(pCommand.CommandId, lMarkupItem) then begin// Get the corresponding TAction for the given Ribbon command
-    case pCommand.CommandType of
-      TUICommandType.ctAction,
-      TUICommandType.ctDecimal,
-      TUICommandType.ctBoolean,
-      TUICommandType.ctColorAnchor,
-      TUICommandType.ctCollection,
-      TUICommandType.ctFont,
-      TUICommandType.ctRecentItems,
-      TUICommandType.ctContext,
-	  TUICommandType.ctGroup:
-      begin
-        lAction := Self.GetActionForCommand(pCommand);
-        if Assigned(lAction) then
-          pCommand.Assign(lAction)
-        {$ifdef DEBUG}else if pCommand.CommandType in [TUICommandType.ctAction, TUICommandType.ctBoolean] then
-          OutputDebugString(PChar(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId]))){$endif};
-      end;
-      // Try mapping ctAnchor (Tabs) to an action. If found, assign properties.
-      // If not found, at least try to localize it.
-      TUICommandType.ctAnchor: begin
-        lAction := Self.GetActionForCommand(pCommand);
-        if Assigned(lAction) then
-          pCommand.Assign(lAction)
-        else
-          Self.LocalizeRibbonElement(pCommand, lMarkupItem);
-      end;// ctAnchor
+    lAction := Self.GetActionForCommand(pCommand);
+    if Assigned(lAction) then
+      pCommand.Assign(lAction)
     else
-      // If none of the types above, at least try to localize that command by
+    begin
+      // If no action is assigned, at least try to localize that command by
       // extracting the corresponding resource strings from the resource file.
       Self.LocalizeRibbonElement(pCommand, lMarkupItem);
-    end;// case/else
+      {$ifdef DEBUG}
+      // For actions and checkboxes, we would presume an action to be assigned
+      if pCommand.CommandType in [TUICommandType.ctAction, TUICommandType.ctBoolean] then
+        OutputDebugString(PChar(Format(sNoMappingFound, [lMarkupItem.Name, pCommand.CommandId])));
+      {$endif}
+    end;
   end;// if RibbonMapper
   if Assigned(FOnCommandCreate) then
     FOnCommandCreate(Self, pCommand);

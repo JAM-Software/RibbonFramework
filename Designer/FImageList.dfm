@@ -31,6 +31,11 @@ object FrameImageList: TFrameImageList
       Top = 0
       Action = ActionDeleteImage
     end
+    object ButtonDeleteAllImages: TToolButton
+      Left = 149
+      Top = 0
+      Action = ActionDeleteAllImages
+    end
     object ButtonEditSmallImage: TToolButton
       Left = 135
       Top = 0
@@ -240,6 +245,11 @@ object FrameImageList: TFrameImageList
       Hint = 'Deletes the selected image'
       ImageIndex = 1
       OnExecute = ActionDeleteImageExecute
+    end
+    object ActionDeleteAllImages: TAction
+      Category = 'Images'
+      Caption = 'Delete All'
+      OnExecute = ActionDeleteAllImagesExecute
     end
     object ActionEditImage: TAction
       Category = 'Images'

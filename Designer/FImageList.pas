@@ -209,6 +209,24 @@ begin
   end;
 end;
 
+procedure TFrameImageList.ActionDeleteAllImagesExecute(Sender: TObject);
+  var
+  Image: TRibbonImage;
+  i: integer;
+begin
+  if ListView.Items.Count = 0 then
+    exit;
+
+  for i := ListView.Items.Count-1 downTo-0 do
+  begin
+    Image := ListView.items[i].Data;
+    FCommand.DeleteImage(Image);
+  end;
+  ListView.Clear;
+  FormMain.Modified;
+end;
+
+
 procedure TFrameImageList.ActionEditImageExecute(Sender: TObject);
 var
   Image: TRibbonImage;

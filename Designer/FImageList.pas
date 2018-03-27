@@ -50,6 +50,7 @@ type
     procedure ActionEditImageExecute(Sender: TObject);
     procedure ActionAddImageExecute(Sender: TObject);
     procedure ActionDeleteImageExecute(Sender: TObject);
+    procedure ActionDeleteAllImagesExecute(Sender: TObject);
     procedure ActionAddMultipleExecute(Sender: TObject);
   private
     { Private declarations }
@@ -210,7 +211,7 @@ begin
 end;
 
 procedure TFrameImageList.ActionDeleteAllImagesExecute(Sender: TObject);
-  var
+var
   Image: TRibbonImage;
   i: integer;
 begin

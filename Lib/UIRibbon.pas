@@ -1073,8 +1073,7 @@ end;
 procedure TUIRibbon.CreateWnd;
 begin
   inherited;
-  if (csRecreating in ControlState) and Available then
-    LoadFramework;
+  LoadFramework(); // Always force reload of framework, see issue #95
   Load();
 end;
 

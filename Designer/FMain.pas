@@ -85,6 +85,9 @@ type
     MenuWebsite: TMenuItem;
     N4: TMenuItem;
     MenuMSDN: TMenuItem;
+    ButtonAutoGenID: TToolButton;
+    editResName: TEdit;
+    Label1: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure ActionPreviewExecute(Sender: TObject);
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
@@ -103,6 +106,8 @@ type
     procedure ActionTutorialExecute(Sender: TObject);
     procedure ActionWebSiteExecute(Sender: TObject);
     procedure ActionMSDNExecute(Sender: TObject);
+    procedure ButtonAutoGenIDClick(Sender: TObject);
+    procedure editResNameChange(Sender: TObject);
   private
     { Private declarations }
     FInitialized: Boolean;
@@ -112,6 +117,7 @@ type
     FFrameViews: TFrameViews;
     FFrameXmlSource: TFrameXmlSource;
     FModified: Boolean;
+    FResourceName:string;
     FPreviewForm: TFormPreview;
   private
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
@@ -202,6 +208,19 @@ begin
   BuildAndPreview(True);
 end;
 
+Procedure SaveIniFile(FileName, ResourceName:string);
+  var
+  iniFile:TIniFile;
+begin
+  iniFile := TIniFile.Create(ChangeFileExt(FileName,'.ini')) ;
+ try
+  iniFile.WriteString('Resource','Name', ResourceName) ;
+ finally
+    iniFile.Free;
+ end;
+end;
+
+
 procedure TFormMain.ActionSaveAsExecute(Sender: TObject);
 var
   OrigDir, NewDir: String;
@@ -222,6 +241,7 @@ begin
     FDocument.SaveToFile(SaveDialog.FileName);
     UpdateCaption;
     UpdateControls;
+    SaveIniFile(FDocument.Filename, FResourceName);
     ClearModified;
   end;
 end;
@@ -233,6 +253,7 @@ begin
   else
   begin
     FDocument.SaveToFile(FDocument.Filename);
+    SaveIniFile(FDocument.Filename, FResourceName);
     ClearModified;
   end;
 end;
@@ -273,7 +294,7 @@ begin
   if (FModified) then
     ActionSave.Execute;
   FreeAndNil(FPreviewForm);
-  Result := FCompiler.Compile(FDocument);
+  Result := FCompiler.Compile(FDocument, FResourceName);
   if (Result = crOk) then
   begin
     if (Preview) then
@@ -286,7 +307,7 @@ begin
       end;
 
       try
-        FPreviewForm := TFormPreview.Create(DllInstance, FDocument);
+        FPreviewForm := TFormPreview.Create(DllInstance, FDocument, FResourceName);
         FPreviewForm.Show;
       except
         FreeLibrary(DllInstance);
@@ -337,6 +358,8 @@ begin
   FFrameViews.ClearDocument;
   FFrameXmlSource.ClearDocument;
   FDocument.Clear;
+  FResourceName:='';
+  editResName.Text:='';
 end;
 
 procedure TFormMain.ClearLog;
@@ -501,6 +524,8 @@ begin
 end;
 
 procedure TFormMain.OpenFile(const Filename: String);
+  var
+    iniFile:TIniFile;
 begin
   ClearDocument;
   FDocument.LoadFromFile(Filename);
@@ -508,6 +533,19 @@ begin
   ActiveControl := FFrameCommands.ListViewCommands;
   ShowDocument;
   UpdateCaption;
+
+  FResourceName:='APPLICATION';
+  iniFile := TIniFile.Create(ChangeFileExt(FileName,'.ini')) ;
+  try
+    FResourceName := iniFile.ReadString('RESOURCE','Name','') ;
+  finally
+    iniFile.Free;
+  end;
+
+  if FResourcename <> '' then
+    editResName.Text := FResourcename
+  else
+    editResName.Text := 'APPLICATION';
   UpdateControls;
   ClearModified;
 end;
@@ -590,6 +628,101 @@ procedure TFormMain.UpdateControls;
 begin
   ActionPreview.Enabled := FileExists(FDocument.Filename);
   ActionBuild.Enabled := ActionPreview.Enabled;
+end;
+
+procedure TFormMain.ButtonAutoGenIDClick(Sender: TObject);
+
+  var
+  FAutoID: integer;
+
+  Procedure SetID(rs:TRibbonString);
+  begin
+    if RS.Content<>'' then begin
+      RS.Id:=FAutoID;
+      inc(FAutoID);
+    end;
+  end;
+
+  Procedure setImageID(rl:TRibbonList<TRibbonImage>);
+    var
+    i:integer;
+  begin
+    for i:=0 to rl.count-1 do begin
+      rl.Items[i].Id:=FAutoId;
+      inc(FAutoID);
+    end;
+  end;
+
+  var
+  command:TRibbonCommand;
+  i, maxID:integer;
+  s:string;
+
+begin
+  {First work out the maximum no of command ids that will be required}
+  MaxID:=FFrameCommands.ListViewCommands.items.count-1;
+  for I := 0 to FFrameCommands.ListViewCommands.items.count-1 do begin
+    Command := FFrameCommands.ListViewCommands.Items[i].Data;
+    with command do begin
+      if LabelTitle.Content<>'' then
+        inc(MaxID);
+      if LabelDescription.Content<>'' then
+        inc(MaxID);
+      if TooltipTitle.Content<>'' then
+        inc(MaxID);
+      if TooltipDescription.Content<>'' then
+        inc(MaxID);
+      if Keytip.Content<>'' then
+        inc(MaxID);
+      inc(MaxID, SmallImages.Count+LargeImages.Count
+        +SmallHighContrastImages.Count+LargeHighContrastImages.Count);
+    end;
+  end;
+
+
+
+  if inputQuery('ID Number', 'Enter the starting ID number between 2 & '+(59999-MaxID).ToString, s) then begin
+    if not tryStrToInt(s, FAutoID) then begin
+      raise Exception.Create('Invald integer value');
+      exit;
+    end;
+  end
+  else
+    exit;
+
+  if (FAutoID<2) or (FAUtoID+MaxID>59999) then begin
+    raise Exception.Create(FAutoID.ToString+ 'is an invlid starting ID. '
+    +'Must be a number between 2 and < '+(59999-MaxID).ToString);
+    exit;
+  end;
+
+  for I := 0 to FFrameCommands.ListViewCommands.items.count-1 do begin
+    Command := FFrameCommands.ListViewCommands.Items[i].Data;
+
+    with command do begin
+      Id:=FAutoID;
+      inc(FAutoID);
+
+      SetID(LabelTitle);
+      SetID(LabelDescription);
+      SetID(TooltipTitle);
+      SetID(TooltipDescription);
+      SetID(Keytip);
+
+      setImageID(SmallImages);
+      setImageID(LargeImages);
+      setImageID(SmallHighContrastImages);
+      setImageID(LargeHighContrastImages);
+    end;
+  end;
+end;
+
+procedure TFormMain.editResNameChange(Sender: TObject);
+begin
+  if trim(editResName.Text) <> '' then
+    FResourcename := editResName.Text
+  else
+    FResourcename := 'APPLICATION';
 end;
 
 end.

@@ -72,6 +72,30 @@ object FormMain: TFormMain
       Action = ActionPreview
       AutoSize = True
     end
+    object ButtonAutoGenID: TToolButton
++      Left = 242
++      Top = 0
++      Caption = 'Auto Generate ID for all resources'
++      ImageIndex = 5
++      OnClick = ButtonAutoGenIDClick
++    end
+    object Label1: TLabel
+      Left = 434
++      Top = 0
++      Width = 84
++      Height = 22
++      Caption = '   ResourceName '
++      Layout = tlCenter
++    end
++    object editResName: TEdit
++      Left = 518
++      Top = 0
++      Width = 121
++      Height = 22
++      TabOrder = 0
++      Text = 'APPLICATION'
++      OnChange = editResNameChange
++    end
   end
   object MemoMessages: TMemo
     Left = 0

@@ -31,7 +31,8 @@ uses
   FXmlSource,
   FPreview,
   FSettings,
-  FNewFile;
+  FNewFile, 
+  System.ImageList;
 
 type
   TFormMain = class(TForm)
@@ -85,6 +86,10 @@ type
     MenuWebsite: TMenuItem;
     N4: TMenuItem;
     MenuMSDN: TMenuItem;
+    ActionSetResourceName: TAction;
+    Setresourcename1: TMenuItem;
+    ActionGenerateResourceIDs: TAction;
+    AutogenerateIDsforallresources1: TMenuItem;
     procedure FormActivate(Sender: TObject);
     procedure ActionPreviewExecute(Sender: TObject);
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
@@ -103,6 +108,8 @@ type
     procedure ActionTutorialExecute(Sender: TObject);
     procedure ActionWebSiteExecute(Sender: TObject);
     procedure ActionMSDNExecute(Sender: TObject);
+    procedure ActionSetResourceNameExecute(Sender: TObject);
+    procedure ActionGenerateResourceIDsExecute(Sender: TObject);
   private
     { Private declarations }
     FInitialized: Boolean;
@@ -178,6 +185,91 @@ begin
   Close;
 end;
 
+procedure TFormMain.ActionGenerateResourceIDsExecute(Sender: TObject);
+
+var
+  FAutoID: integer;
+
+  Procedure SetID(rs:TRibbonString);
+  begin
+    if RS.Content <>'' then begin
+      RS.Id := FAutoID;
+      inc(FAutoID);
+    end;
+  end;
+
+  Procedure setImageID(rl:TRibbonList<TRibbonImage>);
+    var
+    i: integer;
+  begin
+    for i := 0 to rl.count-1 do begin
+      rl.Items[i].Id := FAutoId;
+      inc(FAutoID);
+    end;
+  end;
+
+  var
+  command:TRibbonCommand;
+  i, maxID :integer;
+  s: string;
+
+begin
+  {First work out the maximum no of command ids that will be required}
+  MaxID := FFrameCommands.ListViewCommands.items.count-1;
+  for I := 0 to FFrameCommands.ListViewCommands.items.count-1 do begin
+    Command := FFrameCommands.ListViewCommands.Items[i].Data;
+    with command do begin
+      if LabelTitle.Content <> '' then
+        inc(MaxID);
+      if LabelDescription.Content <> '' then
+        inc(MaxID);
+      if TooltipTitle.Content <> '' then
+        inc(MaxID);
+      if TooltipDescription.Content <> '' then
+        inc(MaxID);
+      if Keytip.Content <> '' then
+        inc(MaxID);
+      inc(MaxID, SmallImages.Count+LargeImages.Count
+        +SmallHighContrastImages.Count+LargeHighContrastImages.Count);
+    end;
+  end;
+
+  if inputQuery('ID Number', 'Enter the starting ID number between 2 & '+(59999-MaxID).ToString, s) then begin
+    if not tryStrToInt(s, FAutoID) then begin
+      raise Exception.Create('Invald integer value');
+      exit;
+    end;
+  end
+  else
+    exit;
+
+  if (FAutoID < 2) or (FAUtoID + MaxID > 59999) then begin
+    raise Exception.Create(FAutoID.ToString + 'is an invlid starting ID. '
+    +'Must be a number between 2 and < '+ (59999 - MaxID).ToString);
+    exit;
+  end;
+
+  for I := 0 to FFrameCommands.ListViewCommands.items.count-1 do begin
+    Command := FFrameCommands.ListViewCommands.Items[i].Data;
+
+    with command do begin
+      
+      SetID(LabelTitle);
+      SetID(LabelDescription);
+      SetID(TooltipTitle);
+      SetID(TooltipDescription);
+      SetID(Keytip);
+
+      setImageID(SmallImages);
+      setImageID(LargeImages);
+      setImageID(SmallHighContrastImages);
+      setImageID(LargeHighContrastImages);
+    end;
+  end;
+
+  FFrameCommands.RefreshSelection;
+end;
+
 procedure TFormMain.ActionMSDNExecute(Sender: TObject);
 begin
   OpenWebsite('http://msdn.microsoft.com/en-us/library/dd371191%28v=VS.85%29.aspx');
@@ -237,6 +329,15 @@ begin
   end;
 end;
 
+procedure TFormMain.ActionSetResourceNameExecute(Sender: TObject);
+var
+  lUserInput: string;
+begin
+  lUserInput := InputBox('Enter resource name', 'Please enter a resource name that is used for this ribbon markup', FDocument.Application.ResourceName);
+  if lUserInput <> '' then
+    FDocument.Application.ResourceName := lUserInput;
+end;
+
 procedure TFormMain.ActionSettingsExecute(Sender: TObject);
 begin
   ShowSettingsDialog;
@@ -273,7 +374,8 @@ begin
   if (FModified) then
     ActionSave.Execute;
   FreeAndNil(FPreviewForm);
-  Result := FCompiler.Compile(FDocument);
+  Result := FCompiler.Compile(FDocument, FDocument.Application.ResourceName);
+
   if (Result = crOk) then
   begin
     if (Preview) then
@@ -286,7 +388,7 @@ begin
       end;
 
       try
-        FPreviewForm := TFormPreview.Create(DllInstance, FDocument);
+        FPreviewForm := TFormPreview.Create(DllInstance, FDocument, FDocument.Application.ResourceName);
         FPreviewForm.Show;
       except
         FreeLibrary(DllInstance);

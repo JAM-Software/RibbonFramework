@@ -34,7 +34,7 @@ type
     procedure CreateDelphiProject(const Filename: String);
   {$ENDREGION 'Internal Declarations'}
   public
-    function Compile(const Document: TRibbonDocument): TRibbonCompileResult;
+    function Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'): TRibbonCompileResult;
 
     property OutputDllPath: String read FOutputDllPath;
     property OnMessage: TRibbonCompilerMessageEvent read FOnMessage write FOnMessage;
@@ -60,7 +60,7 @@ uses
 
 { TRibbonCompiler }
 
-function TRibbonCompiler.Compile(const Document: TRibbonDocument): TRibbonCompileResult;
+function TRibbonCompiler.Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'): TRibbonCompileResult;
 var
   DocDir, DprFilename: String;
 begin
@@ -83,7 +83,7 @@ begin
     DocDir := ExtractFilePath(Document.Filename);
 
     if (not Execute('powershell', DocDir,
-      ['-NoProfile', '-ExecutionPolicy Bypass', '-f "' + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'Generate.Ribbon.Markup.pas.ps1"', Document.Filename.QuotedString('"'), 'APPLICATION', TSettings.Instance.RibbonCompilerDir.QuotedString('"')]))
+      ['-NoProfile', '-ExecutionPolicy Bypass', '-f "' + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'Generate.Ribbon.Markup.pas.ps1"', Document.Filename.QuotedString('"'), ResourceName, TSettings.Instance.RibbonCompilerDir.QuotedString('"')]))
     then
       Exit(crRibbonCompilerError);
 

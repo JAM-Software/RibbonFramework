@@ -26,8 +26,6 @@ object FormMain: TFormMain
     Cursor = crVSplit
     Align = alBottom
     ResizeStyle = rsUpdate
-    ExplicitTop = 19
-    ExplicitWidth = 445
   end
   object ToolBar: TToolBar
     Left = 0
@@ -35,7 +33,7 @@ object FormMain: TFormMain
     Width = 955
     Height = 24
     AutoSize = True
-    ButtonWidth = 68
+    ButtonWidth = 65
     Caption = 'ToolBar'
     EdgeBorders = [ebBottom]
     Images = Images
@@ -49,13 +47,13 @@ object FormMain: TFormMain
       AutoSize = True
     end
     object ButtonSave: TToolButton
-      Left = 60
+      Left = 57
       Top = 0
       Action = ActionSave
       AutoSize = True
     end
     object ToolButton1: TToolButton
-      Left = 115
+      Left = 112
       Top = 0
       Width = 8
       Caption = 'ToolButton1'
@@ -63,13 +61,13 @@ object FormMain: TFormMain
       Style = tbsSeparator
     end
     object ButtonBuild: TToolButton
-      Left = 123
+      Left = 120
       Top = 0
       Action = ActionBuild
       AutoSize = True
     end
     object ButtonPreview: TToolButton
-      Left = 181
+      Left = 173
       Top = 0
       Action = ActionPreview
       AutoSize = True
@@ -91,7 +89,7 @@ object FormMain: TFormMain
     Top = 24
     Width = 955
     Height = 418
-    ActivePage = TabSheetXmlSource
+    ActivePage = TabSheetCommands
     Align = alClient
     TabOrder = 2
     OnChange = PageControlChange
@@ -207,6 +205,25 @@ object FormMain: TFormMain
       ImageIndex = 6
       OnExecute = ActionMSDNExecute
     end
+    object ActionSetResourceName: TAction
+      Category = 'Project'
+      Caption = 'Set ribbon resource name'
+      Hint = 
+        'Set a resource name for the markup. This is necessary if multipl' +
+        'e markups are used in one application. The default is APPLICATIO' +
+        'N.'
+      OnExecute = ActionSetResourceNameExecute
+    end
+    object ActionGenerateResourceIDs: TAction
+      Category = 'Project'
+      Caption = 'Auto generate IDs for all resources'
+      Hint = 
+        'Generates and sets IDs for all resources in this markup. (For ap' +
+        'plications that use multiple different ribbons, it may be necess' +
+        'ary to set IDs explicitly, so that there are no conflicting reso' +
+        'urce IDs)'
+      OnExecute = ActionGenerateResourceIDsExecute
+    end
   end
   object ApplicationEvents: TApplicationEvents
     OnException = ApplicationEventsException
@@ -234,7 +251,7 @@ object FormMain: TFormMain
     Left = 308
     Top = 480
     Bitmap = {
-      494C01010800E0008C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108000D00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -678,6 +695,12 @@ object FormMain: TFormMain
       end
       object MenuPreview: TMenuItem
         Action = ActionPreview
+      end
+      object Setresourcename1: TMenuItem
+        Action = ActionSetResourceName
+      end
+      object AutogenerateIDsforallresources1: TMenuItem
+        Action = ActionGenerateResourceIDs
       end
     end
     object MenuHelp: TMenuItem

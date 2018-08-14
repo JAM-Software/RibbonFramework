@@ -101,7 +101,7 @@ type
     procedure InitializeColorization;
   public
     { Public declarations }
-    constructor Create(const Instance: THandle; const Document: TRibbonDocument); reintroduce;
+    constructor Create(const Instance: THandle; const Document: TRibbonDocument; ResourceName:String); reintroduce;
     destructor Destroy; override;
   end;
 
@@ -170,10 +170,11 @@ begin
 end;
 
 constructor TFormPreview.Create(const Instance: THandle;
-  const Document: TRibbonDocument);
+  const Document: TRibbonDocument; ResourceName:String);
 begin
   inherited Create(nil);
   Ribbon.ResourceInstance := Instance;
+  Ribbon.ResourceName := ResourceName;
   FDocument := Document;
   FCommandMap := TDictionary<String, Cardinal>.Create;
   FGalleryCommand := TUICommandAnchor.Create(Ribbon, 50001);

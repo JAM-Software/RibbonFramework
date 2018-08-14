@@ -21,7 +21,9 @@ uses
   Actions,
   RibbonMarkup,
   UIRibbonCommands,
-  FImageList, Menus;
+  FImageList, 
+  Menus, 
+  System.ImageList;
 
 type
   TFrameCommands = class(TFrame)
@@ -158,6 +160,7 @@ type
     procedure Activate;
     procedure Deactivate;
     procedure ClearDocument;
+    procedure RefreshSelection;
     procedure ShowDocument(const Document: TRibbonDocument);
   end;
 
@@ -569,6 +572,11 @@ begin
   finally
     ListViewCommands.Items.EndUpdate;
   end;
+end;
+
+procedure TFrameCommands.RefreshSelection;
+begin
+  ShowSelection;
 end;
 
 procedure TFrameCommands.ShowSelection;

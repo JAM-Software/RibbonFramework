@@ -23,6 +23,11 @@ uses
   Generics.Collections,
   BasicXml;
 
+const
+  cApplicationDefaultName = 'APPLICATION';
+  cResourceTagPrefix = '<!--ResourceName Value="';
+  cResourceTagSuffix = '"-->';
+
 type
   ERibbonMarkupError = class(Exception);
 
@@ -213,6 +218,8 @@ type
     FDirectory: String;
     FApplication: TRibbonApplication;
   private
+    procedure SaveResourceName(const Filename: String);
+    function LoadResourceName(const Filename: String): string;
     function CreateObject(const ObjType: TRibbonObjectType): TRibbonObject;
   {$ENDREGION 'Internal Declarations'}
   public
@@ -1372,6 +1379,7 @@ type
     FCommandsByName: TRibbonDictionary<String, TRibbonCommand>;
     FCommandsById: TRibbonDictionary<Integer, TRibbonCommand>;
     FViews: TRibbonList<TRibbonView>;
+    FResourceName: string;
     function GetRibbon: TRibbonViewRibbon;
   private
     constructor Create(const Owner: TRibbonDocument); overload;
@@ -1411,6 +1419,7 @@ type
     property Views: TRibbonList<TRibbonView> read FViews;
 
     property Ribbon: TRibbonViewRibbon read GetRibbon;
+    property ResourceName: string read fResourceName write fResourceName;
   end;
 
 resourcestring
@@ -2322,6 +2331,24 @@ begin
   finally
     Doc.Free;
   end;
+  FApplication.ResourceName := LoadResourceName(Filename);
+end;
+
+function TRibbonDocument.LoadResourceName(const Filename: String): string;
+var
+  Strings: TStringList;
+  lLastLine: string;
+begin
+  Result := cApplicationDefaultName;
+  Strings := TStringList.Create;
+  try
+    Strings.LoadFromFile(FileName);
+    lLastLine := Strings[Strings.Count - 1];
+    if lLastLine.StartsWith(cResourceTagPrefix) then
+      Result := lLastLine.Substring(Length(cResourceTagPrefix), Length(lLastLine) - (Length(cResourceTagSuffix) + Length(cResourceTagPrefix)));
+  finally
+    Strings.Free;
+  end;
 end;
 
 procedure TRibbonDocument.LoadFromStream(const Stream: TStream);
@@ -2380,8 +2407,24 @@ begin
     finally
       Stream.Free;
     end;
+    SaveResourceName(Filename);
     FFilename := ExpandFileName(Filename);
     FDirectory := IncludeTrailingPathDelimiter(ExtractFilePath(FFilename));
+  end;
+end;
+
+procedure TRibbonDocument.SaveResourceName(const Filename: String);
+var
+  lResourceString: RawByteString;
+  Stream: TFileStream;
+begin
+  Stream := TFileStream.Create(Filename, fmOpenWrite);
+  try
+    Stream.Seek(0, soFromEnd);
+    lResourceString := RawByteString(#13#10 + cResourceTagPrefix + FApplication.ResourceName + cResourceTagSuffix);
+    Stream.WriteBuffer(lResourceString[1], Length(lResourceString));
+  finally
+    Stream.Free
   end;
 end;
 
@@ -2681,6 +2724,7 @@ end;
 constructor TRibbonApplication.Create(const Owner: TRibbonDocument);
 begin
   inherited;
+  FResourceName := cApplicationDefaultName;
   FCommands := TRibbonList<TRibbonCommand>.Create(Owner, True);
   FCommandsByName := TRibbonDictionary<String, TRibbonCommand>.Create(Owner);
   FCommandsById := TRibbonDictionary<Integer, TRibbonCommand>.Create(Owner);

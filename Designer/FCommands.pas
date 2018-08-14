@@ -22,8 +22,7 @@ uses
   RibbonMarkup,
   UIRibbonCommands,
   FImageList, 
-  Menus, 
-  System.ImageList;
+  Menus;
 
 type
   TFrameCommands = class(TFrame)

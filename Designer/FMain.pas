@@ -31,8 +31,7 @@ uses
   FXmlSource,
   FPreview,
   FSettings,
-  FNewFile, 
-  System.ImageList;
+  FNewFile;
 
 type
   TFormMain = class(TForm)

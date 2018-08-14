@@ -222,6 +222,7 @@ object FormMain: TFormMain
         'plications that use multiple different ribbons, it may be necess' +
         'ary to set IDs explicitly, so that there are no conflicting reso' +
         'urce IDs)'
+      ShortCut = 16455
       OnExecute = ActionGenerateResourceIDsExecute
     end
   end
@@ -696,11 +697,11 @@ object FormMain: TFormMain
       object MenuPreview: TMenuItem
         Action = ActionPreview
       end
-      object Setresourcename1: TMenuItem
-        Action = ActionSetResourceName
-      end
       object AutogenerateIDsforallresources1: TMenuItem
         Action = ActionGenerateResourceIDs
+      end
+      object Setresourcename1: TMenuItem
+        Action = ActionSetResourceName
       end
     end
     object MenuHelp: TMenuItem

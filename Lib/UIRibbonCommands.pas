@@ -1170,6 +1170,7 @@ type
     function GetPropertyValue(const Prop: TUIProperty): TValue; override;
   {$ENDREGION 'Internal Declarations'}
   public
+    constructor Create(const pLabel: string; pDescription: string = ''; const pPinned: Boolean = False);
     { The label text of the item (eg. a filename) }
     property LabelText: String read FLabel write FLabel;
 
@@ -4019,6 +4020,14 @@ begin
 end;
 
 { TUIRecentItem }
+
+constructor TUIRecentItem.Create(const pLabel: string; pDescription: string; const pPinned: Boolean);
+begin
+  Inherited Create();
+  FLabel := pLabel;
+  FDescription := pDescription;
+  FPinned := Pinned;
+end;
 
 function TUIRecentItem.GetPropertyValue(const Prop: TUIProperty): TValue;
 begin

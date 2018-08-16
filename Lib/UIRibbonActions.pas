@@ -538,12 +538,8 @@ begin
 
   lItem := Command.Items.Items[ItemIndex];
 
-  Self.Selected := TUIRecentItem.Create;
+  Self.Selected := TUIRecentItem.Create((lItem as TUIRecentItem).LabelText, (lItem as TUIRecentItem).Description, (lItem as TUIRecentItem).Pinned);
   try
-    Self.Selected.LabelText := (lItem as TUIRecentItem).LabelText;
-    Self.Selected.Description := (lItem as TUIRecentItem).Description;
-    Self.Selected.Pinned := (lItem as TUIRecentItem).Pinned;
-
     if Assigned(Action) then
       Action.Execute;
   finally

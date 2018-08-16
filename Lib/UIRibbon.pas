@@ -196,7 +196,7 @@ type
     /// <param name="pCommandId">The id of the ribbon command.</param>
     /// <param name="pContextAvailability">The availability state.</param>
     procedure SetContextTabAvailability(const pCommandId: Integer; const pContextAvailability: TUIContextAvailability);
-  private
+
     { IInterface }
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
@@ -272,6 +272,8 @@ type
     /// </remarks>
     property RibbonMapper: TRibbonMarkupElementList read fRibbonMapper write fRibbonMapper;
     procedure ChangeScale(M, D: Integer{$if CompilerVersion >= 31}; isDpiChange: Boolean{$ifend}); override;
+    function GetRecentItems(): TUICommandRecentItems;
+    property RecentItems: TUICommandRecentItems read GetRecentItems;
   {$ENDREGION 'Internal Declarations'}
   public
 
@@ -969,6 +971,13 @@ begin
   end;
 end;
 
+function TUIRibbon.GetRecentItems(): TUICommandRecentItems;
+begin
+  if not Assigned(fRecentItems) then
+    fRecentItems := TUICommandRecentItems.Create(Self, 0);
+  Exit(fRecentItems);
+end;
+
 function TUIRibbon.GetRibbonSettingsFilePath(): string;
 const
   cRibbonSettingsDefaultFileName = 'RibbonOptions.xml';
@@ -1171,7 +1180,13 @@ begin
   begin
     if (not FCommands.TryGetValue(CommandId, Command)) then
     begin
-      Command := CommandClass.Create(Self, CommandId);
+      if (CommandClass = TUICommandRecentItems) and Assigned(fRecentItems) then begin
+        // A instance for the recent items might have been created previously to hold items that have beed added before the actual command was created. See issue #67
+        fRecentItems.CommandId := CommandId;
+        Command := fRecentItems;
+      end
+      else
+        Command := CommandClass.Create(Self, CommandId);
       DoCommandCreated(Command);
     end;
 
@@ -1404,12 +1419,10 @@ end;
 
 procedure TUIRibbon.AddToRecentItems(const pPath: string; const pDescription: string = '');
 var
-  lItem: TUIRecentItem;
+  lItem: IUICollectionItem;
 begin
-  lItem := TUIRecentItem.Create;
-  lItem.LabelText := pPath;
-  lItem.Description := pDescription;
-  fRecentItems.Items.Add(lItem);
+  lItem := TUIRecentItem.Create(pPath, pDescription);
+  RecentItems.Items.Add(lItem);
 end;
 
 procedure TUIRibbon.SetRecentItems(pAction: TAction; pPaths: TStrings);

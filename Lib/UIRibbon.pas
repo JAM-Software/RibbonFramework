@@ -1070,9 +1070,11 @@ procedure TUIRibbon.LoadFramework;
 var
   Intf: IUnknown;
 begin
+  if (csDesigning in ComponentState) then
+    exit;
   FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil,
       CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
-  if (not FAvailable) and not (csDesigning in ComponentState) then
+  if (not FAvailable) then
     Height := 0
   else
   begin

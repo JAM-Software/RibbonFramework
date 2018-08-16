@@ -449,8 +449,7 @@ begin
         try
           for I := 0 to 19 do
           begin
-            RecentItem := TUIRecentItem.Create;
-            RecentItem.LabelText := RS_ITEM + ' ' + Char(Ord('A') + I);
+            RecentItem := TUIRecentItem.Create(RS_ITEM + ' ' + Char(Ord('A') + I));
             RecentItem.Description := RS_ITEM_DESC + ' ' + Char(Ord('A') + I);
             RecentItem.Pinned := False;
             CmdRecentItems.Items.Add(RecentItem);

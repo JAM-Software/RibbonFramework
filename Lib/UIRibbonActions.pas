@@ -230,6 +230,14 @@ type
     property OnChanged: TUICommandFontChangedEvent read fOnChanged write fOnChanged;
   end;
 
+  TRecentItemAction = class(TRibbonAction<TUICommandRecentItems>)
+  strict private
+    /// Getter for the property <see cref="RecentItems">
+    function GetRecentItems(): TUICommandRecentItems;
+  public
+    // Provides access to the object that deals with the recent items in the Application menu.
+    property RecentItems: TUICommandRecentItems read GetRecentItems;
+  end;
 
 implementation
 
@@ -552,6 +560,8 @@ begin
   inherited;
   if Assigned(Value) then
     (Client as TUICommandRecentItems).OnSelect := CommandSelect;
+  if (Action is TRecentItemAction) then
+    TRecentItemAction(Action).UICommand := (Client as TUICommandRecentItems);
 end;
 
 { TRibbonCollectionAction }
@@ -816,6 +826,13 @@ begin
   // Keep track of pre-existing event handlers. We call them together with our custom event handler.
   fOriginalOnMenuChange := fPopupMenu.OnChange;
   fPopupMenu.OnChange := MenuChange;
+end;
+
+{ TRecentItemAction }
+
+function TRecentItemAction.GetRecentItems(): TUICommandRecentItems;
+begin
+  Result := UICommand
 end;
 
 end.

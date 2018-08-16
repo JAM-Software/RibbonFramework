@@ -193,7 +193,7 @@ object FormMain: TFormMain
       ShortCut = 16463
       OnAccept = CmdOpenAccept
     end
-    object CmdRecentItems: TAction
+    object CmdRecentItems: TRecentItemAction
       Category = 'File'
       Caption = 'Open Recent File'
       OnExecute = CmdRecentItemsExecute

@@ -48,7 +48,7 @@ type
     CmdPasteSpecial: TAction;
     CmdFont: TRibbonFontAction;
     CmdOpen: TFileOpen;
-    CmdRecentItems: TAction;
+    CmdRecentItems: TRecentItemAction;
     CmdSave: TAction;
     CmdSaveAs: TFileSaveAs;
     CmdNew: TAction;
@@ -315,7 +315,7 @@ end;
 
 procedure TFormMain.CmdRecentItemsExecute(Sender: TObject);
 begin
-  Load(Ribbon.GetSelectedRecentItem.LabelText);
+  Load((Sender as TRecentItemAction).UICommand.GetSelected.LabelText);
 end;
 
 procedure TFormMain.CmdFontChanged(const Args: TUICommandFontEventArgs);

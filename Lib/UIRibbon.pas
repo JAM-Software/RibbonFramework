@@ -273,7 +273,6 @@ type
     property RibbonMapper: TRibbonMarkupElementList read fRibbonMapper write fRibbonMapper;
     procedure ChangeScale(M, D: Integer{$if CompilerVersion >= 31}; isDpiChange: Boolean{$ifend}); override;
     function GetRecentItems(): TUICommandRecentItems;
-    property RecentItems: TUICommandRecentItems read GetRecentItems;
   {$ENDREGION 'Internal Declarations'}
   public
 
@@ -401,18 +400,18 @@ type
     /// </summary>
     /// <param name="pAction">The related action for the recent items.</param>
     /// <param name="pPaths">The list of paths that shall be added to the recent list.</param>
-    procedure SetRecentItems(pAction: TAction; pPaths: TStrings); overload;
+    procedure SetRecentItems(pAction: TAction; pPaths: TStrings); deprecated 'Use RecentItems.Assign() instead';
 
     /// Adds an item to the list of recent path.
     /// <param name="pPath">The path that shall be added to the recent list.</param>
     /// <param name="pDescription">Optional. A description for the path.</param>
-    procedure AddToRecentItems(const pPath: string; const pDescription: string = '');
+    procedure AddToRecentItems(const pPath: string; const pDescription: string = ''); deprecated 'Use RecentItems.Add() instead';
 
     /// <summary>
     ///  Get the currently selected "recent item".
     /// </summary>
     /// <returns>TUIRecentItem</returns>
-    function GetSelectedRecentItem(): TUIRecentItem;
+    function GetSelectedRecentItem(): TUIRecentItem; deprecated 'Use RecentItems.GetSelected instead';
 
     /// True if the ribbon has been loaded from then resource and has been initialized; False otherwise.
     property IsLoaded: Boolean read fLoaded;
@@ -463,6 +462,9 @@ type
     /// </summary>
     /// <seealso>TRibbonApplicationModes</seealso>
     property ApplicationModes: TRibbonApplicationModes read fApplicationModes write Set_ApplicationModes;
+
+    // Provides access to the object that deals with the recent items in the Application menu.
+    property RecentItems: TUICommandRecentItems read GetRecentItems;
 
   published
 
@@ -999,7 +1001,7 @@ end;
 
 function TUIRibbon.GetSelectedRecentItem: TUIRecentItem;
 begin
-  Result := (fRecentItems.ActionLink as TUICommandRecentItemsActionLink).Selected;
+  Result := RecentItems.GetSelected;
 end;
 
 procedure TUIRibbon.LoadSettings(const Filename: String);
@@ -1418,27 +1420,13 @@ begin
 end;
 
 procedure TUIRibbon.AddToRecentItems(const pPath: string; const pDescription: string = '');
-var
-  lItem: IUICollectionItem;
 begin
-  lItem := TUIRecentItem.Create(pPath, pDescription);
-  RecentItems.Items.Add(lItem);
+  RecentItems.Add(pPath, pDescription);
 end;
 
 procedure TUIRibbon.SetRecentItems(pAction: TAction; pPaths: TStrings);
-var
-  lPath: string;
 begin
-  if not Assigned(fRecentItems) then begin
-    fRecentItems := Self.GetCommand(pAction) as TUICommandRecentItems;
-  end;
-  if not Assigned(fRecentItems) then
-    exit;// Happens if this method is called too early, before the ribbon and its commands have been created
-
-  fRecentItems.Items.Clear();
-
-  for lPath in pPaths do
-    AddToRecentItems(lPath);
+  RecentItems.Assign(pAction, pPaths);
 end;
 
 procedure TUIRibbon.SetTextColor(const Value: TColor);

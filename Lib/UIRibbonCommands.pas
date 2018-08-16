@@ -937,55 +937,6 @@ type
   end;
 {$ENDREGION 'Color Anchor command'}
 
-{$REGION 'Recent Items command'}
-  TUICommandRecentItems = class;
-
-  TUICommandRecentItemsSelectEvent = procedure(const Command: TUICommandRecentItems;
-    const Verb: TUICommandVerb; const ItemIndex: Integer;
-    const Properties: TUICommandExecutionProperties) of object;
-
-  { Recent Items command. Used for the Recent Items list in the Application
-    Menu. }
-  TUICommandRecentItems = class(TUICommand)
-  {$REGION 'Internal Declarations'}
-  strict private
-    const NOTIFY_ITEMS = 1;
-  strict private
-    FItems: TUICollection;
-    FOnSelect: TUICommandRecentItemsSelectEvent;
-  strict private
-    procedure ItemsChange(const Collection: TUICollection; const Immediate: Boolean);
-  strict protected
-    procedure DoUpdate(const Prop: TUIProperty; const CurrentValue: PPropVariant;
-      out NewValue: TPropVariant; var Result: HRESULT); override;
-
-    procedure DoExecute(const Prop: TUIProperty; const Verb: TUICommandVerb;
-      const CurrentValue: PPropVariant; var Result: HRESULT); override;
-    function CreateActionLink: TActionLink; override;
-  protected
-    procedure Notify(const Flag: Integer); override;
-  {$ENDREGION 'Internal Declarations'}
-  public
-    constructor Create(const Ribbon: TObject; const CommandId: Cardinal); override;
-    destructor Destroy; override;
-
-    class function CommandType: TUICommandType; override;
-
-    { The items in the Recent Items List. You can fill this collection with
-      TUIRecentItem objects, or your own objects. The items should have the
-      following properties:
-      -LabelText: the text of the item (eg. a filename)
-      -Description: longer description of the item as it appears in the
-        tooltip for the item (eg. the full path)
-      -Pinned (boolean): whether the item is pinned to the application menu. }
-    property Items: TUICollection read FItems;
-
-    { Fired when a Recent Item is selected. ItemIndex is the index of the
-      selected item (into the Items collection). }
-    property OnSelect: TUICommandRecentItemsSelectEvent read FOnSelect write FOnSelect;
-  end;
-{$ENDREGION 'Recent Items command'}
-
 {$REGION 'Collections'}
   { Implemented by TUICollectionItem }
   IUICollectionItem = interface
@@ -1182,6 +1133,72 @@ type
     property Pinned: Boolean read FPinned write FPinned;
   end;
 {$ENDREGION 'Collections'}
+
+{$REGION 'Recent Items command'}
+  TUICommandRecentItems = class;
+
+  TUICommandRecentItemsSelectEvent = procedure(const Command: TUICommandRecentItems;
+    const Verb: TUICommandVerb; const ItemIndex: Integer;
+    const Properties: TUICommandExecutionProperties) of object;
+
+  { Recent Items command. Used for the Recent Items list in the Application
+    Menu. }
+  TUICommandRecentItems = class(TUICommand)
+  {$REGION 'Internal Declarations'}
+  strict private
+    const NOTIFY_ITEMS = 1;
+  strict private
+    FItems: TUICollection;
+    FOnSelect: TUICommandRecentItemsSelectEvent;
+  strict private
+    procedure ItemsChange(const Collection: TUICollection; const Immediate: Boolean);
+  strict protected
+    procedure DoUpdate(const Prop: TUIProperty; const CurrentValue: PPropVariant;
+      out NewValue: TPropVariant; var Result: HRESULT); override;
+
+    procedure DoExecute(const Prop: TUIProperty; const Verb: TUICommandVerb;
+      const CurrentValue: PPropVariant; var Result: HRESULT); override;
+    function CreateActionLink: TActionLink; override;
+  protected
+    procedure Notify(const Flag: Integer); override;
+  {$ENDREGION 'Internal Declarations'}
+  public
+    constructor Create(const Ribbon: TObject; const CommandId: Cardinal); override;
+    destructor Destroy; override;
+
+    /// Adds the given strings to the list of recent path.
+    /// <param name="pAction">The related action for the recent items.</param>
+    /// <param name="pPaths">The list of paths that shall be added to the recent list.</param>
+    procedure Assign(pAction: TAction; pPaths: TArray<string>); overload;
+
+    /// Adds the given strings to the list of recent path.
+    /// <param name="pAction">The related action for the recent items.</param>
+    /// <param name="pPaths">The list of paths that shall be added to the recent list.</param>
+    procedure Assign(pAction: TAction; pPaths: TStrings); overload;
+
+    function GetSelected(): TUIRecentItem;
+
+    /// Adds an item to the list of recent path.
+    /// <param name="pPath">The path that shall be added to the recent list.</param>
+    /// <param name="pDescription">Optional. A description for the path.</param>
+    procedure Add(const pPath: string; const pDescription: string = '');
+    class function CommandType: TUICommandType; override;
+
+    { The items in the Recent Items List. You can fill this collection with
+      TUIRecentItem objects, or your own objects. The items should have the
+      following properties:
+      -LabelText: the text of the item (eg. a filename)
+      -Description: longer description of the item as it appears in the
+        tooltip for the item (eg. the full path)
+      -Pinned (boolean): whether the item is pinned to the application menu. }
+    property Items: TUICollection read FItems;
+
+    { Fired when a Recent Item is selected. ItemIndex is the index of the
+      selected item (into the Items collection). }
+    property OnSelect: TUICommandRecentItemsSelectEvent read FOnSelect write FOnSelect;
+  end;
+{$ENDREGION 'Recent Items command'}
+
 
 {$REGION 'Images'}
   TUIImage = class(TInterfacedObject, IUIImage)
@@ -3619,6 +3636,28 @@ end;
 
 { TUICommandRecentItems }
 
+procedure TUICommandRecentItems.Add(const pPath, pDescription: string);
+var
+  lItem: IUICollectionItem;
+begin
+  lItem := TUIRecentItem.Create(pPath, pDescription);
+  Items.Add(lItem);
+end;
+
+procedure TUICommandRecentItems.Assign(pAction: TAction; pPaths: TArray<string>);
+var
+  lPath: string;
+begin
+  Items.Clear();
+  for lPath in pPaths do
+    Add(lPath);
+end;
+
+procedure TUICommandRecentItems.Assign(pAction: TAction; pPaths: TStrings);
+begin
+  Assign(pAction, pPaths.ToStringArray);
+end;
+
 class function TUICommandRecentItems.CommandType: TUICommandType;
 begin
   Result := ctRecentItems;
@@ -3685,6 +3724,11 @@ begin
       SafeArrayDestroy(List);
     end;
   end;
+end;
+
+function TUICommandRecentItems.GetSelected: TUIRecentItem;
+begin
+  Result := (ActionLink as TUICommandRecentItemsActionLink).Selected;
 end;
 
 procedure TUICommandRecentItems.ItemsChange(const Collection: TUICollection;

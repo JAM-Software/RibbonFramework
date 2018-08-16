@@ -446,7 +446,7 @@ end;
 procedure TFormMain.Load(const pFilePath: string);
 begin
   RichEdit.Lines.LoadFromFile(pFilePath);
-  Ribbon.AddToRecentItems(pFilePath);
+  Ribbon.RecentItems.Add(pFilePath);
   FCurrentfilePath := pFilePath;
 end;
 

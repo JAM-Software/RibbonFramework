@@ -74,7 +74,6 @@ object FrameCommands: TFrameCommands
           AutoSize = True
           Caption = 'Caption'
         end>
-      ColumnClick = False
       GridLines = True
       HideSelection = False
       ReadOnly = True
@@ -82,6 +81,8 @@ object FrameCommands: TFrameCommands
       PopupMenu = PopupMenuList
       TabOrder = 1
       ViewStyle = vsReport
+      OnColumnClick = ListViewCommandsColumnClick
+      OnCompare = ListViewCommandsCompare
       OnSelectItem = ListViewCommandsSelectItem
     end
   end

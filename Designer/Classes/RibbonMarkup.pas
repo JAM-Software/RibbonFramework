@@ -130,7 +130,7 @@ type
     destructor Destroy; override;
     class function ObjectType: TRibbonObjectType; override;
     function Reorder(const Child: TRibbonObject; const Direction: Integer): Boolean; override;
-
+    procedure Assign(const pItems: TList<T>);
     function GetEnumerator: TEnumerator<T>;
 
     property Count: Integer read GetCount;
@@ -1842,6 +1842,18 @@ end;
 procedure TRibbonList<T>.Add(const Item: T);
 begin
   FItems.Add(Item);
+end;
+
+procedure TRibbonList<T>.Assign(const pItems: TList<T>);
+var
+  Item: T;
+begin
+  if Assigned(FItems) then
+  begin
+    FItems.Clear;
+    for Item in pItems do
+      FItems.Add(Item);
+  end;
 end;
 
 procedure TRibbonList<T>.Clear;

@@ -25,6 +25,8 @@ uses
   Menus;
 
 type
+  TCommandSortType = (Name, Caption, None);
+
   TFrameCommands = class(TFrame)
     PanelCommands: TPanel;
     ToolBarCommands: TToolBar;
@@ -138,6 +140,9 @@ type
     procedure BtnGenerateIDClick(Sender: TObject);
     procedure ActionUpdate(Sender: TObject);
     procedure ActionAddCommandUpdate(Sender: TObject);
+    procedure ListViewCommandsColumnClick(Sender: TObject; Column: TListColumn);
+    procedure ListViewCommandsCompare(Sender: TObject; Item1, Item2: TListItem;
+      Data: Integer; var Compare: Integer);
   private
     { Private declarations }
     FDocument: TRibbonDocument;
@@ -148,6 +153,8 @@ type
     FFrameSmallHCImages: TFrameImageList;
     FFrameLargeHCImages: TFrameImageList;
     FNewCommandIndex: Integer;
+    FSortBy: TCommandSortType;
+    FSortDescending: Boolean;
     function AddCommand(const Command: TRibbonCommand): TListItem;
     procedure ShowSelection;
     procedure Modified;
@@ -175,7 +182,8 @@ implementation
 
 uses
   UITypes,
-  FMain;
+  FMain, 
+  System.Generics.Collections;
 
 { TFrameCommands }
 
@@ -250,6 +258,9 @@ end;
 constructor TFrameCommands.Create(AOwner: TComponent);
 begin
   inherited;
+
+  FSortBy := TCommandSortType.None;
+
   FFrameSmallImages := TFrameImageList.Create(Self);
   FFrameSmallImages.Name := 'FrameSmallImages';
   FFrameSmallImages.Parent := PanelSmallImages;
@@ -492,6 +503,48 @@ begin
   ActionDeleteCommand.Enabled := Enable;
 end;
 
+procedure TFrameCommands.ListViewCommandsColumnClick(Sender: TObject; Column: TListColumn);
+var
+  lCommands: TList<TRibbonCommand>;
+  lItem: TListItem;
+begin
+  TListView(Sender).SortType := stNone;
+
+  if FSortBy = TCommandSortType(Column.Index) then
+    FSortDescending := not FSortDescending
+  else begin
+    FSortBy := TCommandSortType(Column.Index);
+    FSortDescending := False;
+  end;
+
+  ListViewCommands.SortType := TSortType.stText;
+
+  lCommands := TList<TRibbonCommand>.Create;
+  try
+    for lItem in TListView(Sender).Items do
+      lCommands.Add(lItem.Data);
+
+    FDocument.Application.Commands.Assign(lCommands);
+  finally
+    lCommands.Free;
+  end;
+end;
+
+procedure TFrameCommands.ListViewCommandsCompare(Sender: TObject; Item1, Item2: TListItem; Data: Integer; var Compare: Integer);
+begin
+  case FSortBy of
+    TCommandSortType.None:
+      Compare := 0;
+    TCommandSortType.Name:
+      Compare := CompareText(Item1.Caption, Item2.Caption)
+    else
+      Compare := CompareText(Item1.SubItems[0], Item2.SubItems[0]);
+  end;
+
+  if FSortDescending then
+    Compare := -Compare;
+end;
+
 procedure TFrameCommands.ListViewCommandsSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
@@ -509,6 +562,8 @@ var
   Item, NewItem: TListItem;
   Command: TRibbonCommand;
 begin
+  ListViewCommands.SortType := stNone;
+
   Item := ListViewCommands.Selected;
   if (Item = nil) or (Item.Data = nil) then
     Exit;

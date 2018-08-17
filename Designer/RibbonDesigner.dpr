@@ -61,7 +61,8 @@ uses
   FXmlSource in 'FXmlSource.pas' {FrameXmlSource: TFrame},
   UIRibbonUtils in '..\Lib\UIRibbonUtils.pas',
   FNewFile in 'FNewFile.pas' {FormNewFile},
-  BasicZip in 'Classes\BasicZip.pas';
+  BasicZip in 'Classes\BasicZip.pas',
+  FCommandsSearch in 'FCommandsSearch.pas' {TCommandSearchForm};
 
 {$R *.res}
 

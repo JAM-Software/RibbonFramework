@@ -106,6 +106,8 @@ type
     MenuMoveDown: TMenuItem;
     MenuMoveUp: TMenuItem;
     BtnGenerateID: TButton;
+    ButtonSearchCommand: TToolButton;
+    ActionSearchCommand: TAction;
     procedure ListViewCommandsSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure EditNameChange(Sender: TObject);
@@ -143,6 +145,7 @@ type
     procedure ListViewCommandsColumnClick(Sender: TObject; Column: TListColumn);
     procedure ListViewCommandsCompare(Sender: TObject; Item1, Item2: TListItem;
       Data: Integer; var Compare: Integer);
+    procedure ActionSearchCommandExecute(Sender: TObject);
   private
     { Private declarations }
     FDocument: TRibbonDocument;
@@ -183,7 +186,7 @@ implementation
 uses
   UITypes,
   FMain, 
-  System.Generics.Collections;
+  System.Generics.Collections, FCommandsSearch;
 
 { TFrameCommands }
 
@@ -233,6 +236,28 @@ end;
 procedure TFrameCommands.ActionMoveUpExecute(Sender: TObject);
 begin
   MoveCommand(-1);
+end;
+
+procedure TFrameCommands.ActionSearchCommandExecute(Sender: TObject);
+var
+  lCommandSearchForm: TCommandSearchForm;
+  lItem: TListItem;
+begin
+  lCommandSearchForm := TCommandSearchForm.Create(Self, ListViewCommands);
+  try
+    if lCommandSearchForm.ShowModal = mrOK then
+    begin
+      if not Assigned(lCommandSearchForm.ListViewCommands.Selected) then
+        exit;
+      for lItem in Self.ListViewCommands.Items do
+      begin
+        if lItem.Data = lCommandSearchForm.ListViewCommands.Selected.Data then
+          Self.ListViewCommands.Selected := lItem;
+      end; //for lItem
+    end; //if ShowModal
+  finally
+    lCommandSearchForm.Release;
+  end;
 end;
 
 procedure TFrameCommands.Activate;

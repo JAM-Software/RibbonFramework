@@ -253,6 +253,7 @@ begin
       begin
         if lItem.Data = lCommandSearchForm.ListViewCommands.Selected.Data then
           Self.ListViewCommands.Selected := lItem;
+          Self.ListViewCommands.Selected.MakeVisible(False);
       end; //for lItem
     end; //if ShowModal
   finally

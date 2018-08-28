@@ -139,7 +139,7 @@ type
   TUIImage = class;
 
   TUICommandUpdatePropertyEvent = procedure (Sender: TObject; const PropKey: TUIPropertyKey;
-    var NewValue: TPropVariant; var Handled: boolean) of object;
+    var NewValue: TPropVariant; out Handled: boolean) of object;
 
   TUICommandUpdateHintEvent = procedure (Sender: TObject; const Value: string) of object;
 
@@ -193,7 +193,7 @@ type
       CommandExecutionProperties: IUISimplePropertySet): HRESULT; stdcall;
 
     function UpdateProperty(CommandId: UInt32; const Key: TUIPropertyKey;
-      CurrentValue: PPropVariant; var NewValue: TPropVariant): HRESULT; stdcall;
+      CurrentValue: PPropVariant; out NewValue: TPropVariant): HRESULT; stdcall;
     procedure SetLargeImage(const Value: TUIImage);
   strict private
     procedure ImageChanged(Sender: TObject);
@@ -2217,7 +2217,7 @@ begin
 end;
 
 function TUICommand.UpdateProperty(CommandId: UInt32; const Key: TUIPropertyKey;
-  CurrentValue: PPropVariant; var NewValue: TPropVariant): HRESULT;
+  CurrentValue: PPropVariant; out NewValue: TPropVariant): HRESULT;
 var
   Prop: TUIProperty;
 begin

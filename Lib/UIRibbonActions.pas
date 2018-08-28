@@ -170,7 +170,7 @@ type
       /// Update handler for TUICommand.UpdateProperty. We assign this handler to the commands' OnUpdateProperty event, so that we can remove
       /// them from the collection as soon as they become invisible.
       /// </summary>
-      procedure PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; var Handled: boolean);
+      procedure PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; out Handled: boolean);
       /// <summary>
       /// This method uses the action items that are stored in the internal list fActionList,
       /// and dynamically creates commands that will be added to the collection.
@@ -692,7 +692,7 @@ begin
     RefreshCommandCollection;
 end;
 
-procedure TRibbonCollectionAction.PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; var Handled: boolean);
+procedure TRibbonCollectionAction.PropertyUpdated(Sender: TObject; const PropKey: TUIPropertyKey; var NewValue: TPropVariant; out Handled: boolean);
 var
   lActionVisible: Boolean;
 begin

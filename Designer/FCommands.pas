@@ -334,6 +334,8 @@ begin
   finally
     lIDs.Free;
   end;
+
+  Exit(0);
 end;
 
 procedure TFrameCommands.BtnGenerateIDClick(Sender: TObject);

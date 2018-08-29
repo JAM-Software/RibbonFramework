@@ -88,6 +88,8 @@ type
     ActionSetResourceName: TAction;
     Setresourcename1: TMenuItem;
     ActionGenerateResourceIDs: TAction;
+    AutogenerateIDsforallcommands1: TMenuItem;
+    ActionGenerateCommandIDs: TAction;
     AutogenerateIDsforallresources1: TMenuItem;
     procedure FormActivate(Sender: TObject);
     procedure ActionPreviewExecute(Sender: TObject);
@@ -109,6 +111,7 @@ type
     procedure ActionMSDNExecute(Sender: TObject);
     procedure ActionSetResourceNameExecute(Sender: TObject);
     procedure ActionGenerateResourceIDsExecute(Sender: TObject);
+    procedure ActionGenerateCommandIDsExecute(Sender: TObject);
   private
     { Private declarations }
     FInitialized: Boolean;
@@ -166,7 +169,7 @@ resourcestring
 implementation
 
 uses
-  UITypes, System.Win.Registry, UIRibbonUtils;
+  UITypes, System.Win.Registry, UIRibbonUtils, System.Math;
 
 {$R *.dfm}
 
@@ -182,6 +185,22 @@ end;
 procedure TFormMain.ActionExitExecute(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TFormMain.ActionGenerateCommandIDsExecute(Sender: TObject);
+var
+  lCommand: TRibbonCommand;
+  I: Integer;
+begin
+  for I := 0 to FFrameCommands.ListViewCommands.Items.Count - 1 do
+  begin
+    lCommand := FFrameCommands.ListViewCommands.Items[i].Data;
+    if lCommand.ID = 0 then
+      // Try to mimic the auto ID generation of the ribbon compiler.
+      lCommand.ID := FFrameCommands.FindSmallestUnusedID(I + 2)
+  end;
+
+  FFrameCommands.RefreshSelection;
 end;
 
 procedure TFormMain.ActionGenerateResourceIDsExecute(Sender: TObject);

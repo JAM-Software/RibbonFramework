@@ -171,6 +171,7 @@ type
     procedure ClearDocument;
     procedure RefreshSelection;
     procedure ShowDocument(const Document: TRibbonDocument);
+    function FindSmallestUnusedID(const pMinId: Integer = 2): Integer;
   end;
 
 const
@@ -185,8 +186,10 @@ implementation
 
 uses
   UITypes,
-  FMain, 
-  System.Generics.Collections, FCommandsSearch;
+  FMain,
+  System.Generics.Collections,
+  FCommandsSearch,
+  System.Math;
 
 { TFrameCommands }
 
@@ -200,6 +203,7 @@ begin
   ListViewCommands.Selected.Focused := True;
   ListViewCommands.Selected.MakeVisible(False);
   EditName.SetFocus;
+  BtnGenerateIDClick(Sender);
   Modified;
 end;
 
@@ -304,16 +308,54 @@ begin
   FFrameLargeHCImages.Parent := PanelLargeHCImages;
 end;
 
+function TFrameCommands.FindSmallestUnusedID(const pMinId: Integer = 2): Integer;
+var
+  lCommand: TRibbonCommand;
+  lIDs: TDictionary<Integer, TRibbonCommand>;
+  I: Integer;
+const
+  cMaxValidID = 59999;
+
+begin
+  lIDs := TDictionary<Integer, TRibbonCommand>.Create();
+
+  try
+    // Gather all IDs that are already taken in a dictionary
+    for lCommand in FDocument.Application.Commands do
+      if lCommand.Id > 0 then
+        lIDs.Add(lCommand.Id, lCommand);
+
+    // Iterate all allowed IDs, starting with the smallest. Return the first one that hasn't been used yet
+    for I := pMinId to cMaxValidID do
+      if not lIDs.ContainsKey(I) then
+        Exit(I);
+
+    raise ERangeError.Create('No valid, unused ID could be found within the range between ' + pMinId.ToString + ' and ' + cMaxValidID.ToString);
+  finally
+    lIDs.Free;
+  end;
+end;
+
 procedure TFrameCommands.BtnGenerateIDClick(Sender: TObject);
 var
   command: TRibbonCommand;
   highID : integer;
+  lMinID: Integer;
 begin
   highID := 1;
   for command in FDocument.Application.Commands do
     if command.Id > highID then
       highID := command.Id;
-  EditId.Text := IntToStr(highID + 1);
+
+  lMinID := 0;
+
+  if Assigned(ListViewCommands.Selected) then
+    lMinID := ListViewCommands.Selected.Index;
+
+  lMinID := lMinID + 2;
+
+  // By using at least the index of the item, we mimic the behavior of the ribbon compiler's ID auto generation as closely as possible.
+  EditId.Text := FindSmallestUnusedID(lMinID).ToString;
 end;
 
 procedure TFrameCommands.Deactivate;

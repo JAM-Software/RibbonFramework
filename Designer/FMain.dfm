@@ -146,6 +146,12 @@ object FormMain: TFormMain
       ShortCut = 16462
       OnExecute = ActionNewExecute
     end
+    object ActionGenerateCommandIDs: TAction
+      Category = 'Project'
+      Caption = 'Auto generate IDs for all commands'
+      Hint = 'Generates and sets IDs for all commands in this markup.'
+      OnExecute = ActionGenerateCommandIDsExecute
+    end
     object ActionSaveAs: TAction
       Category = 'File'
       Caption = 'Save As'
@@ -699,6 +705,9 @@ object FormMain: TFormMain
       end
       object AutogenerateIDsforallresources1: TMenuItem
         Action = ActionGenerateResourceIDs
+      end
+      object AutogenerateIDsforallcommands1: TMenuItem
+        Action = ActionGenerateCommandIDs
       end
       object Setresourcename1: TMenuItem
         Action = ActionSetResourceName

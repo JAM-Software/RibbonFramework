@@ -656,10 +656,6 @@ begin
   end;
 
   Parent := ParentForm; // Make the form the parent of the ribbon control.
-
-  if csDesigning in ComponentState then
-    exit; // Initializing the ribbon doesn't work in design time, so exit here.
-
   LoadFramework;
 end;
 
@@ -1024,8 +1020,19 @@ var
   Inst: THandle;
   lForm: TCustomForm;
 begin
+  // Don't try to load the framework at design time
+  if csDesigning in ComponentState then
+    exit;
+
+  if (not Available) then
+    Height := 0;
+
   if (Available) and (inherited Visible) and not (FLoaded) then
   begin
+    //Load the framework, using the parent form's handle
+    FLoaded := True;
+    HandleNeeded;
+    FFramework.Initialize(GetParentForm(Self.Owner as TControl).Handle, Self);
     // Load mapper for mapping between commands and VCL actions
     fRibbonMapper := TRibbonMarkupElementList.LookupListByResourceName(FResourceName);
     if Assigned(fRibbonMapper) then
@@ -1037,9 +1044,9 @@ begin
       Inst := FResourceInstance;
     try
       FFramework.LoadUI(Inst, PChar(FResourceName + '_RIBBON'));
-      FLoaded := True;
     except
       on E: EOleException do begin
+        FLoaded := False;
         E.Message := Format(sErrorLoadingRibbonRessource, [Self.ResourceName, e.Message, e.ErrorCode]);
         raise;
       end;
@@ -1048,6 +1055,10 @@ begin
       FOnLoaded(Self);
     if roAutoPreserveState in Options then
       LoadRibbonSettings();
+
+    // Restore potential old application mode settings. Certain situations (e.g. RecreateWnd) will recreate the ribbon with the default modes, so we need to reapply them here.
+    if fApplicationModes <> [] then
+      Set_ApplicationModes(fApplicationModes);
 
     lForm := GetParentForm(Self);
     // Set the background color for the form if not yet defined. Use the same
@@ -1070,24 +1081,18 @@ procedure TUIRibbon.LoadFramework;
 var
   Intf: IUnknown;
 begin
+  // Don't try to load the framework at design time
   if (csDesigning in ComponentState) then
     exit;
-  FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil,
-      CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
-  if (not FAvailable) then
-    Height := 0
-  else
-  begin
-    FFramework := Intf as IUIFramework;
-    FFramework.Initialize(GetParentForm(Self.Owner as TControl).Handle, Self);
-  end;
+
+  FAvailable := Succeeded(CoCreateInstance(CLSID_UIRibbonFramework, nil, CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER, IUnknown, Intf));
+  FFramework := Intf as IUIFramework;
 end;
 
 procedure TUIRibbon.CreateWnd;
 begin
   inherited;
-  LoadFramework(); // Always force reload of framework, see issue #95
-  Load();
+  Load;
 end;
 
 procedure TUIRibbon.DestroyWnd;
@@ -1095,6 +1100,8 @@ begin
   inherited;
   if Assigned(FFramework) then
     FFramework := nil;
+  if (csRecreating in ControlState) then
+    LoadFramework;
   FCommands.Clear;
   fLoaded := False;
 end;

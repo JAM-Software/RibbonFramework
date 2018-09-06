@@ -1124,6 +1124,8 @@ begin
   except
     on E: EOleError do
       {$IFDEF DEBUG}raise;{$else}Exit(False);{$endif}
+    on E: EFOpenError do
+      {$IFDEF DEBUG}raise;{$else}Exit(False);{$endif}
   end;
   Exit(True);
 end;

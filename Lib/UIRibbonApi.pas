@@ -21,6 +21,12 @@ uses
   Windows,
   ActiveX;
 
+{$HPPEMIT '#ifdef _WIN64'}
+  {$HPPEMIT '#pragma link "UIRibbonPackage.a"'}
+{$HPPEMIT '#else'}
+  {$HPPEMIT '#pragma link "UIRibbonPackage.lib"'}
+{$HPPEMIT '#endif'}
+
 {$MINENUMSIZE 4}
 {$ALIGN 8}
 

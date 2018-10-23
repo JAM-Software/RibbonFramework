@@ -157,6 +157,12 @@ type
       /// <returns>None</returns>collection
       procedure Add(pAction: TCustomAction); overload;
       procedure Add(const pLabel: string); overload;
+      /// <summary>Inserts an action to the internal list and populates it to the command</summary>
+      /// <param name="pIndex">[Integer] The position to insert at.</param>
+      /// <param name="pAction">[TCustomAction] The action that will be added to the collection.</param>
+      /// <seealso cref="Add" />
+      /// <seealso cref="IList.Insert" />
+      procedure Insert(pIndex: Integer; pAction: TCustomAction);
       /// <summary>
       /// Removes an action from the internal list and populates it to the command.
       /// </summary>
@@ -765,6 +771,12 @@ end;
 function TRibbonCollectionAction.GetItem(pIndex: Integer): TCustomAction;
 begin
   Exit(fActionList[pIndex]);
+end;
+
+procedure TRibbonCollectionAction.Insert(pIndex: Integer; pAction: TCustomAction);
+begin
+  fActionList.Insert(pIndex, pAction);
+  RefreshCommandCollection;
 end;
 
 function TRibbonCollectionAction.IsCurrentlyDisplayed: Boolean;

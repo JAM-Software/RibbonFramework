@@ -1186,11 +1186,12 @@ var
   CommandClass: TUICommandClass;
   Command: TUICommand;
 begin
-  CommandClass := UI_COMMAND_CLASSES[TUICommandType(TypeId)];
-  if (CommandClass = nil) then
-    Result := E_FAIL
-  else
-  begin
+  Result := S_OK;
+  try
+    CommandClass := UI_COMMAND_CLASSES[TUICommandType(TypeId)];
+    if (CommandClass = nil) then
+      Exit(E_FAIL);
+
     if (not FCommands.TryGetValue(CommandId, Command)) then
     begin
       if (CommandClass = TUICommandRecentItems) and Assigned(fRecentItems) then begin
@@ -1205,7 +1206,8 @@ begin
 
     CommandHandler := Command;
     TUICommandAccess(Command).Alive := True;
-    Result := S_OK;
+  except
+    Application.HandleException(Self); // Process otherwise completely unhandled exceptions in this scenario.
   end;
 end;
 

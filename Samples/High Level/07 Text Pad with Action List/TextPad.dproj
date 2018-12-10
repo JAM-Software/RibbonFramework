@@ -57,7 +57,6 @@
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
-        <Custom_Styles>Carbon|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Carbon.vsf</Custom_Styles>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>

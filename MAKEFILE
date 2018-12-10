@@ -1,24 +1,29 @@
-BUILD=C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBUILD.exe
+BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
+BUILD = $(BUILDEXE) /t:Rebuild
 EMBARCADERO = $(PROGRAMFILES)\Embarcadero\RAD Studio
 STUDIO = $(PROGRAMFILES)\Embarcadero\Studio
 BDSCOMMONDIRMAIN = %PUBLIC%\Documents\Embarcadero\Studio\
 
 clean: 
 	DEL /S *.EXE
+	DEL /S *.DCU
+	DEL /S *.BPL
 	
-UIRibbonPackage: 
+Package: 
 	SET BDS=$(STUDIO)\$(BDSVersion)
 	$(BUILD) "Package\UIRibbonPackage.dproj"
-	$(MAKE) _samples
 	
-_Berlin: 
-	$(MAKE) UIRibbonPackage "BDSVersion=18.0"
+10.2: 
+	$(MAKE) Package "BDSVersion=19.0"
+
+10.1: 
+	$(MAKE) Package "BDSVersion=18.0"
 
 _XE8:
-	$(MAKE) UIRibbonPackage "BDSVersion=16.0"
+	$(MAKE) Package "BDSVersion=16.0"
 
 _XE7:
-	$(MAKE) UIRibbonPackage "BDSVersion=15.0"
+	$(MAKE) Package "BDSVersion=15.0"
 
 _XE5:
 	SET BDS=$(EMBARCADERO)\12.0
@@ -26,7 +31,7 @@ _XE5:
 	$(MAKE) _samples
 
 "Designer\Bin\RibbonDesigner.exe": Designer\*.pas Designer\*.dfm Designer\*.dpr Designer\*.dproj 
-	SET BDS=$(STUDIO)\15.0
+	SET BDS=$(STUDIO)\19.0
 	$(BUILD) /p:Config=Release "Designer\RibbonDesigner.dproj"
 
 "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\High Level\01 Simple Ribbon\*.dproj" "Samples\High Level\01 Simple Ribbon\*.pas" "Samples\High Level\01 Simple Ribbon\*.dpr"
@@ -52,4 +57,4 @@ _XE5:
 	
 _samples: "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe" "Samples\High Level\02 Context Popup\ContextPopup.exe" "Samples\High Level\03 DropDown Color Picker\DropDownColorPicker.exe" "Samples\High Level\04 Gallery\Gallery.exe" "Samples\High Level\05 Font Control\FontControl.exe" "Samples\High Level\06 Text Pad\TextPad.exe" "Samples\High Level\07 Text Pad with Action List\TextPad.exe"
 	
-_continuousbuilds: clean _XE7 _Berlin "Designer\Bin\RibbonDesigner.exe"
+_continuousbuilds: clean 10.2 "Designer\Bin\RibbonDesigner.exe" _samples

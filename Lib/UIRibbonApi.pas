@@ -322,6 +322,10 @@ const
   UI_PKEY_GlobalTextColor: TUIPropertyKey =
     (FmtId: '{000007D2-7363-696E-8441-798ACF5AEBB7}'; PId: VT_UI4);
 
+  // DEFINE_UIPROPERTYKEY(UI_PKEY_DarkModeRibbon,               VT_BOOL,                2004);
+  UI_PKEY_DarkModeRibbon: TUIPropertyKEy =
+    (FmtId: '{000007D4-7363-696E-8441-798ACF5AEBB7}'; PId: VT_BOOL);
+
 // Hue, Saturation, Brightness color specification
 
 type

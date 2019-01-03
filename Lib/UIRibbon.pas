@@ -82,6 +82,14 @@ type
   /// </summary>
   TRibbonApplicationModes = set of TRibbonApplicationMode;
 
+  /// <summary>
+  /// Used for property "UseDarkMode". Values of this enum determine whether or not the ribbon should support Windows' "Dark Mode". The different values are:
+  ///   TDarkMode.Always: Always enable the dark mode for the ribbon (if supported by the operating system)
+  ///   TDarkMode.Auto: Use the same setting as Windows to determine wheter or not the ribbon should be displayed in dark mode, or not. If the user selected dark mode for Windows, the ribbon will use it as well.
+  ///   TDarkMode.Never: Don't use the dark mode at all.
+  /// </summary>
+  TDarkMode = (Always, Auto, Never);
+
 type
   TUIRibbon = class;
 
@@ -159,6 +167,7 @@ type
     /// The highest command Id that was used until now. Used for the generation of a unique command id.
     fMaxCommandId: Cardinal;
     fRibbonState: TUIRibbonStates;
+    fUseDarkMode: TDarkMode;
 
     /// <summary>
     ///  Sets the application modes for this Ribbon form.
@@ -224,6 +233,7 @@ type
     procedure AddCommand(const Command: TUICommand);
     function GetColor(const PropKey: TUIPropertyKey): TUIHsbColor;
     procedure SetColor(const PropKey: TUIPropertyKey; const Value: TUIHsbColor);
+    procedure SetUseDarkMode(const pValue: TDarkMode);
     /// <summary>
     ///  Gets the path of the Ribbon settings file.
     /// </summary>
@@ -396,6 +406,11 @@ type
     function GetCommand(pAction: TCustomAction): TUICommand;
 
     /// <summary>
+    /// Applies the current setting of the property UseDarkMode. If TDarkMode.Auto is set, this procedure will determine the current Windows setting and apply it to the ribbon accordingly.
+    /// </summary>
+    procedure UpdateDarkModeSetting;
+
+    /// <summary>
     ///  Sets the "Recent items" list in the application menu.
     /// </summary>
     /// <param name="pAction">The related action for the recent items.</param>
@@ -512,6 +527,10 @@ type
     /// </remarks>
     property Options: TUIRibbonOptions read fOptions write fOptions default [roAutoPreserveState];
 
+    /// <summary>
+    /// (Windows 10 1809 and higher) This property will determine whether or not the ribbon supports a "Dark Mode". The mode can be disabled/enabled permanently, or set in accordance to Windows' internal setting for the dark mode.
+    /// </summary>
+    property UseDarkMode: TDarkMode read fUseDarkMode write SetUseDarkMode default TDarkMode.Never;
     { The event that is fired when the Ribbon Framework creates a command. }
     property OnCommandCreate: TUIRibbomCommandEvent read FOnCommandCreate write FOnCommandCreate;
     { The event that is fired when the Ribbon Framework has been loaded. }
@@ -536,7 +555,8 @@ uses
   Math,
   UITypes,
   UIRibbonActions,
-  UIRibbonUtils;
+  UIRibbonUtils, 
+  System.Win.Registry;
 
 type
   TUICommandAccess = class(TUICommand);
@@ -643,6 +663,7 @@ begin
   FResourceInstance := 0;
   FResourceName := 'APPLICATION';
   FCommands := TObjectDictionary<Cardinal, TUICommand>.Create([doOwnsValues]);
+  fUseDarkMode := TDarkMode.Never;
 
   // Ensure the control is used on a TCustomForm.
   ParentForm := GetParentForm(AOwner as TWinControl);
@@ -794,6 +815,62 @@ begin
   begin
     if Succeeded(PropertyStore.GetValue(TPropertyKey(PropKey), PropValue)) then
       UIPropertyToUInt32(PropKey, PropValue, Result);
+  end;
+end;
+
+procedure TUIRibbon.SetUseDarkMode(const pValue: TDarkMode);
+begin
+  fUseDarkMode := pValue;
+  if Self.IsLoaded then
+    UpdateDarkModeSetting;
+end;
+
+procedure TUIRibbon.UpdateDarkModeSetting;
+var
+  PropertyStore: IPropertyStore;
+  PropValue: TPropVariant;
+  lEnable: Boolean;
+
+  /// Tries to lookup the user's setting for "dark mode" in the registry. If no such entry is found, an ERegistryException is raised.
+  function IsDarkThemeEnabled: Boolean;
+  var
+    lRegistry: TRegistry;
+
+  const
+    cThemesKey = 'Software\Microsoft\Windows\CurrentVersion\Themes\Personalize';
+    cAppsUseLightTheme = 'AppsUseLightTheme';
+
+  begin
+    //Check value of "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+    lRegistry := TRegistry.Create(KEY_READ);
+    try
+     lRegistry.RootKey := HKEY_CURRENT_USER;
+
+     lRegistry.OpenKey(cThemesKey, False);
+     Result := not lRegistry.ReadBool(cAppsUseLightTheme);
+   finally
+     lRegistry.Free;
+   end;
+ end;
+
+begin
+  if fUseDarkMode = TDarkMode.Always then
+    lEnable := True
+  else if fUseDarkMode = TDarkMode.Never then
+    lEnable := False
+  else
+    try
+      lEnable := IsDarkThemeEnabled; // fUseDarkMode = TDarkMode.Auto
+    except on E: ERegistryException do
+      // Registry entry doens't exist (e.g. Windows version < 10) -> Exit;
+      Exit;
+    end;
+
+  if Assigned(FFramework) and Supports(FFramework, IPropertyStore, PropertyStore) then
+  begin
+    UIInitPropertyFromBoolean(UI_PKEY_DarkModeRibbon, lEnable, PropValue);
+    PropertyStore.SetValue(TPropertyKey(UI_PKEY_DarkModeRibbon), PropValue);
+    PropertyStore.Commit;
   end;
 end;
 
@@ -1059,6 +1136,8 @@ begin
     // Restore potential old application mode settings. Certain situations (e.g. RecreateWnd) will recreate the ribbon with the default modes, so we need to reapply them here.
     if fApplicationModes <> [] then
       Set_ApplicationModes(fApplicationModes);
+
+    UpdateDarkModeSetting;
 
     lForm := GetParentForm(Self);
     // Set the background color for the form if not yet defined. Use the same

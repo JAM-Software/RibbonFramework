@@ -42,6 +42,9 @@ type
 
 resourcestring
   RS_CANNOT_SAVE_SETTINGS = 'Unable to save settings.';
+  RS_TOOLS_HEADER = 'Cannot find compilation tools';
+  RS_TOOLS_MESSAGE = 'One or more ribbon compilation tools (UICC.exe and DCC32.exe) could not be found.';
+  RS_TOOLS_SETUP = 'Do you want to open the settings dialog box to specify the locations of these tools now?';
 
 implementation
 

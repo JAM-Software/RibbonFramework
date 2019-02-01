@@ -38,6 +38,7 @@ type
 
     property OutputDllPath: String read FOutputDllPath;
     property OnMessage: TRibbonCompilerMessageEvent read FOnMessage write FOnMessage;
+    class procedure HandleCommandLine; static;
   end;
 
 resourcestring
@@ -56,13 +57,21 @@ implementation
 uses
   Windows,
   IOUtils,
-  Settings;
+  Settings,
+  MarkupGenerator;
 
 { TRibbonCompiler }
 
 function TRibbonCompiler.Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'): TRibbonCompileResult;
 var
   DocDir, DprFilename: String;
+  lResouceCompilerPath: string;
+  lMarkupGenerator: TMarkupGenerator;
+  lBmlFileParam: string;
+  lHeaderFileParam: string;
+  lRcFilePath: string;
+  lRcFileParam: string;
+  lNameParam: string;
 begin
   try
     if (Document.Filename = '') or (not TFile.Exists(Document.Filename)) then
@@ -82,10 +91,28 @@ begin
 
     DocDir := ExtractFilePath(Document.Filename);
 
-    if (not Execute('powershell', DocDir,
-      ['-NoProfile', '-ExecutionPolicy Bypass', '-f "' + IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'Generate.Ribbon.Markup.pas.ps1"', Document.Filename.QuotedString('"'), ResourceName, TSettings.Instance.RibbonCompilerDir.QuotedString('"')]))
-    then
+    lBmlFileParam := ChangeFileExt(Document.Filename, '.bml').QuotedString('"');
+    lHeaderFileParam := Format('"/header:%s"', [ChangeFileExt(Document.Filename, '.h')]);
+    lRcFilePath := ChangeFileExt(Document.Filename, '.rc');
+    lRcFileParam := Format('"/res:%s"', [lRcFilePath]);
+    lNameParam := Format('"/name:%s"', [ResourceName]);
+
+    // Run ribbon compiler UICC.exe to convert the markup XML to a header, a resource and a bml file.
+    if not Execute(TSettings.Instance.RibbonCompilerPath, DocDir, ['"/W0"', Document.Filename.QuotedString('"'), lBmlFileParam, lHeaderFileParam, lRcFileParam, lNameParam]) then
       Exit(crRibbonCompilerError);
+
+    // Run the resource compiler, so that we can include the file into a .pas file
+    lResouceCompilerPath := ExtractFilePath(TSettings.Instance.RibbonCompilerPath) + 'rc.exe';
+    if not Execute(lResouceCompilerPath, DocDir, [lRcFilePath.QuotedString('"')]) then
+      Exit(crResourceCompilerError);
+
+    // Generate the pas file, using the generated files from the previous steps.
+    lMarkupGenerator := TMarkupGenerator.Create(Document.Filename, ResourceName);
+    try
+      lMarkupGenerator.GenerateMarkupFiles;
+    finally
+      lMarkupGenerator.Free;
+    end;
 
     DoMessage(mkInfo, sLineBreak + RS_STARTING_DELPHI_COMPILER);
     DprFilename := ChangeFileExt(Document.Filename, '.dpr');
@@ -247,6 +274,49 @@ begin
   finally
     CloseHandle(ReadPipe);
     CloseHandle(WritePipe);
+  end;
+end;
+
+class procedure TRibbonCompiler.HandleCommandLine;
+var
+  lRibbonFile: string;
+  lRibbonDocument: TRibbonDocument;
+  lRibbonCompiler: TRibbonCompiler;
+begin
+  if (ParamCount = 0) or (ParamCount > 2) or FindCmdLineSwitch('HELP') or FindCmdLineSwitch('?') then
+    writeln('Usage: RibbonCMDCompiler.exe [markupfile] [Resourcename (optional)].')
+  else begin
+    lRibbonFile := ParamStr(1);
+
+    if not FileExists(lRibbonFile) then
+      writeln('File not found: ' + lRibbonFile)
+
+    else if not TSettings.Instance.ToolsAvailable then
+      writeln(RS_TOOLS_HEADER + sLineBreak + RS_TOOLS_MESSAGE)
+
+    else begin
+      lRibbonCompiler := TRibbonCompiler.Create;
+      try
+        lRibbonDocument := TRibbonDocument.Create;
+        try
+          try
+            lRibbonDocument.LoadFromFile(lRibbonFile);
+          except on E: ERibbonMarkupError do
+            writeln(E.Message);
+          end;
+
+        if not ParamStr(2).IsEmpty then
+          lRibbonCompiler.Compile(lRibbonDocument, ParamStr(2))
+        else
+          lRibbonCompiler.Compile(lRibbonDocument);
+
+        finally
+          lRibbonDocument.Free;
+        end;
+      finally
+        lRibbonCompiler.Free;
+      end;
+    end;
   end;
 end;
 

@@ -130,13 +130,20 @@ begin
 
     if (FRibbonCompilerPath = '') then
     begin
-      FRibbonCompilerPath := ExtractFilePath(ParamStr(0)) + 'UICC.exe';
+      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\8.1\bin\x86\uicc.exe';
+      if (not TFile.Exists(FRibbonCompilerPath)) then
+        FRibbonCompilerPath := '';
+    end;
+
+    if (FRibbonCompilerPath = '') then
+    begin
+      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\10\bin\x86\uicc.exe';
       if (not TFile.Exists(FRibbonCompilerPath)) then
         FRibbonCompilerPath := '';
     end;
 
     Reg.RootKey := HKEY_CURRENT_USER;
-    for BdsVersion := 20 downto 10 do
+    for BdsVersion := 30 downto 10 do
     begin
       BdsKey := 'Software\Embarcadero\BDS\' + IntToStr(BdsVersion) + '.0';
       if (Reg.OpenKeyReadOnly(BdsKey)) then

@@ -282,10 +282,12 @@ var
   lRibbonFile: string;
   lRibbonDocument: TRibbonDocument;
   lRibbonCompiler: TRibbonCompiler;
+  lSuccess: Boolean;
 begin
   if (ParamCount = 0) or (ParamCount > 2) or FindCmdLineSwitch('HELP') or FindCmdLineSwitch('?') then
     writeln('Usage: RibbonCMDCompiler.exe [markupfile] [Resourcename (optional)].')
   else begin
+    ExitCode := 1;
     lRibbonFile := ParamStr(1);
 
     if not FileExists(lRibbonFile) then
@@ -306,9 +308,12 @@ begin
           end;
 
         if not ParamStr(2).IsEmpty then
-          lRibbonCompiler.Compile(lRibbonDocument, ParamStr(2))
+          lSuccess := lRibbonCompiler.Compile(lRibbonDocument, ParamStr(2)) = crOk
         else
-          lRibbonCompiler.Compile(lRibbonDocument);
+          lSuccess := lRibbonCompiler.Compile(lRibbonDocument) = crOk;
+
+        if lSuccess then
+          ExitCode := 0;
 
         finally
           lRibbonDocument.Free;

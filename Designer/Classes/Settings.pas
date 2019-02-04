@@ -96,17 +96,24 @@ var
   SdkPath, BdsKey, BdsPath: String;
   BdsVersion: Integer;
 begin
+  // Check %PATH% variable first to find ribbon compiler UICC.exe
+  FRibbonCompilerPath := FileSearch('UICC.exe', GetEnvironmentVariable('PATH'));
+
   Reg := TRegistry.Create;
   try
-    Reg.RootKey := HKEY_LOCAL_MACHINE;
-    if (Reg.OpenKeyReadOnly('SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0\WinSDKTools')) then
+    if (FRibbonCompilerPath = '') then
     begin
-      SdkPath := Reg.ReadString('InstallationFolder');
-      if (SdkPath <> '') then
+
+      Reg.RootKey := HKEY_LOCAL_MACHINE;
+      if (Reg.OpenKeyReadOnly('SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0\WinSDKTools')) then
       begin
-        FRibbonCompilerPath := TPath.Combine(SdkPath, 'UICC.exe');
-        if (not TFile.Exists(FRibbonCompilerPath)) then
-          FRibbonCompilerPath := '';
+        SdkPath := Reg.ReadString('InstallationFolder');
+        if (SdkPath <> '') then
+        begin
+          FRibbonCompilerPath := TPath.Combine(SdkPath, 'UICC.exe');
+          if (not TFile.Exists(FRibbonCompilerPath)) then
+            FRibbonCompilerPath := '';
+        end;
       end;
     end;
 

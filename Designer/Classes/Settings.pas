@@ -14,12 +14,15 @@ type
   strict private
     FSettingsFilename: String;
     FRibbonCompilerPath: String;
-    _FResourceCompilerPath: String; // No longer needed
+    FResourceCompilerPath: String;
     FDelphiCompilerPath: String;
   private
     constructor Create(const Dummy: Integer); overload;
     procedure Load;
     function GetRibbonCompilerPath: String;
+    /// Searches the %PATH% environment variable and different well-known locations of the Winodws toolkit for the given exe file.
+    /// Returns the full path to the exe file, if it can be found. If no such path can be found, an empty string is returned-
+    function FindTool(const pExeName: string): string;
   public
     class constructor Create;
     class destructor Destroy;
@@ -35,6 +38,7 @@ type
     class property Instance: TSettings read FInstance;
 
     property RibbonCompilerPath: String read FRibbonCompilerPath write FRibbonCompilerPath;
+    property ResourceCompilerPath: String read FResourceCompilerPath write FResourceCompilerPath;
     /// The path of the directory in which the ribbon compiler UICC.exe can be found
     property RibbonCompilerDir: String read GetRibbonCompilerPath;
     property DelphiCompilerPath: String read FDelphiCompilerPath write FDelphiCompilerPath;
@@ -93,90 +97,106 @@ end;
 procedure TSettings.DetectTools();
 var
   Reg: TRegistry;
-  SdkPath, BdsKey, BdsPath: String;
   BdsVersion: Integer;
+  BdsKey, BdsPath: String;
 begin
-  // Check %PATH% variable first to find ribbon compiler UICC.exe
-  FRibbonCompilerPath := FileSearch('UICC.exe', GetEnvironmentVariable('PATH'));
+  FRibbonCompilerPath := FindTool('UICC.exe');
+  FResourceCompilerPath := FindTool('rc.exe');
 
+  // Find delphi compiler
   Reg := TRegistry.Create;
   try
-    if (FRibbonCompilerPath = '') then
-    begin
+    Reg.RootKey := HKEY_CURRENT_USER;
+      for BdsVersion := 30 downto 10 do
+      begin
+        BdsKey := 'Software\Embarcadero\BDS\' + IntToStr(BdsVersion) + '.0';
+        if (Reg.OpenKeyReadOnly(BdsKey)) then
+        begin
+          BdsPath := Reg.ReadString('RootDir');
+          if (BdsPath <> '') then
+          begin
+            BdsPath := TPath.Combine(BdsPath, 'bin');
+            if (FDelphiCompilerPath = '') then
+            begin
+              FDelphiCompilerPath := TPath.Combine(BdsPath, 'DCC32.exe');
+              if (not TFile.Exists(FDelphiCompilerPath)) then
+                FDelphiCompilerPath := '';
+            end;
+          end;
+        end;
 
+        if (FDelphiCompilerPath <> '') then
+          Break;
+      end;
+  finally
+    Reg.Free;
+  end;
+
+end;
+
+function TSettings.FindTool(const pExeName: string): string;
+var
+  Reg: TRegistry;
+  SdkPath: string;
+begin
+  // Check %PATH% variable first to find ribbon compiler UICC.exe
+  Result := FileSearch(pExeName, GetEnvironmentVariable('PATH'));
+
+  if (Result = '') then
+  begin
+    Reg := TRegistry.Create;
+    try
       Reg.RootKey := HKEY_LOCAL_MACHINE;
       if (Reg.OpenKeyReadOnly('SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0\WinSDKTools')) then
       begin
         SdkPath := Reg.ReadString('InstallationFolder');
         if (SdkPath <> '') then
         begin
-          FRibbonCompilerPath := TPath.Combine(SdkPath, 'UICC.exe');
-          if (not TFile.Exists(FRibbonCompilerPath)) then
-            FRibbonCompilerPath := '';
+          Result := TPath.Combine(SdkPath, pExeName);
+          if (not TFile.Exists(Result)) then
+            Result := '';
         end;
       end;
+    finally
+      Reg.Free;
     end;
-
-    if (FRibbonCompilerPath = '') then
-    begin
-      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Microsoft SDKs\Windows\v7.1\Bin\UICC.exe';
-      if (not TFile.Exists(FRibbonCompilerPath)) then
-        FRibbonCompilerPath := '';
-    end;
-
-    if (FRibbonCompilerPath = '') then
-    begin
-      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Microsoft SDKs\Windows\v7.1\Bin\UICC.exe';
-      if (not TFile.Exists(FRibbonCompilerPath)) then
-        FRibbonCompilerPath := '';
-    end;
-
-    if (FRibbonCompilerPath = '') then
-    begin
-      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\8.1\bin\x86\uicc.exe';
-      if (not TFile.Exists(FRibbonCompilerPath)) then
-        FRibbonCompilerPath := '';
-    end;
-
-    if (FRibbonCompilerPath = '') then
-    begin
-      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\8.1\bin\x86\uicc.exe';
-      if (not TFile.Exists(FRibbonCompilerPath)) then
-        FRibbonCompilerPath := '';
-    end;
-
-    if (FRibbonCompilerPath = '') then
-    begin
-      FRibbonCompilerPath := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\10\bin\x86\uicc.exe';
-      if (not TFile.Exists(FRibbonCompilerPath)) then
-        FRibbonCompilerPath := '';
-    end;
-
-    Reg.RootKey := HKEY_CURRENT_USER;
-    for BdsVersion := 30 downto 10 do
-    begin
-      BdsKey := 'Software\Embarcadero\BDS\' + IntToStr(BdsVersion) + '.0';
-      if (Reg.OpenKeyReadOnly(BdsKey)) then
-      begin
-        BdsPath := Reg.ReadString('RootDir');
-        if (BdsPath <> '') then
-        begin
-          BdsPath := TPath.Combine(BdsPath, 'bin');
-          if (FDelphiCompilerPath = '') then
-          begin
-            FDelphiCompilerPath := TPath.Combine(BdsPath, 'DCC32.exe');
-            if (not TFile.Exists(FDelphiCompilerPath)) then
-              FDelphiCompilerPath := '';
-          end;
-        end;
-      end;
-
-      if (FRibbonCompilerPath <> '') and (FDelphiCompilerPath <> '') then
-        Break;
-    end;
-  finally
-    Reg.Free;
   end;
+
+  if (Result = '') then
+  begin
+    Result := GetEnvironmentVariable('ProgramW6432') + '\Microsoft SDKs\Windows\v7.1\Bin\' + pExeName;
+    if (not TFile.Exists(Result)) then
+      Result := '';
+  end;
+
+  if (Result = '') then
+  begin
+    Result := GetEnvironmentVariable('ProgramW6432') + '\Microsoft SDKs\Windows\v7.1\Bin\' + pExeName;
+    if (not TFile.Exists(Result)) then
+      Result := '';
+  end;
+
+  if (Result = '') then
+  begin
+    Result := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\8.1\bin\x86\' + pExeName;
+    if (not TFile.Exists(Result)) then
+      Result := '';
+  end;
+
+  if (Result = '') then
+  begin
+    Result := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\8.1\bin\x86\' + pExeName;
+    if (not TFile.Exists(Result)) then
+      Result := '';
+  end;
+
+  if (Result = '') then
+  begin
+    Result := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\10\bin\x86\' + pExeName;
+    if (not TFile.Exists(Result)) then
+      Result := '';
+  end;
+
 end;
 
 function TSettings.GetRibbonCompilerPath: String;
@@ -252,7 +272,7 @@ begin
     Writer.Indent := True;
     Writer.WriteStartElement(EN_SETTINGS);
     SaveSetting(SN_RIBBON_COMPILER, FRibbonCompilerPath);
-    SaveSetting(SN_RESOURCE_COMPILER, _FResourceCompilerPath);
+    SaveSetting(SN_RESOURCE_COMPILER, FResourceCompilerPath);
     SaveSetting(SN_DELPHI_COMPILER, FDelphiCompilerPath);
     Writer.WriteEndElement;
     Xml := Writer.AsXml;

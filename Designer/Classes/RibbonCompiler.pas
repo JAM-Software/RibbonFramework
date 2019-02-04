@@ -65,7 +65,6 @@ uses
 function TRibbonCompiler.Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'): TRibbonCompileResult;
 var
   DocDir, DprFilename: String;
-  lResouceCompilerPath: string;
   lMarkupGenerator: TMarkupGenerator;
   lBmlFileParam: string;
   lHeaderFileParam: string;
@@ -102,8 +101,7 @@ begin
       Exit(crRibbonCompilerError);
 
     // Run the resource compiler, so that we can include the file into a .pas file
-    lResouceCompilerPath := ExtractFilePath(TSettings.Instance.RibbonCompilerPath) + 'rc.exe';
-    if not Execute(lResouceCompilerPath, DocDir, [lRcFilePath.QuotedString('"')]) then
+    if not Execute(TSettings.Instance.ResourceCompilerPath, DocDir, [lRcFilePath.QuotedString('"')]) then
       Exit(crResourceCompilerError);
 
     // Generate the pas file, using the generated files from the previous steps.

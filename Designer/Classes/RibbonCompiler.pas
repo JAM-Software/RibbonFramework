@@ -34,7 +34,7 @@ type
     procedure CreateDelphiProject(const Filename: String);
   {$ENDREGION 'Internal Declarations'}
   public
-    function Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'): TRibbonCompileResult;
+    function Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'; const pCreateDLL: Boolean = False): TRibbonCompileResult;
 
     property OutputDllPath: String read FOutputDllPath;
     property OnMessage: TRibbonCompilerMessageEvent read FOnMessage write FOnMessage;
@@ -62,7 +62,7 @@ uses
 
 { TRibbonCompiler }
 
-function TRibbonCompiler.Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'): TRibbonCompileResult;
+function TRibbonCompiler.Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'; const pCreateDLL: Boolean = False): TRibbonCompileResult;
 var
   DocDir, DprFilename: String;
   lMarkupGenerator: TMarkupGenerator;
@@ -112,26 +112,30 @@ begin
       lMarkupGenerator.Free;
     end;
 
-    DoMessage(mkInfo, sLineBreak + RS_STARTING_DELPHI_COMPILER);
-    DprFilename := ChangeFileExt(Document.Filename, '.dpr');
-    CreateDelphiProject(DprFilename);
-    if (not Execute(TSettings.Instance.DelphiCompilerPath, DocDir,
-      ['"' + DprFilename + '"']))
-    then
-      Exit(crDelphiCompilerError);
+    if pCreateDLL then
+    begin
+      DoMessage(mkInfo, sLineBreak + RS_STARTING_DELPHI_COMPILER);
+      DprFilename := ChangeFileExt(Document.Filename, '.dpr');
+      CreateDelphiProject(DprFilename);
+      if (not Execute(TSettings.Instance.DelphiCompilerPath, DocDir,
+        ['"' + DprFilename + '"']))
+      then
+        Exit(crDelphiCompilerError);
 
-    DoMessage(mkInfo, '');
-    FOutputDllPath := ChangeFileExt(DprFilename, '.dll');
-    if (TFile.Exists(FOutputDllPath)) then
-    begin
+      DoMessage(mkInfo, '');
+      FOutputDllPath := ChangeFileExt(DprFilename, '.dll');
+      if (TFile.Exists(FOutputDllPath)) then
+      begin
+        Result := crOk;
+        DoMessage(mkInfo, RS_COMPILE_SUCCESS)
+      end
+      else
+      begin
+        Result := crNoOutput;
+        DoMessage(mkError, RS_NO_DLL);
+      end;
+    end else
       Result := crOk;
-      DoMessage(mkInfo, RS_COMPILE_SUCCESS)
-    end
-    else
-    begin
-      Result := crNoOutput;
-      DoMessage(mkError, RS_NO_DLL);
-    end;
   except
     on E: Exception do
     begin

@@ -9,7 +9,7 @@ uses
   ActnMan,
   UIRibbonCommands,
   System.Generics.Collections,
-  Winapi.ActiveX, 
+  Winapi.ActiveX,
   UIRibbonApi;
 
 type
@@ -583,7 +583,7 @@ var
   lAction: TCustomAction;
   lCategory: string;
   lItem: TUIGalleryCollectionItem;
-  lCommandAction: TUICommandAction;
+  lCommandAction: TUICommand;
   lCommandCollection: TUICommandCollection;
   I, lTargetCategoryId: Integer;
 
@@ -643,7 +643,7 @@ begin
         lTargetCategoryId := FindOrCreateCategory(lCategory);
 
       // Create a new command item and assign the target action
-      lCommandAction := TUICommandAction.Create((lCommandCollection.Owner as TUIRibbon), lAction);
+      lCommandAction := TUICommandBoolean.Create((lCommandCollection.Owner as TUIRibbon), lAction);
       lCommandAction.OnUpdateProperty := PropertyUpdated;
 
       // Create a collection item, that holds the action and can be added to the collection.

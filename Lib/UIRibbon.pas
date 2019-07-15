@@ -555,7 +555,7 @@ uses
   Math,
   UITypes,
   UIRibbonActions,
-  UIRibbonUtils, 
+  UIRibbonUtils,
   System.Win.Registry;
 
 type
@@ -721,6 +721,11 @@ destructor TUIRibbon.Destroy;
 begin
   if roAutoPreserveState in Options then
     SaveRibbonSettings(); // Save quick toolbar, etc.
+
+  //IMPORTANT: IUIFramework.Destroy has to be called before the commands are freed. They seem to be still needed/referenced in certain cases.
+  if Assigned(FFramework) and FAvailable then
+    FFramework.Destroy;
+
   FreeAndNil(FCommands);
   FFramework := nil;
   inherited;
@@ -1177,8 +1182,9 @@ end;
 procedure TUIRibbon.DestroyWnd;
 begin
   inherited;
-  if Assigned(FFramework) then
-    FFramework := nil;
+  if Assigned(FFramework) and  FAvailable then
+    FFramework.Destroy;
+  FFramework := nil;
   if (csRecreating in ControlState) then
     LoadFramework;
   FCommands.Clear;

@@ -23,6 +23,8 @@ type
     /// Searches the %PATH% environment variable and different well-known locations of the Winodws toolkit for the given exe file.
     /// Returns the full path to the exe file, if it can be found. If no such path can be found, an empty string is returned-
     function FindTool(const pExeName: string): string;
+    /// Returns a separated list of paths that can be used to search for the ribbon tools. We use the PATH variable as well as some well known locations.
+    function GetSearchPaths: string;
   public
     class constructor Create;
     class destructor Destroy;
@@ -134,69 +136,30 @@ begin
 
 end;
 
-function TSettings.FindTool(const pExeName: string): string;
+function TSettings.GetSearchPaths: string;
 var
-  Reg: TRegistry;
-  SdkPath: string;
+  lList : TStringList;
 begin
-  // Check %PATH% variable first to find ribbon compiler UICC.exe
-  Result := FileSearch(pExeName, GetEnvironmentVariable('PATH'));
-
-  if (Result = '') then
-  begin
-    Reg := TRegistry.Create;
-    try
-      Reg.RootKey := HKEY_LOCAL_MACHINE;
-      if (Reg.OpenKeyReadOnly('SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0\WinSDKTools')) then
-      begin
-        SdkPath := Reg.ReadString('InstallationFolder');
-        if (SdkPath <> '') then
-        begin
-          Result := TPath.Combine(SdkPath, pExeName);
-          if (not TFile.Exists(Result)) then
-            Result := '';
-        end;
-      end;
-    finally
-      Reg.Free;
-    end;
+  lList := TStringList.Create;
+  try
+    lList.Delimiter := PathSep;
+    lList.Add(GetEnvironmentVariable('PATH')); // Check %PATH% variable first to find ribbon compiler UICC.exe
+    lList.Add(GetEnvironmentVariable('ProgramFiles')      + '\Windows Kits\10\bin\x86\');
+    lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Windows Kits\10\bin\x86\');
+    lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Windows Kits\10\bin\x86\');
+    lList.Add(GetEnvironmentVariable('ProgramFiles')      + '\Windows Kits\8.1\bin\x86\');
+    lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Windows Kits\8.1\bin\x86\');
+    lList.Add(GetEnvironmentVariable('ProgramFiles')      + '\Microsoft SDKs\Windows\v7.1\Bin\');
+    lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Microsoft SDKs\Windows\v7.1\Bin\');
+    Result := lList.DelimitedText.Replace('"', '');
+  finally
+    lList.Free;
   end;
+end;
 
-  if (Result = '') then
-  begin
-    Result := GetEnvironmentVariable('ProgramW6432') + '\Microsoft SDKs\Windows\v7.1\Bin\' + pExeName;
-    if (not TFile.Exists(Result)) then
-      Result := '';
-  end;
-
-  if (Result = '') then
-  begin
-    Result := GetEnvironmentVariable('ProgramW6432') + '\Microsoft SDKs\Windows\v7.1\Bin\' + pExeName;
-    if (not TFile.Exists(Result)) then
-      Result := '';
-  end;
-
-  if (Result = '') then
-  begin
-    Result := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\8.1\bin\x86\' + pExeName;
-    if (not TFile.Exists(Result)) then
-      Result := '';
-  end;
-
-  if (Result = '') then
-  begin
-    Result := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\8.1\bin\x86\' + pExeName;
-    if (not TFile.Exists(Result)) then
-      Result := '';
-  end;
-
-  if (Result = '') then
-  begin
-    Result := GetEnvironmentVariable('ProgramW6432') + '\Windows Kits\10\bin\x86\' + pExeName;
-    if (not TFile.Exists(Result)) then
-      Result := '';
-  end;
-
+function TSettings.FindTool(const pExeName: string): string;
+begin
+  Result := FileSearch(pExeName, GetSearchPaths);
 end;
 
 function TSettings.GetRibbonCompilerPath: String;

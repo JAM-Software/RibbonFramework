@@ -143,7 +143,8 @@ begin
   lList := TStringList.Create;
   try
     lList.Delimiter := PathSep;
-    lList.Add(GetEnvironmentVariable('PATH')); // Check %PATH% variable first to find ribbon compiler UICC.exe
+    lList.Add(ExtractFileDir(ParamStr(0))); // Check current directory of the RibbonCMDCompiler.exe first to find ribbon compiler UICC.exe
+    lList.Add(GetEnvironmentVariable('PATH'));
     lList.Add(GetEnvironmentVariable('ProgramFiles')      + '\Windows Kits\10\bin\x86\');
     lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Windows Kits\10\bin\x86\');
     lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Windows Kits\10\bin\x86\');

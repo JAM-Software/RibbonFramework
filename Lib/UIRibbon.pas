@@ -27,6 +27,7 @@ uses
   Generics.Collections,
   Controls,
   Classes,
+  ImgList,
   ActnList,
   UIRibbonApi,
   UIRibbonCommands;
@@ -211,6 +212,9 @@ type
     function _Release: Integer; stdcall;
   private
     fOnLoadResourceString: TUILoadResourceStringEvent;
+    ///These members are used to register for changes within the action manager's image lists. See procedure RegisterForImageChanges.
+    fImageChangeLink: TChangeLink;
+    fLargeImageChangeLink: TChangeLink;
     { IUIApplication }
     function OnViewChanged(ViewId: UInt32; TypeId: _UIViewType;
       const View: IUnknown; Verb: _UIViewVerb; ReasonCode: Int32): HRESULT; stdcall;
@@ -223,10 +227,14 @@ type
     function GetBackgroundColor: TColor;
     function GetHighlightColor: TColor;
     function GetTextColor: TColor;
+    /// OnChange event handler for fImageChangeLink. Reacts to image changes and refreshes all commands' icons
+    procedure ImageListChange(Sender: TObject);
     procedure SetBackgroundColor(const Value: TColor);
     procedure SetHighlightColor(const Value: TColor);
     procedure SetTextColor(const Value: TColor);
     procedure LoadFramework();
+    /// Called during the initialization of the framework. We register a change event handler towards the action manager's image list (in case that roAssignImagesFromActionManager is used)
+    procedure RegisterForImageChanges;
   protected
     procedure CreateWnd(); override;
     procedure DestroyWnd(); override;
@@ -556,7 +564,8 @@ uses
   UITypes,
   UIRibbonActions,
   UIRibbonUtils,
-  System.Win.Registry;
+  System.Win.Registry,
+  Vcl.ActnMan;
 
 type
   TUICommandAccess = class(TUICommand);
@@ -719,6 +728,8 @@ end;
 
 destructor TUIRibbon.Destroy;
 begin
+  FreeAndNil(fImageChangeLink);
+  FreeAndNil(fLargeImageChangeLink);
   if roAutoPreserveState in Options then
     SaveRibbonSettings(); // Save quick toolbar, etc.
 
@@ -1015,6 +1026,30 @@ begin
   SetContextTabAvailability(pCommandId, TUIContextAvailability.caNotAvailable);
 end;
 
+procedure TUIRibbon.ImageListChange(Sender: TObject);
+var
+  lCommand: TUICommand;
+  lImageIndex: Integer;
+begin
+  if not (roAssignImagesFromActionManager in Self.Options) then
+    Exit; // ActionManager's images are not actually used -> Nothing todo
+
+  // Update all commands
+  for lCommand in Self do
+  begin
+    // Check if this command has an action. If yes, use the action's image index.
+    if Assigned(lCommand.ActionLink) and Assigned(lCommand.ActionLink.Action) then
+      lImageIndex := TCustomAction(lCommand.ActionLink.Action).ImageIndex
+    else
+      continue;
+
+    // Create a new SmallImage and LargeImage
+    lCommand.SmallImage := TUIImage.Create(Self.ActionManager.Images, lImageIndex);
+    if Assigned((Self.ActionManager as TActionManager).LargeImages) then
+      lCommand.LargeImage := TUIImage.Create((Self.ActionManager as TActionManager).LargeImages, lImageIndex);
+  end;
+end;
+
 procedure TUIRibbon.InitiateAction;
 var
   Command: TUICommand;
@@ -1137,6 +1172,8 @@ begin
       FOnLoaded(Self);
     if roAutoPreserveState in Options then
       LoadRibbonSettings();
+    if roAssignImagesFromActionManager in Options then
+      RegisterForImageChanges(); // If we use images from the action manager, register for changes to the image list, so that icons are refreshed whenever a change occurs.
 
     // Restore potential old application mode settings. Certain situations (e.g. RecreateWnd) will recreate the ribbon with the default modes, so we need to reapply them here.
     if fApplicationModes <> [] then
@@ -1158,6 +1195,27 @@ begin
       else
         lForm.Color := GraphUtil.GetHighLightColor(Self.BackgroundColor);//  TColorHelper.IncreaseRgbValues(FRibbon.BackgroundColor, 17, 12, 10)
     end;//if clBtnFace
+  end;
+end;
+
+procedure TUIRibbon.RegisterForImageChanges;
+begin
+  // Create and register our TChangeLink object, so that we can react to updated images of the action manger.
+  if Assigned(fActionManager) then
+  begin
+    if Assigned(fActionManager.Images) then
+    begin
+      fImageChangeLink := TChangeLink.Create;
+      fImageChangeLink.OnChange := ImagelistChange;
+      fActionManager.Images.RegisterChanges(fImageChangeLink);
+    end;
+
+    if (fActionManager is TActionManager) and Assigned((fActionManager as TActionManager).LargeImages) then
+    begin
+      fLargeImageChangeLink := TChangeLink.Create;
+      fLargeImageChangeLink.OnChange := ImagelistChange;
+      (fActionManager as TActionManager).LargeImages.RegisterChanges(fLargeImageChangeLink);
+    end;
   end;
 end;
 

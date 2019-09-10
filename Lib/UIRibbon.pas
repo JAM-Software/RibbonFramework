@@ -1552,7 +1552,8 @@ begin
     UIInitPropertyFromBoolean(UI_PKEY_Minimized, Value, PropValue);
     PropertyStore.SetValue(TPropertyKey(UI_PKEY_Minimized), PropValue);
     PropertyStore.Commit;
-  end else
+  end
+  else if Value then
     fRibbonState := fRibbonState + [TUIRibbonState.MinimizePending]; //Ribbon hasn't received a paint message yet -> Postpone until WMPaint is called.
 end;
 

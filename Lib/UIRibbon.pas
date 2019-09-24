@@ -142,6 +142,7 @@ type
     FCommands: TObjectDictionary<Cardinal, TUICommand>;
     FAvailable: Boolean;
     FOnCommandCreate: TUIRibbomCommandEvent;
+    FOnCommandDestroy: TUIRibbomCommandEvent;
     FOnLoaded: TNotifyEvent;
     FLoaded: Boolean;
     /// Member variable for the property RibbonSettingsFilePath.
@@ -541,6 +542,8 @@ type
     property UseDarkMode: TDarkMode read fUseDarkMode write SetUseDarkMode default TDarkMode.Never;
     { The event that is fired when the Ribbon Framework creates a command. }
     property OnCommandCreate: TUIRibbomCommandEvent read FOnCommandCreate write FOnCommandCreate;
+    { The event that is fired when the Ribbon Framework destroys a command. }
+    property OnCommandDestroy: TUIRibbomCommandEvent read FOnCommandDestroy write FOnCommandDestroy;
     { The event that is fired when the Ribbon Framework has been loaded. }
     property OnLoaded: TNotifyEvent read FOnLoaded write FOnLoaded;
     /// This event is fired when a resource string was loaded, it allows the resource string to be changed.
@@ -1354,10 +1357,12 @@ begin
   end;
 end;
 
-function TUIRibbon.OnDestroyUICommand(CommandId: UInt32; TypeId: _UICommandType;
-  const CommandHandler: IUICommandHandler): HRESULT;
+function TUIRibbon.OnDestroyUICommand(CommandId: UInt32; TypeId: _UICommandType; const CommandHandler: IUICommandHandler): HRESULT;
 begin
   //FCommands.Remove(CommandId);   <- Code commented, because we might still have references to the command at this point. Since it is not ref-counted, we must not destroy it yet.
+  if Assigned(FOnCommandDestroy) then
+    FOnCommandDestroy(Self, FCommands[CommandId]);
+
   Result := S_OK;
 end;
 

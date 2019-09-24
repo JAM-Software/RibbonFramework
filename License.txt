@@ -1,5 +1,5 @@
 Windows Ribbon Framework for Delphi.
-Website: https://github.com/turbopack/ribbonframework/
+Website: https://github.com/Virtual-TreeView/ribbonframework/
 
 Copyright (C) 2015 by Erik van Bilsen, Joachim Marder
 All rights reserved.

@@ -1358,6 +1358,8 @@ begin
 end;
 
 function TUIRibbon.OnDestroyUICommand(CommandId: UInt32; TypeId: _UICommandType; const CommandHandler: IUICommandHandler): HRESULT;
+var
+  lCommand: TUICommand;
 begin
   //FCommands.Remove(CommandId);   <- Code commented, because we might still have references to the command at this point. Since it is not ref-counted, we must not destroy it yet.
   if Assigned(FOnCommandDestroy) and TryGetCommand(CommandId, lCommand) then

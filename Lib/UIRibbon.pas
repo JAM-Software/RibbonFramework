@@ -85,7 +85,7 @@ type
 
   /// <summary>
   /// Used for property "UseDarkMode". Values of this enum determine whether or not the ribbon should support Windows' "Dark Mode". The different values are:
-  ///   TDarkMode.Always: Always enable the dark mode for the ribbon (if supported by the operating system)
+  ///   TDarkMode.Always: Always enable the dark mode for the ribbon (if supported by the operating system, requires Window 10 1809 or higher)
   ///   TDarkMode.Auto: Use the same setting as Windows to determine wheter or not the ribbon should be displayed in dark mode, or not. If the user selected dark mode for Windows, the ribbon will use it as well.
   ///   TDarkMode.Never: Don't use the dark mode at all.
   /// </summary>

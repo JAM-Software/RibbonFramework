@@ -4375,26 +4375,46 @@ end;
 
 constructor TUIImage.Create(pImageList: TCustomImageList; pImageIndex: TImageIndex);
 var
+  lWICImage: TWICImage;
+  lIcon: TIcon;
+  lStream: TStream;
   lBitmap: TBitmap;
+  lWICStream: TMemoryStream;
 begin
   inherited Create;
-  if Assigned(FImageFactory) and Assigned(pImageList) then
+  if Assigned(FImageFactory) and Assigned(pImageList) and (pImageList.Count > 0) and (pImageIndex >= 0) then
   begin
+    lIcon := TIcon.Create;
+    lStream := TMemoryStream.Create;
+    lWICImage := TWICImage.Create;
+    lWICStream := TMemoryStream.Create;
     lBitmap := TBitmap.Create;
     try
-      lBitmap.Width  := pImageList.Width;
-      lBitmap.Height := pImageList.Height;
-      lBitmap.PixelFormat := pf32bit;
-      lBitmap.Transparent := True;
-      // Draw empty background (for transparency)
-      lBitmap.Canvas.Brush.Color := clNone;
-      lBitmap.Canvas.FillRect(lBitmap.Canvas.ClipRect);
-      if not ImageList_DrawEx(pImageList.Handle, pImageIndex, lBitmap.Canvas.Handle, (lBitmap.Width - pImageList.Width) div 2, (lBitmap.Height - pImageList.Height) div 2, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT) then
-        exit;
+      // Load icon from image list to TIcon and save to a TMemoryStream
+      pImageList.GetIcon(pImageindex, lIcon);
+      try
+        lIcon.SaveToStream(lStream);
+      except on E: EInvalidGraphic do
+        Exit;
+      end;
+
+      // Load stream into a TWICImage, convert to BMP, save to TMemoryStream
+      lWICImage.LoadFromStream(lStream);
+      lWICImage.ImageFormat := TWICImageFormat.wifBmp;
+      lWICImage.SaveToStream(lWICStream);
+      lWICSTream.Seek(0, TSeekOrigin.soBeginning);
+
+      // Load bitmap from WIC stream
+      lBitmap.LoadFromStream(lWICStream);
+      ConvertToAlphaBitmap(lBitmap);
       FHandle := FImageFactory.CreateImage(lBitmap.Handle, UIOwnershipCopy);
       FBitmap := FHandle.GetBitmap;
     finally
       lBitmap.Free;
+      lWICStream.Free;
+      lWICImage.Free;
+      lStream.Free;
+      lIcon.Free;
     end;
   end;
 end;

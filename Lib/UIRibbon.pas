@@ -85,7 +85,7 @@ type
 
   /// <summary>
   /// Used for property "UseDarkMode". Values of this enum determine whether or not the ribbon should support Windows' "Dark Mode". The different values are:
-  ///   TDarkMode.Always: Always enable the dark mode for the ribbon (if supported by the operating system, requires Window 10 1809 or higher)
+  ///   TDarkMode.Always: Always enable the dark mode for the ribbon (if supported by the operating system)
   ///   TDarkMode.Auto: Use the same setting as Windows to determine wheter or not the ribbon should be displayed in dark mode, or not. If the user selected dark mode for Windows, the ribbon will use it as well.
   ///   TDarkMode.Never: Don't use the dark mode at all.
   /// </summary>
@@ -310,6 +310,12 @@ type
 
     { Loads the ribbon. }
     procedure Load(); overload;
+
+    /// <summary>
+    /// Removes a TUICommand from the internal collection and frees it. Make sure that the command is not used anymore before removing it.
+    /// This can be used, e.g. for dynamic galleries, where existing commands need to be removed again.
+    /// </summary>
+    procedure Remove(const pCommand: TUICommand);
 
     { Invalidates on or more aspects from a UI command. This will cause a
       repaint of the specified command. The command will be queried for new
@@ -736,7 +742,6 @@ begin
   if roAutoPreserveState in Options then
     SaveRibbonSettings(); // Save quick toolbar, etc.
 
-  //IMPORTANT: IUIFramework.Destroy has to be called before the commands are freed. They seem to be still needed/referenced in certain cases.
   if Assigned(FFramework) and FAvailable then
     FFramework.Destroy;
 
@@ -1220,6 +1225,11 @@ begin
       (fActionManager as TActionManager).LargeImages.RegisterChanges(fLargeImageChangeLink);
     end;
   end;
+end;
+
+procedure TUIRibbon.Remove(const pCommand: TUICommand);
+begin
+  FCommands.Remove(pCommand.CommandId);
 end;
 
 procedure TUIRibbon.LoadFramework;

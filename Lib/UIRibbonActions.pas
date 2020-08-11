@@ -9,7 +9,7 @@ uses
   ActnMan,
   UIRibbonCommands,
   System.Generics.Collections,
-  Winapi.ActiveX,
+  Winapi.ActiveX, 
   UIRibbonApi;
 
 type
@@ -140,6 +140,7 @@ type
       fSelectedItem: Integer;
       fSelectionInitialized: Boolean;
       fOriginalOnSelect: TUICommandCollectionSelectEvent;
+      fUpdateCount: Integer;
       /// This flag indicates that a refresh should be performed as soon as the collection is not being displayed anymore.
       fRefreshWhenNotDisplayed: Boolean;
       function GetItem(pIndex: Integer): TCustomAction;
@@ -182,6 +183,10 @@ type
       /// and dynamically creates commands that will be added to the collection.
       /// </summary>
       procedure RefreshCommandCollection();
+      /// <summary> Use this to mark larger modifications to the list of actions. No refresh of the internal list of commands will be performed until EndUpdate is called. </summary>
+      procedure BeginUpdate;
+      /// <summary> Marks the end of an ongoing modification to the list of actions. Ending the update will trigger a refresh of the internal list of commands. </summary>
+      procedure EndUpdate;
       function Update(): Boolean; override;
       /// Returns the amount of actions that have been added.
       function ItemCount: Integer;
@@ -615,6 +620,9 @@ begin
   // Command link is not (yet) created -> exit.
   if not Assigned(UICommand) then exit;
 
+  if fUpdateCount > 0 then
+    Exit;
+
   // Check if a refresh was postponed while the collection was displayed and if we can now perform the refresh.
   if IsCurrentlyDisplayed then
   begin
@@ -659,7 +667,16 @@ begin
 end;
 
 procedure TRibbonCollectionAction.Remove(pAction: TCustomAction);
+var
+  lCommand: TUICommand;
 begin
+  if Assigned(UICommand) then
+  begin
+    lCommand := (UICommand.Owner as TUIRibbon).GetCommand(pAction);
+    if Assigned(lCommand) then
+      (UICommand.Owner as TUIRibbon).Remove(lCommand);
+  end;
+
   fActionList.Remove(pAction);
   RefreshCommandCollection;
 end;
@@ -742,15 +759,35 @@ begin
   RefreshCommandCollection;
 end;
 
-procedure TRibbonCollectionAction.Clear;
+procedure TRibbonCollectionAction.BeginUpdate;
 begin
-  fActionList.Clear;
-  RefreshCommandCollection;
+  Inc(fUpdateCount);
+end;
+
+procedure TRibbonCollectionAction.EndUpdate;
+begin
+  Dec(fUpdateCount);
+  if (fUpdateCount = 0) then
+    RefreshCommandCollection;
+end;
+
+procedure TRibbonCollectionAction.Clear;
+var
+  I: Integer;
+begin
+  BeginUpdate;
+  try
+    for I := fActionList.Count - 1 downto 0 do
+      Remove(fActionList[I]);
+  finally
+    EndUpdate; //This triggers RefreshCommandCollection()
+  end;
 end;
 
 constructor TRibbonCollectionAction.Create(AOwner: TComponent);
 begin
   inherited;
+  fUpdateCount := 0;
   fActionList := TList<TCustomAction>.Create;
   fSelectionInitialized := False;
   fRefreshWhenNotDisplayed := False;

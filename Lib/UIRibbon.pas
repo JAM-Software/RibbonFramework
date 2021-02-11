@@ -216,6 +216,8 @@ type
     ///These members are used to register for changes within the action manager's image lists. See procedure RegisterForImageChanges.
     fImageChangeLink: TChangeLink;
     fLargeImageChangeLink: TChangeLink;
+    /// When the window handle is destroyed, the commands are as well. When recreating the window handle, we need to keep track of available context tabs, so that we can restore them
+    fStoredContextTabAvailability: TDictionary<Integer, TUIContextAvailability>;
     { IUIApplication }
     function OnViewChanged(ViewId: UInt32; TypeId: _UIViewType;
       const View: IUnknown; Verb: _UIViewVerb; ReasonCode: Int32): HRESULT; stdcall;
@@ -236,6 +238,8 @@ type
     procedure LoadFramework();
     /// Called during the initialization of the framework. We register a change event handler towards the action manager's image list (in case that roAssignImagesFromActionManager is used)
     procedure RegisterForImageChanges;
+    procedure StoreContextTabAvailability;
+    procedure RestoreContextTabAvailability;
   protected
     procedure CreateWnd(); override;
     procedure DestroyWnd(); override;
@@ -682,6 +686,7 @@ begin
   FResourceName := 'APPLICATION';
   FCommands := TObjectDictionary<Cardinal, TUICommand>.Create([doOwnsValues]);
   fUseDarkMode := TDarkMode.Never;
+  fStoredContextTabAvailability := TDictionary<Integer, TUIContextAvailability>.Create;
 
   // Ensure the control is used on a TCustomForm.
   ParentForm := GetParentForm(AOwner as TWinControl);
@@ -739,6 +744,7 @@ destructor TUIRibbon.Destroy;
 begin
   FreeAndNil(fImageChangeLink);
   FreeAndNil(fLargeImageChangeLink);
+  FreeAndNil(fStoredContextTabAvailability);
   if roAutoPreserveState in Options then
     SaveRibbonSettings(); // Save quick toolbar, etc.
 
@@ -1248,11 +1254,16 @@ procedure TUIRibbon.CreateWnd;
 begin
   inherited;
   Load;
+  // Check if there are contextual tabs stored that need to be re-activated
+  if fStoredContextTabAvailability.Count > 0 then
+    RestoreContextTabAvailability;
 end;
 
 procedure TUIRibbon.DestroyWnd;
 begin
   inherited;
+  if (csRecreating in ControlState) then
+    StoreContextTabAvailability;
   if Assigned(FFramework) and  FAvailable then
     FFramework.Destroy;
   FFramework := nil;
@@ -1261,6 +1272,30 @@ begin
   FCommands.Clear;
   fRecentItems := nil; //Destroying the window handle does not necessarily call OnDestroyUICommand for the recent items command, so we might have to set the reference to nil here.
   fLoaded := False;
+end;
+
+procedure TUIRibbon.StoreContextTabAvailability;
+var
+  lCommand: TUICommand;
+begin
+  for lCommand in fCommands.Values do
+  begin
+    if lCommand.CommandType = TUICommandType.ctContext then
+      fStoredContextTabAvailability.Add(lCommand.CommandId, (lCommand as TUICommandContext).Availability);
+  end;
+end;
+
+procedure TUIRibbon.RestoreContextTabAvailability;
+var
+  lCommandID: Integer;
+  lCommand: TUICommand;
+begin
+  for lCommandID in fStoredContextTabAvailability.Keys do
+  begin
+    if Self.TryGetCommand(lCommandId, lCommand) then
+      (lCommand as TUICommandContext).Availability := fStoredContextTabAvailability[lCommandId]
+  end;
+  fStoredContextTabAvailability.Clear;
 end;
 
 function TUIRibbon.LoadRibbonSettings(): boolean;

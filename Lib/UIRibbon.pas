@@ -1053,7 +1053,13 @@ begin
   begin
     // Check if this command has an action. If yes, use the action's image index.
     if Assigned(lCommand.ActionLink) and Assigned(lCommand.ActionLink.Action) then
-      lImageIndex := TCustomAction(lCommand.ActionLink.Action).ImageIndex
+    begin
+      // Check if this commands action manager is the one we registered for changes. Skip otherwise.
+      if (lCommand.ActionLink.Action is TContainedAction) and (TContainedAction(lCommand.ActionLink.Action).ActionList <> Self.ActionManager) then
+        continue;
+
+      lImageIndex := TCustomAction(lCommand.ActionLink.Action).ImageIndex;
+    end
     else
       continue;
 
@@ -1217,14 +1223,14 @@ begin
   // Create and register our TChangeLink object, so that we can react to updated images of the action manger.
   if Assigned(fActionManager) then
   begin
-    if Assigned(fActionManager.Images) then
+    if not Assigned(fImageChangeLink) and Assigned(fActionManager.Images) then
     begin
       fImageChangeLink := TChangeLink.Create;
       fImageChangeLink.OnChange := ImagelistChange;
       fActionManager.Images.RegisterChanges(fImageChangeLink);
     end;
 
-    if (fActionManager is TActionManager) and Assigned((fActionManager as TActionManager).LargeImages) then
+    if not Assigned(fLargeImageChangeLink) and (fActionManager is TActionManager) and Assigned((fActionManager as TActionManager).LargeImages) then
     begin
       fLargeImageChangeLink := TChangeLink.Create;
       fLargeImageChangeLink.OnChange := ImagelistChange;

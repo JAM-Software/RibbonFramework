@@ -1259,6 +1259,7 @@ begin
   if (csRecreating in ControlState) then
     LoadFramework;
   FCommands.Clear;
+  fRecentItems := nil; //Destroying the window handle does not necessarily call OnDestroyUICommand for the recent items command, so we might have to set the reference to nil here.
   fLoaded := False;
 end;
 
@@ -1372,6 +1373,8 @@ var
   lCommand: TUICommand;
 begin
   //FCommands.Remove(CommandId);   <- Code commented, because we might still have references to the command at this point. Since it is not ref-counted, we must not destroy it yet.
+  if TUICommandType(TypeId) = TUICommandType.ctRecentItems then
+    fRecentItems := nil;
   if Assigned(FOnCommandDestroy) and TryGetCommand(CommandId, lCommand) then
     FOnCommandDestroy(Self, lCommand);
   Result := S_OK;
@@ -1460,7 +1463,7 @@ begin
   except
     on E: EFileStreamError do
     begin
-      OutputDebugString(PChar('An EFileStreamError error occured while trying to save the ribbon settings: ' + E.Message));
+      OutputDebugString(PChar('An EFileStreamError error occurred while trying to save the ribbon settings: ' + E.Message));
       {$ifdef DEBUG}
       raise e;
       {$endif}

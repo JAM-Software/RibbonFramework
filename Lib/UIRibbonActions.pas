@@ -58,6 +58,7 @@ type
   {$ENDREGION 'Internal Declarations'}
   protected
     procedure SetAction(Value: TBasicAction); override;
+    procedure SetChecked(Value: Boolean); override;
   end;
 
   TUICommandDecimalActionLink = class(TUICommandActionLink)
@@ -139,14 +140,11 @@ type
       fActionList: TList<TCustomAction>;
       fSelectedItem: Integer;
       fSelectionInitialized: Boolean;
-      fOriginalOnSelect: TUICommandCollectionSelectEvent;
       fUpdateCount: Integer;
       /// This flag indicates that a refresh should be performed as soon as the collection is not being displayed anymore.
       fRefreshWhenNotDisplayed: Boolean;
       function GetItem(pIndex: Integer): TCustomAction;
       procedure SetSelectedItem(const pValue: Integer);
-      /// Triggered on user induced selection changes. This handler will apply them to the action.
-      procedure UICommandItemSelected(const Args: TUICommandCollectionEventArgs);
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -203,6 +201,7 @@ type
       property SelectedItem: Integer read fSelectedItem write SetSelectedItem;
     published
       property ImageIndex;
+      property Checked;
   end;
 
   /// <summary>
@@ -443,9 +442,13 @@ end;
 
 { TUICommandCollectionActionLink }
 
-procedure TUICommandCollectionActionLink.CommandSelect(
-  const Args: TUICommandCollectionEventArgs);
+procedure TUICommandCollectionActionLink.CommandSelect(const Args: TUICommandCollectionEventArgs);
 begin
+  // Ignore events where the user only hovers over a selection. We only want to react to actual click events, i.e. when the selection changes.
+  if Args.Verb <> TUICommandVerb.cvExecute then
+    Exit;
+
+  (Action as TRibbonCollectionAction).SelectedItem := Args.ItemIndex;
   if Assigned(Action) then
     Action.Execute;
 end;
@@ -458,6 +461,14 @@ begin
     TRibbonCollectionAction(Action).UICommand := (Client as TUICommandCollection);
     TRibbonCollectionAction(Action).RefreshCommandCollection;
   end;
+end;
+
+procedure TUICommandCollectionActionLink.SetChecked(Value: Boolean);
+begin
+  inherited;
+  // Split button galleries have a "Checked" property, set it to the same state as
+  // its corresponding TAction element has.
+  (Client as TUICommandCollection).Checked := Value;
 end;
 
 { TUICommandDecimalActionLink }
@@ -681,17 +692,6 @@ begin
   RefreshCommandCollection;
 end;
 
-procedure TRibbonCollectionAction.UICommandItemSelected(const Args: TUICommandCollectionEventArgs);
-begin
-  // Ignore events where the user only hovers over a selection. We only want to react to actual click events, i.e. when the selection changes.
-  if Args.Verb <> TUICommandVerb.cvExecute then
-    exit;
-
-  fSelectedItem := UICommand.SelectedItem;
-  if Assigned(fOriginalOnSelect) then
-    fOriginalOnSelect(Args);
-end;
-
 procedure TRibbonCollectionAction.SetSelectedItem(const pValue: Integer);
 begin
   fSelectedItem := pValue;
@@ -707,8 +707,6 @@ begin
   if Assigned(UICommand) and not (fSelectionInitialized) then
   begin
     UICommand.SelectedItem := fSelectedItem;
-    fOriginalOnSelect := UICommand.OnSelect;
-    UICommand.OnSelect := UICommandItemSelected;
     fSelectionInitialized := True;
   end;
   if fRefreshWhenNotDisplayed and not IsCurrentlyDisplayed then

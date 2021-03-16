@@ -230,8 +230,6 @@ type
     function GetBackgroundColor: TColor;
     function GetHighlightColor: TColor;
     function GetTextColor: TColor;
-    /// OnChange event handler for fImageChangeLink. Reacts to image changes and refreshes all commands' icons
-    procedure ImageListChange(Sender: TObject);
     procedure SetBackgroundColor(const Value: TColor);
     procedure SetHighlightColor(const Value: TColor);
     procedure SetTextColor(const Value: TColor);
@@ -449,6 +447,9 @@ type
 
     /// True if the ribbon has been loaded from then resource and has been initialized; False otherwise.
     property IsLoaded: Boolean read fLoaded;
+
+    /// OnChange event handler for fImageChangeLink. Reacts to image changes and refreshes all commands' icons
+    procedure ImageListChange(Sender: TObject);
 
     { Whether the UI Ribbon Framework is available on the system.
       Returns False when the application is not running on Windows 7 or
@@ -1044,6 +1045,7 @@ procedure TUIRibbon.ImageListChange(Sender: TObject);
 var
   lCommand: TUICommand;
   lImageIndex: Integer;
+  lActionManager: TActionManager;
 begin
   if not (roAssignImagesFromActionManager in Self.Options) then
     Exit; // ActionManager's images are not actually used -> Nothing todo
@@ -1052,21 +1054,17 @@ begin
   for lCommand in Self do
   begin
     // Check if this command has an action. If yes, use the action's image index.
-    if Assigned(lCommand.ActionLink) and Assigned(lCommand.ActionLink.Action) then
+    if Assigned(lCommand.ActionLink) and Assigned(lCommand.ActionLink.Action) and Assigned(TCustomAction(lCommand.ActionLink.Action).ActionList) then
     begin
-      // Check if this commands action manager is the one we registered for changes. Skip otherwise.
-      if (lCommand.ActionLink.Action is TContainedAction) and (TContainedAction(lCommand.ActionLink.Action).ActionList <> Self.ActionManager) then
-        continue;
-
+      lActionManager := TCustomAction(lCommand.ActionLink.Action).ActionList as TActionManager;
       lImageIndex := TCustomAction(lCommand.ActionLink.Action).ImageIndex;
-    end
-    else
-      continue;
 
-    // Create a new SmallImage and LargeImage
-    lCommand.SmallImage := TUIImage.Create(Self.ActionManager.Images, lImageIndex);
-    if Assigned((Self.ActionManager as TActionManager).LargeImages) then
-      lCommand.LargeImage := TUIImage.Create((Self.ActionManager as TActionManager).LargeImages, lImageIndex);
+      // Check if this action's imagelist is the one we registered for changes. Skip otherwise. Check if small or large image should be adjsuted
+      if (lActionManager.Images = Sender) then
+        lCommand.SmallImage := TUIImage.Create(Sender as TCustomImageList, lImageIndex)
+      else if ((lActionManager.LargeImages = Sender)) then
+        lCommand.LargeImage := TUIImage.Create(Sender as TCustomImageList, lImageIndex)
+    end;
   end;
 end;
 

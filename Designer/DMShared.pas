@@ -28,8 +28,9 @@ uses
 constructor TDataModuleShared.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  JvAppIniFileStorage.FileName := IncludeTrailingPathDelimiter(IncludeTrailingPathDelimiter(JvComputerInfoEx.Folders.AppData)
-                                + ExtractFileName(Application.ExeName)) + ChangeFileExt(Application.ExeName, '.ini');
+  var IniFilePath := IncludeTrailingPathDelimiter(JvComputerInfoEx.Folders.AppData) + ChangeFileExt(ExtractFileName(Application.ExeName), '');
+  ForceDirectories(IniFilePath);
+  JvAppIniFileStorage.FileName := IncludeTrailingPathDelimiter(IniFilePath) + ChangeFileExt(ExtractFileName(Application.ExeName), '.ini');
 end;
 
 end.

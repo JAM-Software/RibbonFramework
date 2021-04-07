@@ -149,6 +149,7 @@ object DataModuleShared: TDataModuleShared
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     AutoFlush = True
+    Location = flCustom
     SubStorages = <>
     Left = 260
     Top = 160

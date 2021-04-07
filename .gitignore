@@ -62,3 +62,4 @@ __recovery/
 *.stat
 RibbonDesigner.exe
 Designer/Bin/RibbonDesigner.exe
+*.exe

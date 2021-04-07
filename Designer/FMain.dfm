@@ -31,9 +31,9 @@ object FormMain: TFormMain
     Left = 0
     Top = 0
     Width = 955
+    Height = 24
     AutoSize = True
-    ButtonHeight = 30
-    ButtonWidth = 71
+    ButtonWidth = 65
     Caption = 'ToolBar'
     EdgeBorders = [ebBottom]
     Images = Images
@@ -45,17 +45,15 @@ object FormMain: TFormMain
       Top = 0
       Action = ActionOpen
       AutoSize = True
-      DropdownMenu = PopupMenuButtonOpen
-      Style = tbsDropDown
     end
     object ButtonSave: TToolButton
-      Left = 78
+      Left = 57
       Top = 0
       Action = ActionSave
       AutoSize = True
     end
     object ToolButton1: TToolButton
-      Left = 133
+      Left = 112
       Top = 0
       Width = 8
       Caption = 'ToolButton1'
@@ -63,13 +61,13 @@ object FormMain: TFormMain
       Style = tbsSeparator
     end
     object ButtonBuild: TToolButton
-      Left = 141
+      Left = 120
       Top = 0
       Action = ActionBuild
       AutoSize = True
     end
     object ButtonPreview: TToolButton
-      Left = 194
+      Left = 173
       Top = 0
       Action = ActionPreview
       AutoSize = True
@@ -88,15 +86,13 @@ object FormMain: TFormMain
   end
   object PageControl: TPageControl
     Left = 0
-    Top = 32
+    Top = 24
     Width = 955
-    Height = 410
+    Height = 418
     ActivePage = TabSheetCommands
     Align = alClient
     TabOrder = 2
     OnChange = PageControlChange
-    ExplicitTop = 24
-    ExplicitHeight = 418
     object TabSheetCommands: TTabSheet
       Caption = 'Commands'
     end
@@ -677,10 +673,6 @@ object FormMain: TFormMain
       object MenuOpen: TMenuItem
         Action = ActionOpen
       end
-      object MenuRecents: TMenuItem
-        Caption = 'Recents'
-        Enabled = False
-      end
       object N1: TMenuItem
         Caption = '-'
       end
@@ -743,31 +735,5 @@ object FormMain: TFormMain
     OnTimer = TimerRestoreLogTimer
     Left = 368
     Top = 480
-  end
-  object JvFormStorage: TJvFormStorage
-    AppStorage = DataModuleShared.JvAppIniFileStorage
-    AppStoragePath = '%FORM_NAME%'
-    StoredProps.Strings = (
-      'OpenDialog.InitialDir')
-    StoredValues = <>
-    Left = 336
-    Top = 292
-  end
-  object JvMRUManager: TJvMRUManager
-    Duplicates = dupIgnore
-    Capacity = 8
-    IniStorage = JvFormStorage
-    RecentMenu = MenuRecents
-    OnClick = JvMRUManagerClick
-    OnAfterUpdate = JvMRUManagerAfterUpdate
-    Left = 472
-    Top = 300
-  end
-  object PopupMenuButtonOpen: TPopupMenu
-    Left = 52
-    Top = 64
-    object tesst1: TMenuItem
-      Caption = 'tesst'
-    end
   end
 end

@@ -18,7 +18,7 @@ uses
   ImgList,
   RibbonMarkup,
   UIRibbonCommands,
-  FImageList, System.ImageList, JvComponentBase, JvFormPlacement, DmShared;
+  FImageList;
 
 type
   TFormEditImage = class(TForm)
@@ -40,7 +40,6 @@ type
     ButtonOk: TButton;
     ButtonCancel: TButton;
     OpenDialog: TOpenDialog;
-    JvFormStorage: TJvFormStorage;
     procedure PaintBoxPaint(Sender: TObject);
     procedure EditImageFileChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

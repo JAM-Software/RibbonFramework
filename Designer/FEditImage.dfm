@@ -228,7 +228,7 @@ object FormEditImage: TFormEditImage
     Left = 24
     Top = 20
     Bitmap = {
-      494C010102000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101020008002C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -373,14 +373,5 @@ object FormEditImage: TFormEditImage
     Title = 'Open Image File'
     Left = 148
     Top = 61
-  end
-  object JvFormStorage: TJvFormStorage
-    AppStorage = DataModuleShared.JvAppIniFileStorage
-    AppStoragePath = '%FORM_NAME%'
-    StoredProps.Strings = (
-      'OpenDialog.InitialDir')
-    StoredValues = <>
-    Left = 392
-    Top = 76
   end
 end

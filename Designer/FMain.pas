@@ -31,7 +31,7 @@ uses
   FXmlSource,
   FPreview,
   FSettings,
-  FNewFile, System.ImageList, JvComponentBase, JvAppStorage, JvFormPlacement, JvMRUList, JvMRUManager;
+  FNewFile;
 
 type
   TFormMain = class(TForm)
@@ -91,11 +91,6 @@ type
     AutogenerateIDsforallcommands1: TMenuItem;
     ActionGenerateCommandIDs: TAction;
     AutogenerateIDsforallresources1: TMenuItem;
-    JvFormStorage: TJvFormStorage;
-    MenuRecents: TMenuItem;
-    JvMRUManager: TJvMRUManager;
-    PopupMenuButtonOpen: TPopupMenu;
-    tesst1: TMenuItem;
     procedure FormActivate(Sender: TObject);
     procedure ActionPreviewExecute(Sender: TObject);
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
@@ -117,8 +112,6 @@ type
     procedure ActionSetResourceNameExecute(Sender: TObject);
     procedure ActionGenerateResourceIDsExecute(Sender: TObject);
     procedure ActionGenerateCommandIDsExecute(Sender: TObject);
-    procedure JvMRUManagerClick(Sender: TObject; const RecentName, Caption: string; UserData: Integer);
-    procedure JvMRUManagerAfterUpdate(Sender: TObject);
   private
     { Private declarations }
     FInitialized: Boolean;
@@ -146,7 +139,6 @@ type
     function CheckSave: Boolean;
     procedure BuildAndPreview(const Preview: Boolean);
     procedure OpenWebsite(const Url: String);
-    procedure PopupMenuButtonOpenClick(Sender: TObject);
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -173,7 +165,7 @@ resourcestring
 implementation
 
 uses
-  UITypes, System.Win.Registry, UIRibbonUtils, System.Math, DMShared;
+  UITypes, System.Win.Registry, UIRibbonUtils, System.Math;
 
 {$R *.dfm}
 
@@ -307,10 +299,8 @@ begin
   if (not CheckSave) then
     Exit;
 
-  if (OpenDialog.Execute) then begin
+  if (OpenDialog.Execute) then
     OpenFile(OpenDialog.FileName);
-    JvMRUManager.Add(OpenDialog.FileName, 0);
-  end;
 end;
 
 procedure TFormMain.ActionPreviewExecute(Sender: TObject);
@@ -539,7 +529,6 @@ end;
 
 procedure TFormMain.FormActivate(Sender: TObject);
 begin
-  JvMRUManager.Load;
   MemoMessages.SelLength := 0;
   if ParamStr(1) <> '' then
     OpenFile(ParamStr(1));
@@ -718,30 +707,6 @@ procedure TFormMain.UpdateControls;
 begin
   ActionPreview.Enabled := FileExists(FDocument.Filename);
   ActionBuild.Enabled := ActionPreview.Enabled;
-end;
-
-procedure TFormMain.JvMRUManagerClick(Sender: TObject; const RecentName, Caption: string; UserData: Integer);
-begin
-  OpenFile(RecentName);
-end;
-
-procedure TFormMain.JvMRUManagerAfterUpdate(Sender: TObject);
-begin
-  var Tag := 0;
-  PopupMenuButtonOpen.Items.Clear;
-  for var s in JvMRUManager.Strings do begin
-    var MenuItem := TMenuItem.Create(PopupMenuButtonOpen);
-    MenuItem.Caption := s;
-    MenuItem.Tag := Tag;
-    MenuItem.OnClick := PopupMenuButtonOpenClick;
-    PopupMenuButtonOpen.Items.Add(MenuItem);
-    Inc(Tag);
-  end;
-end;
-
-procedure TFormMain.PopupMenuButtonOpenClick(Sender: TObject);
-begin
-  OpenFile(JvMRUManager.Strings[(Sender as TMenuItem).Tag]);
 end;
 
 end.

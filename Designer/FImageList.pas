@@ -20,7 +20,7 @@ uses
   CommCtrl,
   ToolWin,
   RibbonMarkup,
-  UIRibbonCommands, JvComponentBase, JvFormPlacement, System.ImageList;
+  UIRibbonCommands;
 
 type
   TImageFlag = (ifLarge, ifHighContrast);
@@ -80,8 +80,7 @@ uses
   IOUtils,
   Math,
   FMain,
-  FEditImage,
-  DMShared;
+  FEditImage;
 
 { TFrameImageList }
 

@@ -407,7 +407,7 @@ begin
     ActionSave.Execute;
   FreeAndNil(FPreviewForm);
   // Create DLL only if a preview is requested
-  Result := FCompiler.Compile(FDocument, True, FDocument.Application.ResourceName, Preview);
+  Result := FCompiler.Compile(FDocument, False, FDocument.Application.ResourceName, Preview);
 
   if (Result = crOk) then
   begin

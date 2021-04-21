@@ -96,6 +96,9 @@ type
     JvMRUManager: TJvMRUManager;
     PopupMenuButtonOpen: TPopupMenu;
     tesst1: TMenuItem;
+    ActionOpenLastUsedFileAtStartup: TAction;
+    N5: TMenuItem;
+    Openlastusedfileatstartup1: TMenuItem;
     procedure FormActivate(Sender: TObject);
     procedure ActionPreviewExecute(Sender: TObject);
     procedure ApplicationEventsException(Sender: TObject; E: Exception);
@@ -119,6 +122,9 @@ type
     procedure ActionGenerateCommandIDsExecute(Sender: TObject);
     procedure JvMRUManagerClick(Sender: TObject; const RecentName, Caption: string; UserData: Integer);
     procedure JvMRUManagerAfterUpdate(Sender: TObject);
+    procedure JvFormStorageBeforeSavePlacement(Sender: TObject);
+    procedure ActionOpenLastUsedFileAtStartupExecute(Sender: TObject);
+    procedure JvFormStorageRestorePlacement(Sender: TObject);
   private
     { Private declarations }
     FInitialized: Boolean;
@@ -180,6 +186,8 @@ uses
 const // Status Panel
   SP_MODIFIED = 0;
   SP_HINT     = 1;
+
+  LAST_USED_FILENAME = 'Last Used Filename';
 
 procedure TFormMain.ActionBuildExecute(Sender: TObject);
 begin
@@ -399,7 +407,7 @@ begin
     ActionSave.Execute;
   FreeAndNil(FPreviewForm);
   // Create DLL only if a preview is requested
-  Result := FCompiler.Compile(FDocument, FDocument.Application.ResourceName, Preview);
+  Result := FCompiler.Compile(FDocument, True, FDocument.Application.ResourceName, Preview);
 
   if (Result = crOk) then
   begin
@@ -527,7 +535,7 @@ begin
     else begin
       NewFile(True);
     end;//else
-  end // if file passed
+  end; // if file passed
 end;
 
 destructor TFormMain.Destroy;
@@ -742,6 +750,30 @@ end;
 procedure TFormMain.PopupMenuButtonOpenClick(Sender: TObject);
 begin
   OpenFile(JvMRUManager.Strings[(Sender as TMenuItem).Tag]);
+end;
+
+procedure TFormMain.JvFormStorageBeforeSavePlacement(Sender: TObject);
+begin
+  if (FDocument <> nil) and FileExists(FDocument.Filename) then begin
+    JvFormStorage.WriteString(LAST_USED_FILENAME, FDocument.Filename);
+  end else begin
+    JvFormStorage.DeleteValue(LAST_USED_FILENAME)
+  end;
+end;
+
+procedure TFormMain.ActionOpenLastUsedFileAtStartupExecute(Sender: TObject);
+begin
+  ActionOpenLastUsedFileAtStartup.Checked := not ActionOpenLastUsedFileAtStartup.Checked;
+end;
+
+procedure TFormMain.JvFormStorageRestorePlacement(Sender: TObject);
+begin
+  if ActionOpenLastUsedFileAtStartup.Checked then begin
+    var FileName := JvFormStorage.ReadString(LAST_USED_FILENAME, '');
+    if FileExists(FileName) then begin
+      OpenFile(FileName);
+    end;
+  end;
 end;
 
 end.

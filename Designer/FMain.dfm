@@ -95,8 +95,6 @@ object FormMain: TFormMain
     Align = alClient
     TabOrder = 2
     OnChange = PageControlChange
-    ExplicitTop = 24
-    ExplicitHeight = 418
     object TabSheetCommands: TTabSheet
       Caption = 'Commands'
     end
@@ -234,6 +232,12 @@ object FormMain: TFormMain
         'urce IDs)'
       ShortCut = 16455
       OnExecute = ActionGenerateResourceIDsExecute
+    end
+    object ActionOpenLastUsedFileAtStartup: TAction
+      Category = 'File'
+      Caption = 'Open last used file at startup'
+      Hint = 'Open last used file at startup'
+      OnExecute = ActionOpenLastUsedFileAtStartupExecute
     end
   end
   object ApplicationEvents: TApplicationEvents
@@ -681,6 +685,12 @@ object FormMain: TFormMain
         Caption = 'Recents'
         Enabled = False
       end
+      object N5: TMenuItem
+        Caption = '-'
+      end
+      object Openlastusedfileatstartup1: TMenuItem
+        Action = ActionOpenLastUsedFileAtStartup
+      end
       object N1: TMenuItem
         Caption = '-'
       end
@@ -746,12 +756,15 @@ object FormMain: TFormMain
   end
   object JvFormStorage: TJvFormStorage
     AppStorage = DataModuleShared.JvAppIniFileStorage
-    AppStoragePath = '%FORM_NAME%'
+    AppStoragePath = '%FORM_NAME%\'
+    BeforeSavePlacement = JvFormStorageBeforeSavePlacement
+    OnRestorePlacement = JvFormStorageRestorePlacement
     StoredProps.Strings = (
-      'OpenDialog.InitialDir')
+      'OpenDialog.InitialDir'
+      'ActionOpenLastUsedFileAtStartup.Checked')
     StoredValues = <>
-    Left = 336
-    Top = 292
+    Left = 332
+    Top = 280
   end
   object JvMRUManager: TJvMRUManager
     Duplicates = dupIgnore

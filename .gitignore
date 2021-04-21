@@ -60,6 +60,4 @@ __recovery/
 
 # Castalia statistics file
 *.stat
-RibbonDesigner.exe
-Designer/Bin/RibbonDesigner.exe
-*.exe
+

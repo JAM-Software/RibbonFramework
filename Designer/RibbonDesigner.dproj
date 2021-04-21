@@ -86,9 +86,8 @@
         <DCC_ExeOutput>Bin</DCC_ExeOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <Debugger_RunParams>&quot;..\..\Samples\High Level\07 Text Pad with Action List\Ribbon\RibbonMarkup.xml&quot;</Debugger_RunParams>
         <BT_BuildType>Debug</BT_BuildType>
-        <Icon_MainIcon>RibbonDesigner_Icon1.ico</Icon_MainIcon>
+        <Icon_MainIcon>RibbonDesigner_Icon.ico</Icon_MainIcon>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">

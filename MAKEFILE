@@ -13,11 +13,11 @@ Package:
 	SET BDS=$(STUDIO)\$(BDSVersion)
 	$(BUILD) "Package\UIRibbonPackage.dproj"
 	
+10.4: 
+	$(MAKE) Package "BDSVersion=21.0"
+
 10.2: 
 	$(MAKE) Package "BDSVersion=19.0"
-
-10.1: 
-	$(MAKE) Package "BDSVersion=18.0"
 
 _XE8:
 	$(MAKE) Package "BDSVersion=16.0"
@@ -57,4 +57,4 @@ _XE5:
 	
 _samples: "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe" "Samples\High Level\02 Context Popup\ContextPopup.exe" "Samples\High Level\03 DropDown Color Picker\DropDownColorPicker.exe" "Samples\High Level\04 Gallery\Gallery.exe" "Samples\High Level\05 Font Control\FontControl.exe" "Samples\High Level\06 Text Pad\TextPad.exe" "Samples\High Level\07 Text Pad with Action List\TextPad.exe"
 	
-_continuousbuilds: clean 10.2 "Designer\Bin\RibbonDesigner.exe" _samples
+_continuousbuilds: clean 10.4 "Designer\Bin\RibbonDesigner.exe" _samples

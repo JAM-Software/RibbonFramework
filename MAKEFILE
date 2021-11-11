@@ -1,4 +1,13 @@
-BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
+# Default MS Build version
+!IF EXIST("$(PROGRAMFILES)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe")
+BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+!ELSE
+!IF EXIST("$(PROGRAMFILES)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\msbuild.exe")
+BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\msbuild.exe"
+!ELSE
+BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\msbuild.exe"
+!ENDIF
+!ENDIF
 BUILD = $(BUILDEXE) /t:Rebuild
 EMBARCADERO = $(PROGRAMFILES)\Embarcadero\RAD Studio
 STUDIO = $(PROGRAMFILES)\Embarcadero\Studio
@@ -31,7 +40,7 @@ _XE5:
 	$(MAKE) _samples
 
 "Designer\Bin\RibbonDesigner.exe": Designer\*.pas Designer\*.dfm Designer\*.dpr Designer\*.dproj 
-	SET BDS=$(STUDIO)\19.0
+	SET BDS=$(STUDIO)\21.0
 	$(BUILD) /p:Config=Release "Designer\RibbonDesigner.dproj"
 
 "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\High Level\01 Simple Ribbon\*.dproj" "Samples\High Level\01 Simple Ribbon\*.pas" "Samples\High Level\01 Simple Ribbon\*.dpr"

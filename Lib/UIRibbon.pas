@@ -207,6 +207,7 @@ type
     /// <param name="pCommandId">The id of the ribbon command.</param>
     /// <param name="pContextAvailability">The availability state.</param>
     procedure SetContextTabAvailability(const pCommandId: Integer; const pContextAvailability: TUIContextAvailability);
+    function GetContextTabAvailability(const pCommandId: Integer): TUIContextAvailability;
 
     { IInterface }
     function _AddRef: Integer; stdcall;
@@ -402,6 +403,12 @@ type
     /// </summary>
     /// <param name="pCommandId">The ID of the context tab.</param>
     procedure EnableContextTab(const pCommandId: Integer);
+
+    /// <summary>
+    ///  Returns whether or not a ribbon context tab is enabled.
+    /// </summary>
+    /// <param name="pCommandId">The ID of the context tab.</param>
+    function IsContextTabEnabled(const pCommandId: Integer): Boolean;
 
     /// <summary>
     ///  Hides a ribbon context tab.
@@ -1104,6 +1111,11 @@ begin
   end;
 end;
 
+function TUIRibbon.IsContextTabEnabled(const pCommandId: Integer): Boolean;
+begin
+  Result := GetContextTabAvailability(pCommandId) in [TUIContextAvailability.caAvailable, TUIContextAvailability.caActive];
+end;
+
 function TUIRibbon.GetRecentItems(): TUICommandRecentItems;
 begin
   if not Assigned(fRecentItems) then
@@ -1588,6 +1600,22 @@ begin
   // If found, check type, cast and set Availability property.
   if (lCommand.CommandType = TUICommandType.ctContext) then
     (lCommand as TUICommandContext).Availability := pContextAvailability;
+end;
+
+function TUIRibbon.GetContextTabAvailability(const pCommandId: Integer): TUIContextAvailability;
+var
+  lCommand: TUICommand;
+begin
+  Result := TUIContextAvailability.caNotAvailable;
+  //If Ribbons are disabled, exit here.
+  if (not Self.Visible) then
+    Exit;
+  // Get the command with that ID
+  if not Self.TryGetCommand(pCommandId, lCommand) then
+    Exit;
+  // If found, check type, cast and get Availability property.
+  if (lCommand.CommandType = TUICommandType.ctContext) then
+    Result := (lCommand as TUICommandContext).Availability;
 end;
 
 procedure TUIRibbon.SetHighlightColor(const Value: TColor);

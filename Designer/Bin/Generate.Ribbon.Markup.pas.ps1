@@ -78,6 +78,30 @@ function FindFileInLocation($pLocation, $pFileName)
     {
         return "${env:ProgramFiles(x86)}\Windows Kits\10\bin\x86\$pFileName"
     }    
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.22000.0\x86\$pFileName")
+    {
+        return "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.22000.0\x86\$pFileName"
+    }    
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.19041.0\x86\$pFileName")
+    {
+        return "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.19041.00\x86\$pFileName"
+    }    
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.17134.0\x86\$pFileName")
+    {
+        return "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.17134.0\x86\$pFileName"
+    }    
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.16299.0\x86\$pFileName")
+    {
+        return "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.16299.0\x86\$pFileName"
+    }    
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.15063.0\x86\$pFileName")
+    {
+        return "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.15063.0\x86\$pFileName"
+    }    
+    elseif (Test-Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.14393.0\x86\$pFileName")
+    {
+        return "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.14393.0\x86\$pFileName"
+    }    
 # end modification.
     elseif (Test-Path "$PSScriptRoot\$pFileName")
     {

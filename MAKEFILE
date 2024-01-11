@@ -1,16 +1,19 @@
 # Default MS Build version
-!IF EXIST("$(PROGRAMFILES)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe")
-BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
-!ELSE
-!IF EXIST("$(PROGRAMFILES)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\msbuild.exe")
-BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\msbuild.exe"
-!ELSE
+!IF EXIST("$(PROGRAMFILES)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\msbuild.exe")
+BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+!ELSE IF EXIST("$(PROGRAMFILES)\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\msbuild.exe")
+BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\msbuild.exe"
+!ELSE IF EXIST("$(PROGRAMFILES)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\msbuild.exe")
 BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\msbuild.exe"
+!ELSE 
+BUILDEXE = "msbuild.exe"
 !ENDIF
-!ENDIF
+
+PROGRAMFILESX86 = C:\Program Files (x86)
+
 BUILD = $(BUILDEXE) /t:Rebuild
-EMBARCADERO = $(PROGRAMFILES)\Embarcadero\RAD Studio
-STUDIO = $(PROGRAMFILES)\Embarcadero\Studio
+EMBARCADERO = $(PROGRAMFILESX86)\Embarcadero\RAD Studio
+STUDIO = $(PROGRAMFILESX86)\Embarcadero\Studio
 BDSCOMMONDIRMAIN = %PUBLIC%\Documents\Embarcadero\Studio\
 
 clean: 
@@ -18,9 +21,13 @@ clean:
 	DEL /S *.DCU
 	DEL /S *.BPL
 	
-Package: 
-	SET BDS=$(STUDIO)\$(BDSVersion)
+Package: lib\* Package\Delphi\*
+	@SET BDS=$(STUDIO)\$(BDSVersion)
+	@SET BDSINCLUDE=$(STUDIO)\$(BDSVersion)\include
 	$(BUILD) "Package\UIRibbonPackage.dproj"
+	
+12.0: 
+	$(MAKE) Package "BDSVersion=23.0"
 	
 10.4: 
 	$(MAKE) Package "BDSVersion=21.0"
@@ -40,7 +47,7 @@ _XE5:
 	$(MAKE) _samples
 
 "Designer\Bin\RibbonDesigner.exe": Designer\*.pas Designer\*.dfm Designer\*.dpr Designer\*.dproj 
-	SET BDS=$(STUDIO)\21.0
+	SET BDS=$(STUDIO)\23.0
 	$(BUILD) /p:Config=Release "Designer\RibbonDesigner.dproj"
 
 "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\High Level\01 Simple Ribbon\*.dproj" "Samples\High Level\01 Simple Ribbon\*.pas" "Samples\High Level\01 Simple Ribbon\*.dpr"
@@ -66,4 +73,4 @@ _XE5:
 	
 _samples: "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe" "Samples\High Level\02 Context Popup\ContextPopup.exe" "Samples\High Level\03 DropDown Color Picker\DropDownColorPicker.exe" "Samples\High Level\04 Gallery\Gallery.exe" "Samples\High Level\05 Font Control\FontControl.exe" "Samples\High Level\06 Text Pad\TextPad.exe" "Samples\High Level\07 Text Pad with Action List\TextPad.exe"
 	
-_continuousbuilds: clean 10.4 "Designer\Bin\RibbonDesigner.exe" _samples
+_continuousbuilds: clean 12.0 "Designer\Bin\RibbonDesigner.exe" _samples

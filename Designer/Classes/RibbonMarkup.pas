@@ -1924,7 +1924,6 @@ var
   Item: T;
   Index: Integer;
 begin
-  Result := False;
   Item := T(Child);
   Index := FItems.IndexOf(Item);
   if (Direction < 0) then

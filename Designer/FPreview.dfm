@@ -18,7 +18,7 @@ object FormPreview: TFormPreview
     Top = 117
     Width = 635
     Height = 462
-    ActivePage = TabSheetColorize
+    ActivePage = TabSheetAppModes
     Align = alTop
     TabOrder = 0
     object TabSheetAppModes: TTabSheet
@@ -36,6 +36,7 @@ object FormPreview: TFormPreview
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitWidth = 198
       end
       object CheckListBoxAppModes: TCheckListBox
         Left = 0
@@ -64,6 +65,7 @@ object FormPreview: TFormPreview
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitWidth = 188
       end
       object CheckListBoxContextTabs: TCheckListBox
         Left = 0
@@ -92,6 +94,7 @@ object FormPreview: TFormPreview
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        ExplicitWidth = 182
       end
       object ListBoxContextPopups: TListBox
         Left = 0

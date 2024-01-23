@@ -10,7 +10,7 @@ interface
 {$R 'RibbonMarkup.res'}
 
 uses
-	Generics.Collections, SysUtils, UIRibbon;
+  Generics.Collections, SysUtils, UIRibbon;
 
 const
   CmdTabHome = 2;
@@ -740,10 +740,11 @@ begin
   Result.Add(TRibbonMarkupElement.Create('CmdObjectProperties', 93, 60530, -1, -1, -1));
   Result.Add(TRibbonMarkupElement.Create('CmdOpenObject', 94, 60531, -1, -1, -1));
   Result.Add(TRibbonMarkupElement.Create('CmdLinks', 95, 60532, -1, -1, -1));
-  Result.Add(TRibbonMarkupElement.Create('CmdContextPopupObject', 96, -1, -1));
+  Result.Add(TRibbonMarkupElement.Create('CmdContextPopupObject', 96, -1, -1, -1, -1));
 end;
+
 initialization
 
   RegisterRibbonElements();
-  
+
 end.

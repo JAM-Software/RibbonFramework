@@ -12,7 +12,7 @@ object FrameImageList: TFrameImageList
     Height = 30
     AutoSize = True
     ButtonHeight = 30
-    ButtonWidth = 64
+    ButtonWidth = 78
     Caption = 'ToolBarSmallImages'
     Images = ImageListToolbars
     List = True
@@ -37,7 +37,7 @@ object FrameImageList: TFrameImageList
       Action = ActionDeleteAllImages
     end
     object ButtonEditSmallImage: TToolButton
-      Left = 135
+      Left = 227
       Top = 0
       Action = ActionEditImage
     end
@@ -80,7 +80,7 @@ object FrameImageList: TFrameImageList
     Left = 32
     Top = 68
     Bitmap = {
-      494C0101030008003C0010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010103000800040010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000004590ABC07A612FF07A612FF07A612FF07A612FF04590ABC0000

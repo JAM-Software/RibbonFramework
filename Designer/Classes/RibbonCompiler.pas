@@ -34,7 +34,9 @@ type
     procedure CreateDelphiProject(const Filename: String);
   {$ENDREGION 'Internal Declarations'}
   public
-    function Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'; const pCreateDLL: Boolean = False): TRibbonCompileResult;
+    function Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'; const pCreateDLL: Boolean = False): TRibbonCompileResult; overload;
+    function Compile(const Document: TRibbonDocument; const IncludeXML: Boolean = False; ResourceName: string = 'APPLICATION'; const pCreateDLL: Boolean = False): TRibbonCompileResult; overload;
+
 
     property OutputDllPath: String read FOutputDllPath;
     property OnMessage: TRibbonCompilerMessageEvent read FOnMessage write FOnMessage;
@@ -63,6 +65,11 @@ uses
 { TRibbonCompiler }
 
 function TRibbonCompiler.Compile(const Document: TRibbonDocument; ResourceName: string = 'APPLICATION'; const pCreateDLL: Boolean = False): TRibbonCompileResult;
+begin
+  Result := Compile( Document, False, ResourceName, pCreateDLL);
+end;
+
+function TRibbonCompiler.Compile(const Document: TRibbonDocument; const IncludeXML: Boolean = False; ResourceName: string = 'APPLICATION'; const pCreateDLL: Boolean = False): TRibbonCompileResult;
 var
   DocDir, DprFilename: String;
   lMarkupGenerator: TMarkupGenerator;
@@ -71,6 +78,7 @@ var
   lRcFilePath: string;
   lRcFileParam: string;
   lNameParam: string;
+  lXML: string;
 begin
   try
     if (Document.Filename = '') or (not TFile.Exists(Document.Filename)) then
@@ -97,8 +105,22 @@ begin
     lNameParam := Format('"/name:%s"', [ResourceName]);
 
     // Run ribbon compiler UICC.exe to convert the markup XML to a header, a resource and a bml file.
-    if not Execute(TSettings.Instance.RibbonCompilerPath, DocDir, ['"/W0"', Document.Filename.QuotedString('"'), lBmlFileParam, lHeaderFileParam, lRcFileParam, lNameParam]) then
+    if not Execute(TSettings.Instance.RibbonCompilerPath, DocDir, ['"/W0"', Document.Filename.QuotedString('"'), lBmlFileParam,
+                                                                   lHeaderFileParam, lRcFileParam, lNameParam]) then
       Exit(crRibbonCompilerError);
+
+    // LC2L Informatique 2021-04-19 Add the possibility to include the XML file into the ressources file
+    if IncludeXML then begin
+      var RcFile := TStringList.Create;
+      try
+        RcFile.LoadFromFile(lRcFilePath);
+        RcFile.Add('');
+        RcFile.Add(Format('APPLICATION_RIBBON_XML    RCDATA    "%s"', [Document.Filename.Replace('\', '\\')]));
+        RcFile.SaveToFile(lRcFilePath);
+      finally
+        RcFile.Free;
+      end;
+    end;
 
     // Run the resource compiler, so that we can include the file into a .pas file
     if not Execute(TSettings.Instance.ResourceCompilerPath, DocDir, [lRcFilePath.QuotedString('"')]) then
@@ -312,7 +334,7 @@ begin
         if not ParamStr(2).IsEmpty then
           lSuccess := lRibbonCompiler.Compile(lRibbonDocument, ParamStr(2)) = crOk
         else
-          lSuccess := lRibbonCompiler.Compile(lRibbonDocument) = crOk;
+          lSuccess := lRibbonCompiler.Compile(lRibbonDocument, '') = crOk;
 
         if lSuccess then
           ExitCode := 0;

@@ -1,9 +1,10 @@
-unit UIRibbon.Register;
+﻿unit UIRibbon.Register;
 
 interface
 
 uses
-  DesignIntf, DesignEditors;
+  DesignIntf,
+  DesignEditors;
 
 type
   // Adds ability to start RibbonDesigner to right click menu of TUIRibbon control in IDE desginer

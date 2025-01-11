@@ -7,9 +7,9 @@ interface
 {$WARN SYMBOL_PLATFORM OFF}
 
 uses
-  Windows,
-  ActiveX,
-  ShlObj;
+  WinApi.Windows,
+  WinApi.ActiveX,
+  WinApi.ShlObj;
 
 type
   PSHORT = ^SHORT;
@@ -217,7 +217,7 @@ function VarUI2FromDec(const Input: TDecimal; out Output: UInt16): HRESULT; stdc
 implementation
 
 uses
-  ShLwApi;
+  WinApi.ShLwApi;
 
 {$REGION 'PropIdl.h'}
 const

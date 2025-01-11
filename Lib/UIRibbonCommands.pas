@@ -3,20 +3,20 @@ unit UIRibbonCommands;
 interface
 
 uses
-  Generics.Collections,
-  Windows,
-  Messages,
-  Graphics,
-  Classes,
-  ActiveX,
-  Rtti,
-  ComCtrls,
-  RichEdit,
-  PropSys,
-  ActnList,
-  UIRibbonApi,
-  PNGImage,
+  System.Generics.Collections,
+  System.Rtti,
+  System.Classes,
+  WinApi.Windows,
+  WinApi.Messages,
+  WinApi.ActiveX,
+  WinApi.RichEdit,
+  WinApi.PropSys,
+  Vcl.Graphics,
+  Vcl.ComCtrls,
+  Vcl.ActnList,
+  Vcl.Imaging.PNGImage,
   Vcl.ImgList,
+  UIRibbonApi,
   System.UITypes;
 
 const
@@ -1301,12 +1301,12 @@ function GetProperty(const Key: TUIPropertyKey): TUIProperty;
 implementation
 
 uses
-  Menus,
-  Forms,
-  SysUtils,
-  CommCtrl,
+  System.SysUtils,
+  Vcl.Menus,
+  Vcl.Forms,
+  Vcl.Controls,
+  WinApi.CommCtrl,
   WinApiEx,
-  Controls,
   UIRibbon,
   UIRibbonActions;
 
@@ -2176,12 +2176,12 @@ end;
 
 procedure TUICommand.SetShortCut(const Shift: TShiftState; const Key: Word);
 begin
-  FShortCut := Menus.ShortCut(Key, Shift);
+  FShortCut := Vcl.Menus.ShortCut(Key, Shift);
 end;
 
 procedure TUICommand.SetShortCut(const Shift: TShiftState; const Key: Char);
 begin
-  FShortCut := Menus.ShortCut(Ord(Key), Shift);
+  FShortCut := Vcl.Menus.ShortCut(Ord(Key), Shift);
 end;
 
 procedure TUICommand.SetSmallImage(const Value: TUIImage);
@@ -4268,7 +4268,7 @@ end;
 
 procedure TUIImage.GetBitmapProperties;
 var
-  Props: Windows.TBitmap;
+  Props: WinApi.Windows.TBitmap;
 begin
   if (GetObject(FBitmap, SizeOf(Props), @Props) <> 0) then
   begin

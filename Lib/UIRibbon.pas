@@ -1,4 +1,4 @@
-unit UIRibbon;
+﻿unit UIRibbon;
 
 { Windows Ribbon Framework for Delphi
   ===================================
@@ -21,14 +21,14 @@ unit UIRibbon;
 interface
 
 uses
-  Messages,
-  Windows,
-  Graphics,
-  Generics.Collections,
-  Controls,
-  Classes,
-  ImgList,
-  ActnList,
+  WinApi.Messages,
+  WinApi.Windows,
+  System.Generics.Collections,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.ImgList,
+  Vcl.ActnList,
   UIRibbonApi,
   UIRibbonCommands;
 
@@ -572,21 +572,21 @@ type
 implementation
 
 uses
-  SysUtils,
-  Actions,
-  ActiveX,
-  ComObj,
-  Dialogs,
-  PropSys,
-  Forms,
-  Menus,
-  GraphUtil,
-  Math,
-  UITypes,
-  UIRibbonActions,
-  UIRibbonUtils,
+  System.SysUtils,
+  System.Actions,
   System.Win.Registry,
-  Vcl.ActnMan;
+  System.Win.ComObj,
+  System.Math,
+  System.UITypes,
+  WinApi.ActiveX,
+  WinApi.PropSys,
+  Vcl.Dialogs,
+  Vcl.Forms,
+  Vcl.Menus,
+  Vcl.GraphUtil,
+  Vcl.ActnMan,
+  UIRibbonActions,
+  UIRibbonUtils;
 
 type
   TUICommandAccess = class(TUICommand);
@@ -1025,7 +1025,7 @@ var
   lShortCut: TShortCut;
 begin
   lShiftState := KeyDataToShiftState(pMessage.KeyData);
-  lShortCut := Menus.ShortCut(pMessage.CharCode, lShiftState);
+  lShortCut := ShortCut(pMessage.CharCode, lShiftState);
   Result := (lShortCut <> scNone) and Self.HandleShortCut(lShortCut);
 end;
 
@@ -1223,7 +1223,7 @@ begin
         // http://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/b38da1e9-34a0-440a-bdf0-bb293940dd0c/win8-ribbon-colors
         lForm.Color := RGB(254,254,254)
       else
-        lForm.Color := GraphUtil.GetHighLightColor(Self.BackgroundColor);//  TColorHelper.IncreaseRgbValues(FRibbon.BackgroundColor, 17, 12, 10)
+        lForm.Color := Vcl.GraphUtil.GetHighLightColor(Self.BackgroundColor);//  TColorHelper.IncreaseRgbValues(FRibbon.BackgroundColor, 17, 12, 10)
     end;//if clBtnFace
   end;
 end;

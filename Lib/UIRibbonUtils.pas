@@ -3,8 +3,8 @@ unit UIRibbonUtils;
 interface
 
 uses
-  Graphics,
-  GraphUtil,
+  Vcl.Graphics,
+  Vcl.GraphUtil,
   UIRibbonApi;
 
 function HsbToColor(const Hsb: TUIHsbColor): TColor; overload;
@@ -26,8 +26,8 @@ const
 implementation
 
 uses
-  Windows,
-  ActiveX;
+  WinApi.Windows,
+  WinApi.ActiveX;
 
 function HsbToColor(const Hsb: TUIHsbColor): TColor;
 var

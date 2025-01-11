@@ -4,12 +4,12 @@ interface
 
 uses
   System.Classes,
-  Vcl.Menus,
-  ActnList,
-  ActnMan,
-  UIRibbonCommands,
   System.Generics.Collections,
-  Winapi.ActiveX, 
+  Winapi.ActiveX,
+  Vcl.Menus,
+  Vcl.ActnList,
+  Vcl.ActnMan,
+  UIRibbonCommands,
   UIRibbonApi;
 
 type
@@ -252,13 +252,11 @@ type
 implementation
 
 uses
-  Controls,
-  UIRibbon,
-  {$if CompilerVersion >= 24}
   System.Actions,
-  {$endif}
   System.SysUtils,
-  System.Math;
+  System.Math,
+  Vcl.Controls,
+  UIRibbon;
 
 const
   cNoSelection = -1;

@@ -18,8 +18,8 @@ unit UIRibbonApi;
 interface
 
 uses
-  Windows,
-  ActiveX;
+  WinApi.Windows,
+  WinApi.ActiveX;
 
 {$HPPEMIT '#ifdef _WIN64'}
   {$HPPEMIT '#pragma link "UIRibbonPackage.a"'}
@@ -655,9 +655,9 @@ function UIPropertyToIUnknownArrayAlloc(const Key: TUIPropertyKey; const PropVar
 implementation
 
 uses
-  ComObj,
-  ShLwApi,
-  SysUtils,
+  System.Win.ComObj,
+  WinApi.ShLwApi,
+  System.SysUtils,
   WinApiEx;
 
 

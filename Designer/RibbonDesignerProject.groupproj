@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{A689F710-B573-40FE-9CFC-77694AE19E99}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="RibbonDesigner.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="RibbonDesigner">
+        <MSBuild Projects="RibbonDesigner.dproj"/>
+    </Target>
+    <Target Name="RibbonDesigner:Clean">
+        <MSBuild Projects="RibbonDesigner.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RibbonDesigner:Make">
+        <MSBuild Projects="RibbonDesigner.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="RibbonDesigner"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="RibbonDesigner:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="RibbonDesigner:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

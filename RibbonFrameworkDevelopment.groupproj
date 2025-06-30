@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{288F71FC-991B-4D78-8AEB-72A33DD5D5F0}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Package\UIRibbonPackage.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Samples\High Level\07 Text Pad with Action List\TextPad.dproj">
+            <Dependencies>Package\UIRibbonPackage.dproj</Dependencies>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="UIRibbonPackage">
+        <MSBuild Projects="Package\UIRibbonPackage.dproj"/>
+    </Target>
+    <Target Name="UIRibbonPackage:Clean">
+        <MSBuild Projects="Package\UIRibbonPackage.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="UIRibbonPackage:Make">
+        <MSBuild Projects="Package\UIRibbonPackage.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="TextPad" DependsOnTargets="UIRibbonPackage">
+        <MSBuild Projects="Samples\High Level\07 Text Pad with Action List\TextPad.dproj"/>
+    </Target>
+    <Target Name="TextPad:Clean" DependsOnTargets="UIRibbonPackage:Clean">
+        <MSBuild Projects="Samples\High Level\07 Text Pad with Action List\TextPad.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="TextPad:Make" DependsOnTargets="UIRibbonPackage:Make">
+        <MSBuild Projects="Samples\High Level\07 Text Pad with Action List\TextPad.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="UIRibbonPackage;TextPad"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="UIRibbonPackage:Clean;TextPad:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="UIRibbonPackage:Make;TextPad:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -111,7 +111,7 @@ begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
-      for BdsVersion := 30 downto 10 do
+      for BdsVersion := 50 downto 10 do
       begin
         BdsKey := 'Software\Embarcadero\BDS\' + IntToStr(BdsVersion) + '.0';
         if (Reg.OpenKeyReadOnly(BdsKey)) then

@@ -106,6 +106,8 @@ begin
     FRibbonCompilerPath := FindTool('UICC.exe');
   if not FileExists(FResourceCompilerPath) then
     FResourceCompilerPath := FindTool('rc.exe');
+  if not FileExists(FResourceCompilerPath) then
+    FResourceCompilerPath := FindTool('resinator.exe');
 
   // Find delphi compiler
   Reg := TRegistry.Create;
@@ -147,6 +149,7 @@ begin
     lList.Delimiter := PathSep;
     lList.Add(ExtractFileDir(ParamStr(0))); // Check current directory of the RibbonCMDCompiler.exe first to find ribbon compiler UICC.exe
     lList.Add(GetEnvironmentVariable('PATH'));
+    lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Windows Kits\10\bin\10.0.26100.0\x86\');
     lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Windows Kits\10\bin\10.0.18362.0\x86\');
     lList.Add(GetEnvironmentVariable('ProgramFiles')      + '\Windows Kits\10\bin\x86\');
     lList.Add(GetEnvironmentVariable('ProgramFiles(x86)') + '\Windows Kits\10\bin\x86\');

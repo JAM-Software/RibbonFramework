@@ -15,9 +15,14 @@ type
   TRibbonCompilerMessageEvent = procedure(const Compiler: TRibbonCompiler;
     const MsgType: TMessageKind; const Msg: String) of object;
 
-  TRibbonCompileResult = (crOk, crNoFilename, crNoTools, crRibbonCompilerError,
+  TRibbonCompileResult = (crOk = 0, crNoFilename, crNoTools, crRibbonCompilerError,
     crResourceCompilerError, crDelphiCompilerError, crHeaderConversionError,
     crNoOutput, crException);
+
+  TConsoleMessageHandler = class(TObject)
+  public
+    procedure DumpVerboseToConsole(const Compiler: TRibbonCompiler; const MsgType: TMessageKind; const Msg: String);
+  end;
 
   TRibbonCompiler = class
   {$REGION 'Internal Declarations'}
@@ -82,6 +87,12 @@ begin
     if (not TSettings.Instance.ToolsAvailable) then
     begin
       DoMessage(mkError, RS_NO_TOOLS);
+
+      DoMessage(mkError, 'Evaluated path for UICC: ' + TSettings.Instance.RibbonCompilerPath);
+      DoMessage(mkError, 'Evaluated path for RC: ' + TSettings.Instance.ResourceCompilerPath);
+      DoMessage(mkError, 'Evaluated path for DCC32: ' + TSettings.Instance.DelphiCompilerPath);
+      DoMessage(mkError, 'Searched paths: ' + TSettings.Instance.GetSearchPaths);
+
       Exit(crNoTools);
     end;
 
@@ -96,13 +107,27 @@ begin
     lRcFileParam := Format('"/res:%s"', [lRcFilePath]);
     lNameParam := Format('"/name:%s"', [ResourceName]);
 
+    DoMessage(mkInfo, 'Calling UICC to convert XML markup to header, resource and bml.');
+    DoMessage(mkInfo, 'UICC Path: ' + TSettings.Instance.RibbonCompilerPath);
+    DoMessage(mkInfo, 'Parameters: "/W0" ' + Document.Filename.QuotedString('"') + ' ' + lBmlFileParam + ' ' + lHeaderFileParam + ' ' + lRcFileParam + ' ' + lNameParam);
+
     // Run ribbon compiler UICC.exe to convert the markup XML to a header, a resource and a bml file.
     if not Execute(TSettings.Instance.RibbonCompilerPath, DocDir, ['"/W0"', Document.Filename.QuotedString('"'), lBmlFileParam, lHeaderFileParam, lRcFileParam, lNameParam]) then
       Exit(crRibbonCompilerError);
 
+    DoMessage(mkInfo, 'UICC completed');
+
+    DoMessage(mkInfo, 'Calling RC to compile the resource file from rc.');
+    DoMessage(mkInfo, 'RC Path: ' + TSettings.Instance.ResourceCompilerPath);
+    DoMessage(mkInfo, 'Parameters: ' + lRcFilePath.QuotedString('"'));
+
     // Run the resource compiler, so that we can include the file into a .pas file
     if not Execute(TSettings.Instance.ResourceCompilerPath, DocDir, [lRcFilePath.QuotedString('"')]) then
       Exit(crResourceCompilerError);
+
+    DoMessage(mkInfo, 'RC completed');
+
+    DoMessage(mkInfo, 'Generating pas file');
 
     // Generate the pas file, using the generated files from the previous steps.
     lMarkupGenerator := TMarkupGenerator.Create(Document.Filename, ResourceName);
@@ -111,6 +136,8 @@ begin
     finally
       lMarkupGenerator.Free;
     end;
+
+    DoMessage(mkInfo, 'Markup generation completed');
 
     if pCreateDLL then
     begin
@@ -282,49 +309,79 @@ end;
 class procedure TRibbonCompiler.HandleCommandLine;
 var
   lRibbonFile: string;
+  lResourceName: string;
   lRibbonDocument: TRibbonDocument;
   lRibbonCompiler: TRibbonCompiler;
-  lSuccess: Boolean;
+  lVerboseMsgHandler: TConsoleMessageHandler;
 begin
-  if (ParamCount = 0) or (ParamCount > 2) or FindCmdLineSwitch('HELP') or FindCmdLineSwitch('?') then
-    writeln('Usage: RibbonCMDCompiler.exe [markupfile] [Resourcename (optional)].')
-  else begin
-    ExitCode := 1;
-    lRibbonFile := ParamStr(1);
+  ExitCode := 1;
 
-    if not FileExists(lRibbonFile) then
-      writeln('File not found: ' + lRibbonFile)
-
-    else if not TSettings.Instance.ToolsAvailable then
-      writeln(RS_TOOLS_HEADER + sLineBreak + RS_TOOLS_MESSAGE)
-
-    else begin
-      lRibbonCompiler := TRibbonCompiler.Create;
-      try
-        lRibbonDocument := TRibbonDocument.Create;
-        try
-          try
-            lRibbonDocument.LoadFromFile(lRibbonFile);
-          except on E: ERibbonMarkupError do
-            writeln(E.Message);
-          end;
-
-        if not ParamStr(2).IsEmpty then
-          lSuccess := lRibbonCompiler.Compile(lRibbonDocument, ParamStr(2)) = crOk
-        else
-          lSuccess := lRibbonCompiler.Compile(lRibbonDocument) = crOk;
-
-        if lSuccess then
-          ExitCode := 0;
-
-        finally
-          lRibbonDocument.Free;
-        end;
-      finally
-        lRibbonCompiler.Free;
-      end;
-    end;
+  if (ParamCount = 0) or (ParamCount > 3) or FindCmdLineSwitch('HELP') or FindCmdLineSwitch('?') then
+  begin
+    WriteLn('Usage: RibbonCMDCompiler.exe [markupfile] [Resourcename (optional)].');
+    Exit;
   end;
+
+  lRibbonFile := ParamStr(1);
+
+  if not FileExists(lRibbonFile) then
+  begin
+    WriteLn('File not found: ' + lRibbonFile);
+    Exit;
+  end;
+
+  if not TSettings.Instance.ToolsAvailable then
+  begin
+    WriteLn(RS_TOOLS_HEADER + sLineBreak + RS_TOOLS_MESSAGE);
+
+    WriteLn('Evaluated path for UICC: ' + TSettings.Instance.RibbonCompilerPath);
+    WriteLn('Evaluated path for RC: ' + TSettings.Instance.ResourceCompilerPath);
+    WriteLn('Evaluated path for DCC32: ' + TSettings.Instance.DelphiCompilerPath);
+    WriteLn('Searched paths: ' + TSettings.Instance.GetSearchPaths);
+
+    Exit;
+  end;
+
+  if FindCmdLineSwitch('Verbose') then
+    lVerboseMsgHandler := TConsoleMessageHandler.Create
+  else
+    lVerboseMsgHandler := nil;
+
+  lRibbonCompiler := TRibbonCompiler.Create;
+  try
+    if Assigned(lVerboseMsgHandler) then
+      lRibbonCompiler.FOnMessage := lVerboseMsgHandler.DumpVerboseToConsole;
+
+    lRibbonDocument := TRibbonDocument.Create;
+    try
+      try
+        lRibbonDocument.LoadFromFile(lRibbonFile);
+      except on E: ERibbonMarkupError do
+        WriteLn(E.Message);
+        // Exit; ?!
+      end;
+
+      lResourceName := ParamStr(2);
+      if lResourceName.IsEmpty then
+        lResourceName := 'APPLICATION'; // Default in TRibbonCompiler.Compile
+
+      ExitCode := Ord(lRibbonCompiler.Compile(lRibbonDocument, lResourceName));
+    finally
+      if Assigned(lVerboseMsgHandler) then
+        lVerboseMsgHandler.Free;
+
+      lRibbonDocument.Free;
+    end;
+  finally
+    lRibbonCompiler.Free;
+  end;
+end;
+
+{ TConsoleMessageHandler }
+
+procedure TConsoleMessageHandler.DumpVerboseToConsole(const Compiler: TRibbonCompiler; const MsgType: TMessageKind; const Msg: String);
+begin
+  WriteLn(Msg);
 end;
 
 end.

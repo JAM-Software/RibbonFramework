@@ -23,8 +23,6 @@ type
     /// Searches the %PATH% environment variable and different well-known locations of the Winodws toolkit for the given exe file.
     /// Returns the full path to the exe file, if it can be found. If no such path can be found, an empty string is returned-
     function FindTool(const pExeName: string): string;
-    /// Returns a separated list of paths that can be used to search for the ribbon tools. We use the PATH variable as well as some well known locations.
-    function GetSearchPaths: string;
   public
     class constructor Create;
     class destructor Destroy;
@@ -36,6 +34,8 @@ type
     /// Tries to find the used tool on the current system if their paths are empty
     procedure DetectTools();
     function ToolsAvailable: Boolean;
+    /// Returns a separated list of paths that can be used to search for the ribbon tools. We use the PATH variable as well as some well known locations.
+    function GetSearchPaths: string;
 
     class property Instance: TSettings read FInstance;
 
@@ -49,7 +49,7 @@ type
 resourcestring
   RS_CANNOT_SAVE_SETTINGS = 'Unable to save settings.';
   RS_TOOLS_HEADER = 'Cannot find compilation tools';
-  RS_TOOLS_MESSAGE = 'One or more ribbon compilation tools (UICC.exe and DCC32.exe) could not be found.';
+  RS_TOOLS_MESSAGE = 'One or more ribbon compilation tools (UICC.exe, DCC32.exe and/or RC.exe) could not be found.';
   RS_TOOLS_SETUP = 'Do you want to open the settings dialog box to specify the locations of these tools now?';
 
 implementation
@@ -258,7 +258,7 @@ end;
 function TSettings.ToolsAvailable: Boolean;
 begin
   DetectTools();
-  Result := (FRibbonCompilerPath <> '') and (FDelphiCompilerPath <> '');
+  Result := (FRibbonCompilerPath <> '') and (FDelphiCompilerPath <> '') and (FResourceCompilerPath <> '');
 end;
 
 end.

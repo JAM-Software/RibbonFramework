@@ -50,7 +50,7 @@ _XE5:
 	$(MAKE) _samples
 
 "Designer\Bin\RibbonDesigner.exe": Designer\*.pas Designer\*.dfm Designer\*.dpr Designer\*.dproj
-	SET BDS=$(STUDIO)\23.0
+	SET BDS=$(STUDIO)\37.0
 	$(BUILD) /p:Config=Release "Designer\RibbonDesigner.dproj"
 
 "Samples\High Level\01 Simple Ribbon\SimpleRibbon.exe": "Samples\High Level\01 Simple Ribbon\*.dproj" "Samples\High Level\01 Simple Ribbon\*.pas" "Samples\High Level\01 Simple Ribbon\*.dpr"

@@ -71,7 +71,6 @@
         <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <DCC_Inlining>off</DCC_Inlining>
         <DCC_Optimize>false</DCC_Optimize>
-        <BRCC_CompilerToUse>rc</BRCC_CompilerToUse>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
     </PropertyGroup>

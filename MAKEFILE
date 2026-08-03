@@ -9,6 +9,10 @@ BUILDEXE = "$(PROGRAMFILES)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0
 BUILDEXE = "msbuild.exe"
 !ENDIF
 
+!IFNDEF BDSVersion
+BDSVersion = 37.0
+!ENDIF
+
 PROGRAMFILESX86 = C:\Program Files (x86)
 
 BUILD = $(BUILDEXE) /t:Rebuild
@@ -20,6 +24,9 @@ clean:
 	DEL /S *.EXE
 	DEL /S *.DCU
 	DEL /S *.BPL
+
+lib\UIRibbon.res: lib\UIRibbon.rc
+	"$(STUDIO)\$(BDSVersion)\bin\brcc32.exe" lib\UIRibbon.rc 3>&1
 
 Package: lib\* Package\Delphi\*
 	@SET BDS=$(STUDIO)\$(BDSVersion)

@@ -54,6 +54,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <BRCC_CompilerToUse>rc</BRCC_CompilerToUse>
         <SanitizedProjectName>TextPad</SanitizedProjectName>
         <DCC_UnitSearchPath>..\..\..\Lib;D:\Projects\vcl-styles-utils.git\Common;D:\Projects\vcl-styles-utils.git\Common\delphi-detours-library;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1033</VerInfo_Locale>

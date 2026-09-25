@@ -1053,6 +1053,7 @@ var
   lCommand: TUICommand;
   lImageIndex: Integer;
   lActionManager: TActionManager;
+  lAction: TCustomAction;
 begin
   if not (roAssignImagesFromActionManager in Self.Options) then
     Exit; // ActionManager's images are not actually used -> Nothing todo
@@ -1063,8 +1064,9 @@ begin
     // Check if this command has an action. If yes, use the action's image index.
     if Assigned(lCommand.ActionLink) and Assigned(lCommand.ActionLink.Action) and Assigned(TCustomAction(lCommand.ActionLink.Action).ActionList) then
     begin
-      lActionManager := TCustomAction(lCommand.ActionLink.Action).ActionList as TActionManager;
-      lImageIndex := TCustomAction(lCommand.ActionLink.Action).ImageIndex;
+      lAction := TCustomAction(lCommand.ActionLink.Action);
+      lActionManager := lAction.ActionList as TActionManager;
+      lImageIndex := GetActionImageIndex(lAction, Sender as TCustomImageList, lAction.ImageIndex);
 
       // Check if this action's imagelist is the one we registered for changes. Skip otherwise. Check if small or large image should be adjsuted
       if (lActionManager.Images = Sender) then

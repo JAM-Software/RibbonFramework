@@ -9,6 +9,7 @@ uses
   Vcl.Menus,
   Vcl.ActnList,
   Vcl.ActnMan,
+  Vcl.ImgList,
   UIRibbonCommands,
   UIRibbonApi;
 
@@ -128,6 +129,10 @@ type
     property HelpKeyword;
     property HelpType;
     property Hint;
+    property ImageIndex;
+    {$IF CompilerVersion >= 34.0}
+    property ImageName;
+    {$IFEND}
     property SecondaryShortCuts;
     property ShortCut default 0;
     property OnExecute;
@@ -249,6 +254,12 @@ type
     property RecentItems: TUICommandRecentItems read GetRecentItems;
   end;
 
+/// <summary>
+/// Returns the index of the image of the given action in the given image list. If the action has an ImageName that
+/// can be resolved in pImages (e.g. a TVirtualImageList), this is preferred. Otherwise pImageIndex is returned.
+/// </summary>
+function GetActionImageIndex(pAction: TCustomAction; pImages: TCustomImageList; pImageIndex: Integer): Integer;
+
 implementation
 
 uses
@@ -260,6 +271,17 @@ uses
 
 const
   cNoSelection = -1;
+
+function GetActionImageIndex(pAction: TCustomAction; pImages: TCustomImageList; pImageIndex: Integer): Integer;
+begin
+  Result := -1;
+  {$IF CompilerVersion >= 34.0} // ImageName was introduced in Delphi 10.4
+  if (pAction.ImageName <> '') and Assigned(pImages) then
+    Result := pImages.GetIndexByName(pAction.ImageName);
+  {$IFEND}
+  if Result < 0 then
+    Result := pImageIndex;
+end;
 
 { TUICommandActionLink }
 
@@ -406,14 +428,21 @@ end;
 procedure TUICommandActionLink.SetImageIndex(Value: Integer);
 var
   lActionManager: TActionManager;
+  lImageIndex: Integer;
 begin
   inherited;
-  if (Value >= 0) and IsImageIndexLinked and (TContainedAction(Self.Action).ActionList is TActionManager) then begin
+  if IsImageIndexLinked and (TContainedAction(Self.Action).ActionList is TActionManager) then begin
     lActionManager := TActionManager(TContainedAction(Self.Action).ActionList);
-    if Assigned(lActionManager.Images) then
-      FClient.SmallImage := TUIImage.Create(lActionManager.Images, Value);
-    if Assigned(lActionManager.LargeImages) then
-      FClient.LargeImage := TUIImage.Create(lActionManager.LargeImages, Value);
+    if Assigned(lActionManager.Images) then begin
+      lImageIndex := GetActionImageIndex(TCustomAction(Self.Action), lActionManager.Images, Value);
+      if lImageIndex >= 0 then
+        FClient.SmallImage := TUIImage.Create(lActionManager.Images, lImageIndex);
+    end;
+    if Assigned(lActionManager.LargeImages) then begin
+      lImageIndex := GetActionImageIndex(TCustomAction(Self.Action), lActionManager.LargeImages, Value);
+      if lImageIndex >= 0 then
+        FClient.LargeImage := TUIImage.Create(lActionManager.LargeImages, lImageIndex);
+    end;
   end;
 end;
 

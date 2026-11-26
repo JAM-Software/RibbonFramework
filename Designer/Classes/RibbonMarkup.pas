@@ -377,6 +377,8 @@ type
   strict private
     FApplicationModes: Cardinal;
   private
+    { True if the parent is a MenuGroup of the Application Menu (left column) }
+    FIsInApplicationMenu: Boolean;
     constructor Create(const Owner: TRibbonDocument); overload;
     constructor Create(const Owner: TRibbonDocument; const E: TXmlElement); overload;
   protected
@@ -384,6 +386,10 @@ type
   {$ENDREGION 'Internal Declarations'}
   public
     class function SupportApplicationModes: Boolean; virtual; abstract;
+    { Whether ApplicationModes may be set at the current position in the
+      markup. Only Tab, Group and controls in the left column of the
+      Application Menu are allowed, otherwise UICC fails with error SC1037. }
+    function CanHaveApplicationModes: Boolean;
     function CanReorder: Boolean; override;
 
     property ApplicationModes: Cardinal read FApplicationModes write FApplicationModes;
@@ -3110,6 +3116,12 @@ begin
   FApplicationModes := $FFFFFFFF;
 end;
 
+function TRibbonControl.CanHaveApplicationModes: Boolean;
+begin
+  Result := SupportApplicationModes and
+    (FIsInApplicationMenu or (Self is TRibbonTab) or (Self is TRibbonGroup));
+end;
+
 function TRibbonControl.CanReorder: Boolean;
 begin
   Result := True;
@@ -3157,7 +3169,7 @@ var
   I: Integer;
 begin
   inherited;
-  if (SupportApplicationModes) and (FApplicationModes <> $FFFFFFFF) then
+  if (CanHaveApplicationModes) and (FApplicationModes <> $FFFFFFFF) then
   begin
     S := '';
     for I := 0 to 31 do
@@ -4522,6 +4534,7 @@ begin
   begin
     Result := Owner.CreateObject(ObjType);
     FControls.Add(Result as TRibbonControl);
+    TRibbonControl(Result).FIsInApplicationMenu := (ObjectType = otAppMenuGroup);
   end
   else
     Result := inherited AddNew(ObjType);
@@ -4537,6 +4550,7 @@ constructor TRibbonAppMenuGroup.Create(const Owner: TRibbonDocument;
 var
   S: String;
   C: TXmlElement;
+  Control: TRibbonControl;
 begin
   inherited Create(Owner, E);
   FControls := TRibbonList<TRibbonControl>.Create(Owner, True);
@@ -4553,6 +4567,8 @@ begin
     if (not AddControl(C)) then
       Error(C, RS_UNSUPPORTED_CHILD_ELEMENT, [C.Name, E.Name]);
   end;
+  for Control in FControls do
+    Control.FIsInApplicationMenu := (ObjectType = otAppMenuGroup);
 end;
 
 function TRibbonAppMenuGroup.Delete(const Obj: TRibbonObject): Boolean;

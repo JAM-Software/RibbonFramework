@@ -82,9 +82,9 @@ begin
   FControl := Subject as TRibbonControl;
   EditApplicationModes.OnRightButtonClick := EditApplicationModesRightButtonClick;
   EditApplicationModes.Images := DataModuleShared.ImageListAppModes;
-  LabelApplicationModes.Enabled := FControl.SupportApplicationModes;
-  EditApplicationModes.Enabled := FControl.SupportApplicationModes;
-  EditApplicationModes.RightButton.Enabled := FControl.SupportApplicationModes;
+  LabelApplicationModes.Enabled := FControl.CanHaveApplicationModes;
+  EditApplicationModes.Enabled := FControl.CanHaveApplicationModes;
+  EditApplicationModes.RightButton.Enabled := FControl.CanHaveApplicationModes;
   if EditApplicationModes.Enabled then
     EditApplicationModes.Text := ApplicationModesToString(FControl.ApplicationModes)
   else
